@@ -25,17 +25,22 @@ import java.util.logging.Level;
 public class Utils {
 
 	private Utils utils;
+	private boolean debug = false;
 	protected static String osName = getOSName();
 	private static final String browserDriver = osName.equals("windows")
 			? "chromedriver.exe" : "chromedriver";
 
-	private ChromeDriverService service;
+	private ChromeDriverService chromeDriverService;
 	private WebDriver driver;
 	private String wsURL;
 	private static ThreadLocal<Utils> instance = new ThreadLocal<Utils>();
 	private static final Logger logger = LoggerFactory.getLogger(Utils.class);
 	private static final String chromeDriverLogFile = System
 			.getProperty("user.dir") + "/target/chromedriver.log";
+
+	public void setDebug(boolean value) {
+		this.debug = value;
+	}
 
 	public static Utils getInstance() {
 		if (instance.get() == null) {
@@ -49,7 +54,7 @@ public class Utils {
 	}
 
 	public WebDriver launchBrowser(boolean isHeadless) throws IOException {
-		logger.info("Launching the Chrome...");
+		logger.info("Launching browser");
 
 		Map<String, Object> prefs = new HashMap<>();
 		// 1-Allow, 2-Block, 0-default
@@ -57,11 +62,9 @@ public class Utils {
 		LoggingPreferences logPrefs = new LoggingPreferences();
 		logPrefs.enable(LogType.BROWSER, Level.ALL);
 		ChromeOptions options = new ChromeOptions();
-		options.addArguments(Arrays.asList("--start-maximized"));
-		options.addArguments(Arrays.asList("--ssl-protocol=any"));
-		options.addArguments(Arrays.asList("--ignore-ssl-errors=true"));
-		options.addArguments(Arrays.asList("--disable-extensions"));
-		options.addArguments(Arrays.asList("--ignore-certificate-errors"));
+		options.addArguments(Arrays.asList("--start-maximized",
+				"--ssl-protocol=any", "--ignore-ssl-errors=true",
+				"--disable-extensions", "--ignore-certificate-errors"));
 		options.setExperimentalOption("useAutomationExtension", false);
 		// options.addArguments("enable-automation");
 		// options.addArguments("start-maximized");
@@ -85,12 +88,13 @@ public class Utils {
 				Paths.get(System.getProperty("user.home")).resolve("Downloads")
 						.resolve(browserDriver).toAbsolutePath().toString());
 
-		service = new ChromeDriverService.Builder().usingAnyFreePort()
+		chromeDriverService = new ChromeDriverService.Builder().usingAnyFreePort()
 				.withVerbose(true).build();
-		service.start();
+		chromeDriverService.start();
 
 		try {
-			driver = new RemoteWebDriver(service.getUrl(), crcapabilities);
+			driver = new RemoteWebDriver(chromeDriverService.getUrl(),
+					crcapabilities);
 		} catch (Exception e) {
 			throw e;
 		}
@@ -101,7 +105,7 @@ public class Utils {
 		// wsURL =
 		// String.format("ws://localhost:9222/devtools/session/%s/chromium/send_command_and_get_result",
 		// driver.getWindowHandle().replace("CDwindow-",""));
-		wsURL = getWebSocketDebuggerUrl();
+		wsURL = extractWebSocketDebuggerUrl();
 		UIUtils.getInstance().setDriver(driver);
 		return driver;
 	}
@@ -113,7 +117,7 @@ public class Utils {
 	public void stopChrome() {
 		driver.close();
 		driver.quit();
-		service.stop();
+		chromeDriverService.stop();
 	}
 
 	public void waitFor(long interval) {
@@ -142,23 +146,29 @@ public class Utils {
 		return wsURL.replace(id, targetID);
 	}
 
-	public String getWebSocketDebuggerUrl() throws IOException {
+	public String extractWebSocketDebuggerUrl() throws IOException {
 		String webSocketDebuggerUrl = "";
+		if (debug) {
+			System.err.println("Reading the logfile: " + chromeDriverLogFile);
+		}
+
 		File file = new File(chromeDriverLogFile);
 		try {
 
-			Scanner sc = new Scanner(file);
+			Scanner scanner = new Scanner(file);
 			String urlString = "";
-			while (sc.hasNextLine()) {
-				String line = sc.nextLine();
+			while (scanner.hasNextLine()) {
+				String line = scanner.nextLine();
 				if (line.contains("DevTools HTTP Request: http://localhost")) {
 					urlString = line.substring(line.indexOf("http"), line.length())
 							.replace("/version", "");
-					System.err.println("Parsed from the log: " + urlString);
+					if (debug) {
+						System.err.println("Extracted url: " + urlString);
+					}
 					break;
 				}
 			}
-			sc.close();
+			scanner.close();
 
 			URL url = new URL(urlString);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();

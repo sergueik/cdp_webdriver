@@ -1,8 +1,6 @@
 package example.utils;
 
 import com.neovisionaries.ws.client.WebSocketFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -33,9 +31,10 @@ public class SSLUtil {
 	public static void turnOffSslChecking() {
 		try {
 			// Install the all-trusting trust manager
-			final SSLContext sc = SSLContext.getInstance("SSL");
-			sc.init(null, UNQUESTIONING_TRUST_MANAGER, null);
-			HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+			final SSLContext sSLContext = SSLContext.getInstance("SSL");
+			sSLContext.init(null, UNQUESTIONING_TRUST_MANAGER, null);
+			HttpsURLConnection
+					.setDefaultSSLSocketFactory(sSLContext.getSocketFactory());
 		} catch (Exception e) {
 			System.out.println("Error in SSL Utils");
 		}
@@ -44,10 +43,11 @@ public class SSLUtil {
 	public static void turnOffSslChecking(WebSocketFactory factory) {
 		try {
 			// Install the all-trusting trust manager
-			final SSLContext sc = SSLContext.getInstance("SSL");
-			sc.init(null, UNQUESTIONING_TRUST_MANAGER, null);
-			HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-			factory.setSSLContext(sc);
+			final SSLContext sSLContext = SSLContext.getInstance("SSL");
+			sSLContext.init(null, UNQUESTIONING_TRUST_MANAGER, null);
+			HttpsURLConnection
+					.setDefaultSSLSocketFactory(sSLContext.getSocketFactory());
+			factory.setSSLContext(sSLContext);
 		} catch (Exception e) {
 			System.out.println("Error in SSL Utils");
 		}
@@ -60,6 +60,7 @@ public class SSLUtil {
 	}
 
 	private SSLUtil() {
-		throw new UnsupportedOperationException("Do not instantiate libraries.");
+		throw new UnsupportedOperationException(
+				"Should not instantiate libraries.");
 	}
 }

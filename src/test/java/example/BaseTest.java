@@ -7,6 +7,7 @@ import example.messaging.ServiceWorker;
 import example.utils.UIUtils;
 import example.utils.Utils;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 
@@ -18,8 +19,14 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriverService;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+
+import static java.lang.System.err;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,7 +60,7 @@ public class BaseTest {
 		this.uiUtils = UIUtils.getInstance();
 
 		this.driver = utils.launchBrowser(headless);
-		this.wsURL = utils.getWebSocketDebuggerUrl();
+		this.wsURL = utils.extractWebSocketDebuggerUrl();
 		this.CDPClient = new CDPClient(wsURL);
 		this.id = Utils.getInstance().getDynamicID();
 

@@ -1,8 +1,5 @@
 package example.messaging;
 
-import static java.lang.System.err;
-import static java.lang.System.out;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -68,6 +65,14 @@ public class MessageBuilder {
 		params.put("latitude", latitude);
 		params.put("longitude", longitude);
 		params.put("accuracy", 100);
+		final boolean debug = true;
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n{\"id\":%s,\"method\":\"Emulation.setGeolocationOverride\","
+							+ "\"params\":{\"latitude\":%s,\"longitude\":%s,\"accuracy\":100}}",
+					id, latitude, longitude));
+
+		}
 		return buildMessage(id, method, params);
 		/*
 		 * return
