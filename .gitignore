@@ -18,3 +18,4 @@
 *~
 *.SAVED
 *.MOVED
+/target/

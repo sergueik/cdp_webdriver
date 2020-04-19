@@ -82,7 +82,7 @@ public class HeadlessTest extends BaseTest {
 		CDPClient.sendMessage(MessageBuilder.buildNetWorkEnableMessage(id));
 		URL = "http://petstore.swagger.io/v2/swagger.json";
 		driver.navigate().to(URL);
-		utils.waitFor(3);
+		utils.sleep(3);
 		responseMessage = CDPClient.getResponseMessage("Network.requestWillBeSent");
 		result = new JSONObject(responseMessage);
 		String reqId = result.getJSONObject("params").getString("requestId");
@@ -91,7 +91,7 @@ public class HeadlessTest extends BaseTest {
 				.sendMessage(MessageBuilder.buildGetResponseBodyMessage(id2, reqId));
 		String networkResponse = CDPClient.getResponseBodyMessage(id2);
 		System.err.println("Here is the network Response: " + networkResponse);
-		// utils.waitFor(1);
+		// utils.sleep(1);
 		// uiUtils.takeScreenShot();
 	}
 

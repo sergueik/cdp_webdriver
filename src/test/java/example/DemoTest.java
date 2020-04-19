@@ -73,21 +73,21 @@ public class DemoTest extends BaseTest {
 
 	}
 
-	@Ignore
+	// @Ignore
 	@Test
 	public void doFakeGeoLocation()
 			throws IOException, WebSocketException, InterruptedException {
 		CDPClient.sendMessage(
 				MessageBuilder.buildGeoLocationMessage(id, 37.422290, -122.084057));
 		// google HQ
-		utils.waitFor(3);
+		utils.sleep(3);
 		URL = "https://www.google.com.sg/maps";
 		driver.navigate().to(URL);
 		uiUtils
 				.findElement(By.cssSelector(
 						"div[class *='widget-mylocation-button-icon-common']"), 120)
 				.click();
-		utils.waitFor(10);
+		utils.sleep(10);
 		uiUtils.takeScreenShot();
 	}
 
@@ -99,7 +99,7 @@ public class DemoTest extends BaseTest {
 		CDPClient.mockResponse("This is mocked!!!");
 		URL = "http://petstore.swagger.io/v2/swagger.json";
 		driver.navigate().to(URL);
-		utils.waitFor(3);
+		utils.sleep(3);
 	}
 
 	@Ignore
@@ -113,7 +113,7 @@ public class DemoTest extends BaseTest {
 		CDPClient.mockFunResponse(encodedString);
 		URL = "https://sg.carousell.com/";
 		driver.navigate().to(URL);
-		utils.waitFor(300);
+		utils.sleep(300);
 	}
 
 	@Ignore
@@ -125,7 +125,7 @@ public class DemoTest extends BaseTest {
 		CDPClient.sendMessage(MessageBuilder.buildClearBrowserCookiesMessage(id));
 		CDPClient.sendMessage(MessageBuilder.buildClearDataForOriginMessage(id,
 				"https://framework.realtime.co"));
-		utils.waitFor(3);
+		utils.sleep(3);
 	}
 
 	// Page.handleJavaScriptDialog
@@ -213,7 +213,7 @@ public class DemoTest extends BaseTest {
 		URL = "https://framework.realtime.co/demo/web-push";
 		CDPClient.sendMessage(MessageBuilder.buildServiceWorkerEnableMessage(id));
 		driver.navigate().to(URL);
-		utils.waitFor(5);
+		utils.sleep(5);
 		ServiceWorker serviceWorker = CDPClient.getServiceWorker(URL, 5,
 				"activated");
 		int id1 = Utils.getInstance().getDynamicID();
@@ -228,7 +228,7 @@ public class DemoTest extends BaseTest {
 				3);
 		uiUtils.scrollToElement(elem);
 		elem.click();
-		utils.waitFor(3);
+		utils.sleep(3);
 	}
 
 	// https://en.wikipedia.org/wiki/Basic_access_authentication
@@ -274,7 +274,7 @@ public class DemoTest extends BaseTest {
 			element = driver.findElement(By.tagName("body"));
 			assertThat("get past authentication", element.getAttribute("innerHTML"),
 					containsString("Your browser made it!"));
-			utils.waitFor(3);
+			utils.sleep(3);
 		} catch (WebDriverException | IOException | WebSocketException e) {
 			err.println("Exception (ignored): " + e.getMessage());
 		}
