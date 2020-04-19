@@ -1,6 +1,5 @@
 package example;
 
-import static java.lang.System.err;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -19,6 +18,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
@@ -36,6 +36,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 // TODO: get rid of
 import com.neovisionaries.ws.client.WebSocketException;
 
+import example.messaging.CDPClient.MessageTimeOutException;
 import example.messaging.MessageBuilder;
 import example.messaging.ServiceWorker;
 import example.utils.Utils;
@@ -231,6 +232,30 @@ public class DemoTest extends BaseTest {
 		utils.sleep(3);
 	}
 
+	@Test
+	public void getPerformanceMetricsTest() {
+		try {
+
+			CDPClient.sendMessage(MessageBuilder.buildPerformancEnableMessage(id));
+			CDPClient.sendMessage(
+					MessageBuilder.buildSetTimeDomainMessage(id, "threadTicks"));
+			driver.get("https://www.wikipedia.org");
+			int id2 = Utils.getInstance().getDynamicID();
+			CDPClient.sendMessage(MessageBuilder.buildPerformancGetMetrics(id2));
+			responseMessage = CDPClient.getResponseDataMessage(id2);
+			System.err.println("performanceMetricsTest response: " + responseMessage);
+			// byte[] bytes = Base64.getDecoder().decode(responseMessage);
+			CDPClient.sendMessage(MessageBuilder.buildPerformancDisableMessage(id2));
+		} catch (WebDriverException | IOException | WebSocketException
+				| MessageTimeOutException | InterruptedException e) {
+			System.err.println("performanceMetricsTest Exception in ??? (ignored): "
+					+ e.getMessage());
+			// most likely, the
+			// example.messaging.CDPClient$MessageTimeOutException:
+			// No message received with this id
+		}
+	}
+
 	// https://en.wikipedia.org/wiki/Basic_access_authentication
 	// https://examples.javacodegeeks.com/core-java/apache/commons/codec/binary/base64-binary/org-apache-commons-codec-binary-base64-example/
 	@Test
@@ -276,8 +301,7 @@ public class DemoTest extends BaseTest {
 					containsString("Your browser made it!"));
 			utils.sleep(3);
 		} catch (WebDriverException | IOException | WebSocketException e) {
-			err.println("Exception (ignored): " + e.getMessage());
+			System.err.println("Exception (ignored): " + e.getMessage());
 		}
 	}
 }
-

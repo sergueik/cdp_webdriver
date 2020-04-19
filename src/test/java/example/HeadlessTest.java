@@ -24,6 +24,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
 // TODO: get rid of
@@ -31,6 +32,7 @@ import com.neovisionaries.ws.client.WebSocketException;
 
 import example.messaging.MessageBuilder;
 import example.messaging.ServiceWorker;
+import example.messaging.CDPClient.MessageTimeOutException;
 import example.utils.Utils;
 
 public class HeadlessTest extends BaseTest {
@@ -114,5 +116,29 @@ public class HeadlessTest extends BaseTest {
 		if (f.exists())
 			f.delete();
 		Files.write(f.toPath(), bytes);
+	}
+
+	@Test
+	public void getPerformanceMetricsHeadlessTest() {
+		try {
+
+			CDPClient.sendMessage(MessageBuilder.buildPerformancEnableMessage(id));
+			CDPClient.sendMessage(
+					MessageBuilder.buildSetTimeDomainMessage(id, "threadTicks"));
+			driver.get("https://www.wikipedia.org");
+			int id2 = Utils.getInstance().getDynamicID();
+			CDPClient.sendMessage(MessageBuilder.buildPerformancGetMetrics(id2));
+			responseMessage = CDPClient.getResponseDataMessage(id2);
+			System.err.println("getPerformanceMetricsHeadlessTest response: " + responseMessage);
+			// byte[] bytes = Base64.getDecoder().decode(responseMessage);
+			CDPClient.sendMessage(MessageBuilder.buildPerformancDisableMessage(id2));
+		} catch (WebDriverException | IOException | WebSocketException
+				| MessageTimeOutException | InterruptedException e) {
+			System.err.println("getPerformanceMetricsHeadlessTest Exception in ??? (ignored): "
+					+ e.getMessage());
+			// most likely, the
+			// example.messaging.CDPClient$MessageTimeOutException:
+			// No message received with this id
+		}
 	}
 }

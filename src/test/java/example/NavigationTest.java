@@ -45,7 +45,7 @@ public class NavigationTest extends BaseTest {
 	private String responseMessage = null;
 	private JSONObject result = null;
 
-	// @Ignore
+	@Ignore
 	// https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-getDocuments
 	// https://chromedevtools.github.io/devtools-protocol/tot/DOM#type-Node
 	// https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-querySelector

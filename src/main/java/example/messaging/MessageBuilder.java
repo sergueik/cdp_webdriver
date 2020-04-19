@@ -450,7 +450,7 @@ public class MessageBuilder {
 		return buildMessage(Utils.getInstance().getDynamicID(), method, params);
 	}
 
-	private String buildAttachToTargetMessage(String targetId) {
+	private static String buildAttachToTargetMessage(String targetId) {
 
 		String method = "BackgroundService.clearEvents";
 		message = new Message(Utils.getInstance().getDynamicID(), method);
@@ -463,4 +463,42 @@ public class MessageBuilder {
 		 * targetId);
 		 */
 	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Performance/#method-setTimeDomain
+	public static String buildSetTimeDomainMessage(int id, String timeDomain) {
+
+		String method = "Performance.setTimeDomain";
+		params = new HashMap<>();
+		params.put("timeDomain", timeDomain);
+		return buildMessage(id, method, params);
+		/*
+		 * return String.format("{\"id\":%d,\"method\":\"Performance.setTimeDomain\"," +
+		 * "\"params\":{\"timeDomain\":\"%s\"}}", id, timeDomain);
+		 */
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Performance/#method-enable
+	public static String buildPerformancEnableMessage(int id) {
+		return buildMessage(id, "Performance.enable");
+		/*
+		 * return String.format("{\"id\":%d,\"method\":\"Performance.enable\"}", id);
+		 */
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Performance/#method-disable
+	public static String buildPerformancDisableMessage(int id) {
+		return buildMessage(id, "Performance.disable");
+		/*
+		 * return String.format("{\"id\":%d,\"method\":\"Performance.disable\"}", id);
+		 */
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Performance/#method-getMetrics
+	public static String buildPerformancGetMetrics(int id) {
+		return buildMessage(id, "Performance.getMetrics");
+		/*
+		 * return String.format("{\"id\":%d,\"method\":\"Performance.getMetrics\"}", id);
+		 */
+	}
+
 }
