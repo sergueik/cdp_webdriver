@@ -22,13 +22,15 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
+import example.utils.TestUtils;
+
 public class Utils {
 
 	private Utils utils;
 	private boolean debug = false;
 
 	private int debugPort = 0;
-	protected static String osName = getOSName();
+	protected static String osName = TestUtils.getOSName();
 	private static final String browserDriver = osName.equals("windows")
 			? "chromedriver.exe" : "chromedriver";
 
@@ -219,14 +221,4 @@ public class Utils {
 		return webSocketDebuggerUrl;
 	}
 
-	// Utilities
-	public static String getOSName() {
-		if (osName == null) {
-			osName = System.getProperty("os.name").toLowerCase();
-			if (osName.startsWith("windows")) {
-				osName = "windows";
-			}
-		}
-		return osName;
-	}
 }

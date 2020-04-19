@@ -9,8 +9,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 
 import example.messaging.CDPClient;
+
 import example.utils.UIUtils;
 import example.utils.Utils;
+import example.utils.TestUtils;
 
 public class BaseTest {
 	protected WebDriver driver;
@@ -19,7 +21,8 @@ public class BaseTest {
 	protected CDPClient CDPClient;
 	protected int id;
 	private final static int debugPort = Integer
-			.parseInt(getPropertyEnv("debugPort", "0"));
+			.parseInt(TestUtils.getPropertyEnv("debugPort", "0"));
+	// used to override the default port 9222
 	@SuppressWarnings("unused")
 	private boolean debug = false;
 	private boolean headless = false;
@@ -55,17 +58,6 @@ public class BaseTest {
 		utils.stopChrome();
 		if (!Objects.isNull(chromeDriverService))
 			chromeDriverService.stop();
-	}
-
-	public static String getPropertyEnv(String name, String defaultValue) {
-		String value = System.getProperty(name);
-		if (value == null || value.length() == 0) {
-			value = System.getenv(name);
-			if (value == null || value.length() == 0) {
-				value = defaultValue;
-			}
-		}
-		return value;
 	}
 
 }
