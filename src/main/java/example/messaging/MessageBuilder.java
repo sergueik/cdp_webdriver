@@ -17,6 +17,7 @@ public class MessageBuilder {
 
 	private static String method = null;
 	private static Message message = null;
+	private static final boolean debug = false;
 	private static Map<String, Object> params = new HashMap<>();
 	private static Map<String, Object> data = new HashMap<>();
 
@@ -65,7 +66,6 @@ public class MessageBuilder {
 		params.put("latitude", latitude);
 		params.put("longitude", longitude);
 		params.put("accuracy", 100);
-		final boolean debug = true;
 		if (debug) {
 			System.err.println(String.format(
 					"Sending:\n{\"id\":%s,\"method\":\"Emulation.setGeolocationOverride\","

@@ -32,7 +32,7 @@ public class Utils {
 
 	private ChromeDriverService chromeDriverService;
 	private WebDriver driver;
-	private String wsURL;
+	private String webSocketURL = null;
 	private static ThreadLocal<Utils> instance = new ThreadLocal<Utils>();
 	private static final Logger logger = LoggerFactory.getLogger(Utils.class);
 	private static final String chromeDriverLogFile = System
@@ -99,19 +99,22 @@ public class Utils {
 			throw e;
 		}
 
-		// wsURL =
+		// webSocketURL =
 		// String.format("ws://localhost:9222/devtools/page/%s",driver.getWindowHandle().replace("CDwindow-",""));
-		// NOTE: need to try
-		// wsURL =
+		// NOTE: Python appears to be using
 		// String.format("ws://localhost:9222/devtools/session/%s/chromium/send_command_and_get_result",
 		// driver.getWindowHandle().replace("CDwindow-",""));
-		wsURL = extractWebSocketDebuggerUrl();
+		webSocketURL = extractWebSocketDebuggerUrl();
 		UIUtils.getInstance().setDriver(driver);
 		return driver;
 	}
 
-	public String getWsURL() {
-		return wsURL;
+	public String getWebSocketURL() {
+
+		if (this.webSocketURL == null) {
+			this.webSocketURL = extractWebSocketDebuggerUrl();
+		}
+		return webSocketURL;
 	}
 
 	public void stopChrome() {
@@ -140,13 +143,14 @@ public class Utils {
 		return r.nextInt((max - min) + 1) + min;
 	}
 
+	// TODO: is it still needed?
 	public String getSWURL(String wsURL, String targetID) {
 		String[] arr = wsURL.split("page/");
 		String id = arr[1];
 		return wsURL.replace(id, targetID);
 	}
 
-	public String extractWebSocketDebuggerUrl() throws IOException {
+	public String extractWebSocketDebuggerUrl() {
 		String webSocketDebuggerUrl = "";
 		if (debug) {
 			System.err.println("Reading the logfile: " + chromeDriverLogFile);
@@ -178,17 +182,24 @@ public class Utils {
 			JSONArray jsonArray = new JSONArray(json);
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
-				System.err.println("inspecting json: " + jsonObject.toString());
+				if (debug) {
+					System.err.println("inspecting json: " + jsonObject.toString());
+				}
 				if (jsonObject.getString("type").equals("page")) {
 					webSocketDebuggerUrl = jsonObject.getString("webSocketDebuggerUrl");
 					break;
 				}
 			}
 		} catch (FileNotFoundException e) {
-			throw e;
+			throw new RuntimeException("Cannot find Driver Log File: "
+					+ chromeDriverLogFile + " " + e.toString());
+		} catch (IOException e) {
+			throw new RuntimeException("Cannot read Driver Log File: "
+					+ chromeDriverLogFile + " " + e.toString());
 		}
-		if (webSocketDebuggerUrl.equals(""))
+		if (webSocketDebuggerUrl.equals("")) {
 			throw new RuntimeException("webSocketDebuggerUrl not found");
+		}
 		return webSocketDebuggerUrl;
 	}
 
