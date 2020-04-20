@@ -64,6 +64,34 @@ this for an e.g. `Emulation.setGeolocationOverride` creates payload which looks 
   }
 }
 ```
+### Docker Testing
+
+Currently the test described in the original repository author's [blog](https://medium.com/@sahajamit/can-selenium-chrome-dev-tools-recipe-works-inside-a-docker-container-afff92e9cce5) does not appear to work:
+#### Setup
+* download stock Docker image with chrome and selenium proxy
+```sh
+docker pull selenium/standalone-chrome
+```
+Note: the defauld docker image is based on ubuntu and its size is 908 Mb compared to some 384 Mb of custom alpine based image with chromium browser (which is a work in progress).
+
+* run the Docker container with additional port published
+``sh
+docker run -d --expose=9222 -p 4444:4444 -p 0.0.0.0:9222:9222 --name selenium-standalone-chrome -v /dev/shm:/dev/shm selenium/standalone-chrome
+```
+alternatively can specify custom debugging port and omit volume:
+```sh
+docker container prune -f
+docker run -d --expose=10000 -p 4444:4444 -p 0.0.0.0:10000:10000 --name selenium-standalone-chrome selenium/standalone-chrome
+
+```
+#### Run Test	
+run the Docker tests
+```sh
+mvn test -DdebugPort=10000
+```
+will see the error:
+```sh
+```
 ### See Also:
   * original project author's [blog](https://medium.com/@sahajamit/selenium-chrome-dev-tools-makes-a-perfect-browser-automation-recipe-c35c7f6a2360)
   * SeleniumHQ devtools-specific [tests](https://github.com/SeleniumHQ/selenium/tree/cdp_codegen/java/client/test/org/openqa/selenium/devtools) - one has to switch to __cdp_codegen__ branch.
