@@ -38,7 +38,6 @@ public class BaseTest {
 		BaseTest.headless = value;
 	}
 
-
 	@BeforeClass
 	public static void beforeClass() throws IOException {
 		utils = Utils.getInstance();
@@ -46,6 +45,11 @@ public class BaseTest {
 		utils.setDebug(debug);
 		if (debugPort != 0) {
 			utils.setDebugPort(debugPort);
+		}
+		// force the headless flag to be true to support Unix console execution
+		if (!(Utils.getOsName().equals("windows"))
+				&& !(System.getenv().containsKey("DISPLAY"))) {
+			headless = true;
 		}
 		driver = utils.launchBrowser(headless);
 		CDPClient = new CDPClient(utils.getWebSocketURL());

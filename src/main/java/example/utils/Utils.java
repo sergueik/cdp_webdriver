@@ -31,14 +31,16 @@ public class Utils {
 
 	private int debugPort = 0;
 	protected static String osName = TestUtils.getOSName();
-	private static final String browserDriver = osName.equals("windows") ? "chromedriver.exe" : "chromedriver";
+	private static final String browserDriver = osName.equals("windows")
+			? "chromedriver.exe" : "chromedriver";
 
 	private ChromeDriverService chromeDriverService;
 	private WebDriver driver;
 	private String webSocketURL = null;
 	private static ThreadLocal<Utils> instance = new ThreadLocal<Utils>();
 	private static final Logger logger = LoggerFactory.getLogger(Utils.class);
-	private String chromeDriverLogFile = System.getProperty("user.dir") + "/target/chromedriver.log";
+	private String chromeDriverLogFile = System.getProperty("user.dir")
+			+ "/target/chromedriver.log";
 
 	public void setChromeDriverLogFile(String value) {
 		chromeDriverLogFile = value;
@@ -59,6 +61,10 @@ public class Utils {
 		return instance.get();
 	}
 
+	public static String getOsName() {
+		return osName;
+	}
+
 	public WebDriver launchBrowser() throws IOException {
 		return launchBrowser(false);
 	}
@@ -73,13 +79,15 @@ public class Utils {
 		LoggingPreferences logPrefs = new LoggingPreferences();
 		logPrefs.enable(LogType.BROWSER, Level.ALL);
 		ChromeOptions options = new ChromeOptions();
-		options.addArguments(Arrays.asList("--start-maximized", "--ssl-protocol=any", "--ignore-ssl-errors=true",
+		options.addArguments(Arrays.asList("--start-maximized",
+				"--ssl-protocol=any", "--ignore-ssl-errors=true",
 				"--disable-extensions", "--ignore-certificate-errors"));
 		if (debugPort != 0) {
 			if (debug) {
 				logger.info("Specifying the debug Port: " + debugPort);
 			}
-			options.addArguments(Arrays.asList("--remote-debugging-port=" + debugPort));
+			options
+					.addArguments(Arrays.asList("--remote-debugging-port=" + debugPort));
 		}
 		if (debug) {
 			logger.info("Specifying the options: " + options);
@@ -98,12 +106,15 @@ public class Utils {
 		capabilities.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
 
 		// the chrome driver log is where the session will be extracted from
-		System.setProperty(ChromeDriverService.CHROME_DRIVER_LOG_PROPERTY, chromeDriverLogFile);
+		System.setProperty(ChromeDriverService.CHROME_DRIVER_LOG_PROPERTY,
+				chromeDriverLogFile);
 
-		System.setProperty(ChromeDriverService.CHROME_DRIVER_EXE_PROPERTY, Paths.get(System.getProperty("user.home"))
-				.resolve("Downloads").resolve(browserDriver).toAbsolutePath().toString());
+		System.setProperty(ChromeDriverService.CHROME_DRIVER_EXE_PROPERTY,
+				Paths.get(System.getProperty("user.home")).resolve("Downloads")
+						.resolve(browserDriver).toAbsolutePath().toString());
 
-		chromeDriverService = new ChromeDriverService.Builder().usingAnyFreePort().withVerbose(true).build();
+		chromeDriverService = new ChromeDriverService.Builder().usingAnyFreePort()
+				.withVerbose(true).build();
 		chromeDriverService.start();
 
 		try {
@@ -120,9 +131,11 @@ public class Utils {
 		return driver;
 	}
 
-	public WebDriver launchBrowser(boolean isHeadless, URL remoteDriverURL) throws IOException {
+	public WebDriver launchBrowser(boolean isHeadless, URL remoteDriverURL)
+			throws IOException {
 		if (debug) {
-			logger.info("Launching " + (isHeadless ? "headless " : "") + "browser on " + remoteDriverURL);
+			logger.info("Launching " + (isHeadless ? "headless " : "") + "browser on "
+					+ remoteDriverURL);
 		}
 		Map<String, Object> prefs = new HashMap<String, Object>();
 		// 1-Allow, 2-Block, 0-default
@@ -132,14 +145,17 @@ public class Utils {
 		LoggingPreferences logPrefs = new LoggingPreferences();
 		logPrefs.enable(LogType.BROWSER, Level.ALL);
 		ChromeOptions options = new ChromeOptions();
-		options.addArguments(Arrays.asList("--start-maximized", "--ssl-protocol=any", "--ignore-ssl-errors=true",
+		options.addArguments(Arrays.asList("--start-maximized",
+				"--ssl-protocol=any", "--ignore-ssl-errors=true",
 				"--disable-extensions", "--ignore-certificate-errors"));
 		if (debugPort != 0) {
 			if (debug) {
 				logger.info("Specifying the debug Port: " + debugPort);
-				logger.info("Specifying the userdir: " + System.getProperty("user.dir"));
+				logger
+						.info("Specifying the userdir: " + System.getProperty("user.dir"));
 			}
-			options.addArguments(Arrays.asList("--remote-debugging-port=" + debugPort));
+			options
+					.addArguments(Arrays.asList("--remote-debugging-port=" + debugPort));
 		}
 		options.addArguments("enable-automation");
 
@@ -158,16 +174,20 @@ public class Utils {
 			logger.info("Specifying the driver log file: " + chromeDriverLogFile);
 		}
 
-		System.setProperty(ChromeDriverService.CHROME_DRIVER_LOG_PROPERTY, chromeDriverLogFile);
+		System.setProperty(ChromeDriverService.CHROME_DRIVER_LOG_PROPERTY,
+				chromeDriverLogFile);
 
-		System.setProperty(ChromeDriverService.CHROME_DRIVER_EXE_PROPERTY, Paths.get(System.getProperty("user.home"))
-				.resolve("Downloads").resolve(browserDriver).toAbsolutePath().toString());
-		chromeDriverService = new ChromeDriverService.Builder().usingAnyFreePort().withVerbose(true).build();
+		System.setProperty(ChromeDriverService.CHROME_DRIVER_EXE_PROPERTY,
+				Paths.get(System.getProperty("user.home")).resolve("Downloads")
+						.resolve(browserDriver).toAbsolutePath().toString());
+		chromeDriverService = new ChromeDriverService.Builder().usingAnyFreePort()
+				.withVerbose(true).build();
 		if (Objects.isNull(remoteDriverURL)) {
 			chromeDriverService.start();
 		}
 		try {
-			driver = (remoteDriverURL == null) ? new RemoteWebDriver(chromeDriverService.getUrl(), capabilities)
+			driver = (remoteDriverURL == null)
+					? new RemoteWebDriver(chromeDriverService.getUrl(), capabilities)
 					: new RemoteWebDriver(remoteDriverURL, capabilities);
 		} catch (Exception e) {
 			System.err.println("Exception initializing");
@@ -243,7 +263,8 @@ public class Utils {
 			while (scanner.hasNextLine()) {
 				String line = scanner.nextLine();
 				if (line.contains("DevTools HTTP Request: http://localhost")) {
-					urlString = line.substring(line.indexOf("http"), line.length()).replace("/version", "");
+					urlString = line.substring(line.indexOf("http"), line.length())
+							.replace("/version", "");
 					if (debug) {
 						System.err.println("Extracted url: " + urlString);
 					}
@@ -254,7 +275,8 @@ public class Utils {
 
 			URL url = new URL(urlString);
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			BufferedReader reader = new BufferedReader(
+					new InputStreamReader(conn.getInputStream()));
 			String json = org.apache.commons.io.IOUtils.toString(reader);
 			JSONArray jsonArray = new JSONArray(json);
 			for (int i = 0; i < jsonArray.length(); i++) {
@@ -268,9 +290,11 @@ public class Utils {
 				}
 			}
 		} catch (FileNotFoundException e) {
-			throw new RuntimeException("Cannot find Driver Log File: " + chromeDriverLogFile + " " + e.toString());
+			throw new RuntimeException("Cannot find Driver Log File: "
+					+ chromeDriverLogFile + " " + e.toString());
 		} catch (IOException e) {
-			throw new RuntimeException("Cannot read Driver Log File: " + chromeDriverLogFile + " " + e.toString());
+			throw new RuntimeException("Cannot read Driver Log File: "
+					+ chromeDriverLogFile + " " + e.toString());
 		}
 		if (webSocketDebuggerUrl.equals("")) {
 			throw new RuntimeException("webSocketDebuggerUrl not found");
