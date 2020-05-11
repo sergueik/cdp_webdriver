@@ -50,8 +50,7 @@ public class MessageBuilder {
 		return (new Message(id, method)).toJson();
 	}
 
-	private static String buildMessage(int id, String method,
-			Map<String, Object> params) {
+	private static String buildMessage(int id, String method, Map<String, Object> params) {
 		message = new Message(id, method);
 		for (String key : params.keySet()) {
 			message.addParam(key, params.get(key));
@@ -59,8 +58,7 @@ public class MessageBuilder {
 		return message.toJson();
 	}
 
-	public static String buildGeoLocationMessage(int id, double latitude,
-			double longitude) {
+	public static String buildGeoLocationMessage(int id, double latitude, double longitude) {
 		method = "Emulation.setGeolocationOverride";
 		params = new HashMap<>();
 		params.put("latitude", latitude);
@@ -83,22 +81,20 @@ public class MessageBuilder {
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-setExtraHTTPHeaders
-	public static String buildNetWorkSetExtraHTTPHeadersMessage(int id,
-			Map<String, String> headers) {
+	public static String buildNetWorkSetExtraHTTPHeadersMessage(int id, Map<String, String> headers) {
 		method = "Network.setExtraHTTPHeaders";
 		params = new HashMap<>();
 		params.put("headers", headers);
 		return buildMessage(id, method, params);
 		/*
 		 * return String.format(
-		 * "{\"id\":%s,\"method\":\"Network.setExtraHTTPHeaders\",\"params\":{\"headers\":{\"header key\":\"header value\"}}}",
-		 * id);
+		 * "{\"id\":%s,\"method\":\"Network.setExtraHTTPHeaders\",\"params\":{\"headers\":{\"header key\":\"header value\"}}}"
+		 * , id);
 		 */
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-setExtraHTTPHeaders
-	public static String buildNetWorkSetExtraHTTPHeadersMessage(int id,
-			String headerKey, String headerValue) {
+	public static String buildNetWorkSetExtraHTTPHeadersMessage(int id, String headerKey, String headerValue) {
 		method = "Network.setExtraHTTPHeaders";
 		params = new HashMap<>();
 		Map<String, String> headers = new HashMap<>();
@@ -134,13 +130,12 @@ public class MessageBuilder {
 		return buildMessage(id, method, params);
 		/*
 		 * return String.format(
-		 * "{\"id\":%s,\"method\":\"Network.enable\",\"params\":{\"maxTotalBufferSize\":10000000,\"maxResourceBufferSize\":5000000, \"maxPostDataSize\":5000000}}",
-		 * id);
+		 * "{\"id\":%s,\"method\":\"Network.enable\",\"params\":{\"maxTotalBufferSize\":10000000,\"maxResourceBufferSize\":5000000, \"maxPostDataSize\":5000000}}"
+		 * , id);
 		 */
 	}
 
-	public static String buildRequestInterceptorPatternMessage(int id,
-			String urlPattern, String resourceType) {
+	public static String buildRequestInterceptorPatternMessage(int id, String urlPattern, String resourceType) {
 		method = "Network.setRequestInterception";
 		params = new HashMap<>();
 		data = new HashMap<>();
@@ -160,8 +155,7 @@ public class MessageBuilder {
 		 */
 	}
 
-	public static String buildGetResponseBodyForInterceptionMessage(int id,
-			String interceptionId) {
+	public static String buildGetResponseBodyForInterceptionMessage(int id, String interceptionId) {
 		method = "Network.getResponseBodyForInterception";
 		params = new HashMap<>();
 		params.put("interceptionId", interceptionId);
@@ -174,13 +168,11 @@ public class MessageBuilder {
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Network#method-continueInterceptedRequest
-	public static String buildGetContinueInterceptedRequestMessage(int id,
-			String interceptionId, String rawResponse) {
+	public static String buildGetContinueInterceptedRequestMessage(int id, String interceptionId, String rawResponse) {
 		method = "Network.getResponseBodyForInterception";
 		params = new HashMap<>();
 		params.put("interceptionId", interceptionId);
-		params.put("rawResponse",
-				new String(Base64.encodeBase64(rawResponse.getBytes())));
+		params.put("rawResponse", new String(Base64.encodeBase64(rawResponse.getBytes())));
 		return buildMessage(id, method, params);
 		/*
 		 * return String.format(
@@ -191,8 +183,8 @@ public class MessageBuilder {
 	}
 
 	// TODO: debug the role of encoded
-	public static String buildGetContinueInterceptedRequestEncodedMessage(int id,
-			String interceptionId, String encodedResponse) {
+	public static String buildGetContinueInterceptedRequestEncodedMessage(int id, String interceptionId,
+			String encodedResponse) {
 		method = "Network.getResponseBodyForInterception";
 		params = new HashMap<>();
 		params.put("interceptionId", interceptionId);
@@ -208,8 +200,8 @@ public class MessageBuilder {
 	public static String buildGetDocumentMessage(int id) {
 		return buildMessage(id, "DOM.getDocument");
 		/*
-		return String.format("{\"id\":%s,\"method\":\"DOM.getDocument\"}", id);
-		*/
+		 * return String.format("{\"id\":%s,\"method\":\"DOM.getDocument\"}", id);
+		 */
 	}
 
 	public static String buildDescribeNodeMessage(int id, long nodeId) {
@@ -219,29 +211,26 @@ public class MessageBuilder {
 		params.put("depth", 1);
 		return buildMessage(id, method, params);
 		/*
-		return String.format("{\"id\":%s,\"method\":\"DOM.describeNode\"}\",\"params\":{\"nodeId\":\"%d\",\"depth\":\"%d\"}}", id, nodeId, 1);
-		*/
+		 * return String.format(
+		 * "{\"id\":%s,\"method\":\"DOM.describeNode\"}\",\"params\":{\"nodeId\":\"%d\",\"depth\":\"%d\"}}",
+		 * id, nodeId, 1);
+		 */
 	}
 
-	public static String buildQuerySelectorMessage(int id, long nodeId,
-			String selector) {
+	public static String buildQuerySelectorMessage(int id, long nodeId, String selector) {
 		method = "DOM.querySelector";
 		params = new HashMap<>();
 		params.put("nodeId", nodeId);
 		params.put("selector", selector);
 		return buildMessage(id, method, params);
 		/*
-		return String.format("{\"id\":%s,\"method\":\"DOM.querySelector\"}\",\"params\":{\"nodeId\":\"%d\", \"selector\":\"%s\"}}", id, nodeId, selector);
-		*/
-	}
-
-	public static String buildServiceWorkerEnableMessage(int id) {
-		return buildMessage(id, "ServiceWorker.enable");
-		/*
-		 * return String.format("{\"id\":%s,\"method\":\"ServiceWorker.enable\"}", id);
+		 * return String.
+		 * format("{\"id\":%s,\"method\":\"DOM.querySelector\"}\",\"params\":{\"nodeId\":\"%d\", \"selector\":\"%s\"}}"
+		 * , id, nodeId, selector);
 		 */
 	}
 
+	// https://chromedevtools.github.io/devtools-protocol/tot/Browser#method-getVersion
 	public static String buildBrowserVersionMessage(int id) {
 		return buildMessage(id, "Browser.getVersion");
 		/*
@@ -250,15 +239,22 @@ public class MessageBuilder {
 	}
 
 	public static String buildBrowserVersionMessage() {
-		return buildMessage(Utils.getInstance().getDynamicID(),
-				"Browser.getVersion");
+		return buildMessage(Utils.getInstance().getDynamicID(), "Browser.getVersion");
 		/*
 		 * return String.format("{\"id\":%s,\"method\":\"Browser.getVersion\"}", id);
 		 */
 	}
 
-	public static String buildServiceWorkerInspectMessage(int id,
-			String versionId) {
+	// https://chromedevtools.github.io/devtools-protocol/tot/ServiceWorker/#method-enable
+	public static String buildServiceWorkerEnableMessage(int id) {
+		return buildMessage(id, "ServiceWorker.enable");
+		/*
+		 * return String.format("{\"id\":%s,\"method\":\"ServiceWorker.enable\"}", id);
+		 */
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/ServiceWorker/#method-inspectWorker
+	public static String buildServiceWorkerInspectMessage(int id, String versionId) {
 		method = "ServiceWorker.inspectWorker";
 		params = new HashMap<>();
 		params.put("versionId", versionId);
@@ -270,6 +266,25 @@ public class MessageBuilder {
 		 */
 	}
 
+	// https://chromedevtools.github.io/devtools-protocol/tot/ServiceWorker/#method-deliverPushMessage
+	public static String buildSendPushNotificationMessage(int id, String origin, String registrationId, String data) {
+		method = "ServiceWorker.deliverPushMessage";
+		params = new HashMap<>();
+		params.put("origin", origin);
+		params.put("registrationId", registrationId);
+		params.put("data", data);
+		return
+
+		buildMessage(id, method, params);
+		/*
+		 * return String.format(
+		 * "{\"id\":%s,\"method\":\"ServiceWorker.deliverPushMessage\","+
+		 * "\"params\":{\"origin\":\"%s\",\"registrationId\":\"%s\",\"data\":\"%s\"}}",
+		 * id, origin, registrationId, data);
+		 */
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Log/#method-enable
 	public static String buildEnableLogMessage(int id) {
 		return buildMessage(id, "Log.enable");
 		/*
@@ -281,6 +296,7 @@ public class MessageBuilder {
 		return buildPrintPDFMessage(Utils.getInstance().getDynamicID());
 	}
 
+	// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF
 	public static String buildPrintPDFMessage(int id) {
 		method = "Page.printToPDF";
 		params = new HashMap<>();
@@ -298,6 +314,7 @@ public class MessageBuilder {
 		// ,"data":"landscape: boolean value expected...
 	}
 
+	// https://chromedevtools.github.io/devtools-protocol/tot/Runtime/#method-enable
 	public static String buildEnableRuntimeMessage(int id) {
 		return buildMessage(id, "Runtime.enable");
 		/*
@@ -305,22 +322,7 @@ public class MessageBuilder {
 		 */
 	}
 
-	public static String buildSendPushNotificationMessage(int id, String origin,
-			String registrationId, String data) {
-		method = "ServiceWorker.deliverPushMessage";
-		params = new HashMap<>();
-		params.put("origin", origin);
-		params.put("registrationId", registrationId);
-		params.put("data", data);
-		return buildMessage(id, method, params);
-		/*
-		 * return String.format(
-		 * "{\"id\":%s,\"method\":\"ServiceWorker.deliverPushMessage\","+
-		 * "\"params\":{\"origin\":\"%s\",\"registrationId\":\"%s\",\"data\":\"%s\"}}",
-		 * id, origin, registrationId, data);
-		 */
-	}
-
+	// https://chromedevtools.github.io/devtools-protocol/tot/BackgroundService/#method-startObserving
 	public static String buildObserveBackgroundServiceMessage(int id) {
 		method = "BackgroundService.startObserving";
 		params = new HashMap<>();
@@ -341,6 +343,7 @@ public class MessageBuilder {
 		 */
 	}
 
+	// https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-clearBrowserCache
 	public static String buildClearBrowserCacheMessage(int id) {
 		return buildMessage(id, "Network.clearBrowserCache");
 		/*
@@ -349,8 +352,33 @@ public class MessageBuilder {
 		 */
 	}
 
+	// https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-clearBrowserCookies
 	public static String buildClearBrowserCookiesMessage(int id) {
 		return buildMessage(id, "Network.clearBrowserCookies");
+		/*
+		 * return
+		 * String.format("{\"id\":%d,\"method\":\"Network.clearBrowserCookies\"}", id);
+		 */
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-getAllCookies
+	public static String buildGetAllCookiesMessage(int id) {
+		return buildMessage(id, "Network.getAllCookies");
+		/*
+		 * return
+		 * String.format("{\"id\":%d,\"method\":\"Network.getAllCookies\"}", id);
+		 */
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-deleteCookies
+	public static String buildDeleteCookiesMessage(int id, String name, String url, String domain, String path) {
+		method = "Network.deleteCookies";
+		params = new HashMap<>();
+		params.put("name", name);
+		params.put("url", url);
+		params.put("domain", domain);
+		params.put("path", path);
+		return buildMessage(id, method, params);
 		/*
 		 * return
 		 * String.format("{\"id\":%d,\"method\":\"Network.clearBrowserCookies\"}", id);
@@ -369,8 +397,7 @@ public class MessageBuilder {
 		 */
 	}
 
-	public static String buildTakeElementScreenShotMessage(int id, long x, long y,
-			long height, long width, int scale) {
+	public static String buildTakeElementScreenShotMessage(int id, long x, long y, long height, long width, int scale) {
 		method = "Page.captureScreenshot";
 		params = new HashMap<>();
 		data = new HashMap<>();
@@ -406,17 +433,14 @@ public class MessageBuilder {
 		 */
 	}
 
-	public static String buildBasicHttpAuthenticationMessage(String username,
-			String password) {
-		byte[] encodedBytes = Base64
-				.encodeBase64(String.format("%s:%s", username, password).getBytes());
+	public static String buildBasicHttpAuthenticationMessage(String username, String password) {
+		byte[] encodedBytes = Base64.encodeBase64(String.format("%s:%s", username, password).getBytes());
 		String base64EncodedCredentials = new String(encodedBytes);
 		String method = "Network.setExtraHTTPHeaders";
 		int id = 2;
 		params = new HashMap<>();
 		data = new HashMap<>();
-		data.put("Authorization",
-				String.format("Basic %s", base64EncodedCredentials));
+		data.put("Authorization", String.format("Basic %s", base64EncodedCredentials));
 		params.put("headers", data);
 		return buildMessage(id, method, params);
 		/*
@@ -440,8 +464,7 @@ public class MessageBuilder {
 		 */
 	}
 
-	public static String buildSetUserAgentOverrideMessage(String userAgent,
-			String platform) {
+	public static String buildSetUserAgentOverrideMessage(String userAgent, String platform) {
 		String method = "Network.setUserAgentOverride";
 		message = new Message(Utils.getInstance().getDynamicID(), method);
 		params = new HashMap<>();
@@ -497,7 +520,8 @@ public class MessageBuilder {
 	public static String buildPerformancGetMetrics(int id) {
 		return buildMessage(id, "Performance.getMetrics");
 		/*
-		 * return String.format("{\"id\":%d,\"method\":\"Performance.getMetrics\"}", id);
+		 * return String.format("{\"id\":%d,\"method\":\"Performance.getMetrics\"}",
+		 * id);
 		 */
 	}
 

@@ -93,6 +93,7 @@ will see the error:
 ```sh
 ```
 ### See Also:
+  * intro to [headless chrome](https://developers.google.com/web/updates/2017/04/headless-chrome)
   * original project author's [blog](https://medium.com/@sahajamit/selenium-chrome-dev-tools-makes-a-perfect-browser-automation-recipe-c35c7f6a2360)
   * SeleniumHQ devtools-specific [tests](https://github.com/SeleniumHQ/selenium/tree/cdp_codegen/java/client/test/org/openqa/selenium/devtools) - one has to switch to __cdp_codegen__ branch.
 ### Author

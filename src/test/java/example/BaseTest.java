@@ -22,12 +22,11 @@ public class BaseTest {
 	protected static UIUtils uiUtils;
 	protected static CDPClient CDPClient;
 	protected int id;
-	private final static int debugPort = Integer
-			.parseInt(TestUtils.getPropertyEnv("debugPort", "0"));
+	private final static int debugPort = Integer.parseInt(TestUtils.getPropertyEnv("debugPort", "0"));
 	// used to override the default port 9222
 	@SuppressWarnings("unused")
 	private static boolean debug = false;
-	private static boolean headless = false;
+	protected static boolean headless = true; // false;
 	protected static ChromeDriverService chromeDriverService;
 
 	public void setDebug(boolean value) {
@@ -47,10 +46,10 @@ public class BaseTest {
 			utils.setDebugPort(debugPort);
 		}
 		// force the headless flag to be true to support Unix console execution
-		if (!(Utils.getOsName().equals("windows"))
-				&& !(System.getenv().containsKey("DISPLAY"))) {
+		if (!(Utils.getOsName().equals("windows")) && !(System.getenv().containsKey("DISPLAY"))) {
 			headless = true;
 		}
+		System.err.println("HEADLESS: " + headless);
 		driver = utils.launchBrowser(headless);
 		CDPClient = new CDPClient(utils.getWebSocketURL());
 	}
