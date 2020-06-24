@@ -1,9 +1,11 @@
 ### Info
 
-This project contains a test scenarios practicing Java accessing the [Chrome Devtools API]() during Selenium test without upgrading the Selenium driver to alpha release __4.0.x__
+This project contains test scenarios practicing Java accessing [Chrome Devtools API](https://chromedevtools.github.io/devtools-protocol) during Selenium test without upgrading the Selenium driver to alpha release __4.0.x__
 
-The code was developing from replica of [ahajamit/chrome-devtools-webdriver-integration](https://github.com/sahajamit/chrome-devtools-webdriver-integration)
+The code was developed from replica of [ahajamit/chrome-devtools-webdriver-integration](https://github.com/sahajamit/chrome-devtools-webdriver-integration)
 Chrome DevTools WebDriver integration project with borrowing more utils and test scenarios.
+
+For accessing the __Chrome Devtools API__  after ugrading the Selenium driver to alpha release __4.0.x__ see [Selenium CDP](https://github.com/sergueik/selenium_cdp) project
 
 ### Operation
 
