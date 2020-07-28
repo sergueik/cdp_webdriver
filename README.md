@@ -98,6 +98,9 @@ will see the error:
   * intro to [headless chrome](https://developers.google.com/web/updates/2017/04/headless-chrome)
   * original project author's [blog](https://medium.com/@sahajamit/selenium-chrome-dev-tools-makes-a-perfect-browser-automation-recipe-c35c7f6a2360)
   * SeleniumHQ devtools-specific [tests](https://github.com/SeleniumHQ/selenium/tree/cdp_codegen/java/client/test/org/openqa/selenium/devtools) - one has to switch to __cdp_codegen__ branch.
+  * another [Chrome DevTools Java Client](https://github.com/kklisura/chrome-devtools-java-client) said to be able of Java generation from `protocol.json` (cdt-client-test branch )
+
 ### Author
 [Serguei Kouzmine](kouzmine_serguei@yahoo.com)
+
 
