@@ -304,10 +304,6 @@ public class MessageBuilder {
 		 */
 	}
 
-	public static String buildprintPDFMessage() {
-		return buildPrintPDFMessage(Utils.getInstance().getDynamicID());
-	}
-
 	// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF
 	public static String buildPrintPDFMessage(int id) {
 		method = "Page.printToPDF";
@@ -326,12 +322,38 @@ public class MessageBuilder {
 		// ,"data":"landscape: boolean value expected...
 	}
 
+	public static String buildPrintPDFMessage() {
+		return buildPrintPDFMessage(Utils.getInstance().getDynamicID());
+	}
+
 	// https://chromedevtools.github.io/devtools-protocol/tot/Runtime/#method-enable
 	public static String buildEnableRuntimeMessage(int id) {
 		return buildMessage(id, "Runtime.enable");
 		/*
 		 * return String.format("{\"id\":%d,\"method\":\"Runtime.enable\"}", id);
 		 */
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/1-2/Runtime/#method-evaluate
+	public static String buildRuntimeEvaluateMessage(int id,
+			final String selector, Boolean returnByValue) {
+		String method = "Runtime.evaluate";
+		String expression = String.format(
+				((selector.charAt(0) == '/') ? "$x(\\\"%s\\\")[0]" : "$(\\\"%s\\\")"),
+				selector);
+		message = new Message(Utils.getInstance().getDynamicID(), method);
+		params = new HashMap<>();
+		params.put("expression", expression);
+		params.put("returnByValue", returnByValue);
+		return buildMessage(id, method, params);
+		/*
+		 * return String.format("{\"id\":%d,\"method\":\"Runtime.evaluate\", \"params\":{\"returnByValue\":false,\"expression\":\"$x(\\\"//body\\\")[0]\"", id);
+		 */
+	}
+
+	public static String buildRuntimeEvaluateMessage(int id,
+			final String selector) {
+		return buildRuntimeEvaluateMessage(id, selector, false);
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/BackgroundService/#method-startObserving
@@ -441,12 +463,12 @@ public class MessageBuilder {
 		method = "Target.createTarget";
 		params = new HashMap<>();
 		params.put("url", url);
-		params.put("width", width);
-		params.put("height", height);
-		params.put("browserContextId", browserContextId);
-		params.put("enableBeginFrameControl", enableBeginFrameControl);
+		// params.put("width", width);
+		// params.put("height", height);
+		// params.put("browserContextId", browserContextId);
+		// params.put("enableBeginFrameControl", enableBeginFrameControl);
 		params.put("newWindow", newWindow);
-		params.put("background", background);
+		// params.put("background", background);
 		return buildMessage(id, method, params);
 	}
 

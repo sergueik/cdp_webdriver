@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.neovisionaries.ws.client.WebSocketException;
@@ -27,6 +28,7 @@ public class WindowsTabsTest extends BaseTest {
 	private static String baseURL = "about:blank";
 
 	// https://github.com/qtacore/chrome_master/blob/master/chrome_master/input_handler.py#L32
+	@Ignore
 	@Test
 	public void tabTest() {
 		try {
@@ -44,6 +46,7 @@ public class WindowsTabsTest extends BaseTest {
 		}
 	}
 
+	@Ignore
 	@Test
 	public void windowTest() {
 		try {
