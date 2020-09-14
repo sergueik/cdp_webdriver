@@ -124,8 +124,14 @@ public class DemoTest extends BaseTest {
 		}
 	}
 
+	// see also: https://habr.com/ru/post/185092/
+	// https://github.com/dunxrion/console.image
 	@Ignore
 	@Test
+	// TODO: "Location Unavailable" test 
+	// Omitting any of the parameters in Emulation.setGeolocationOverride
+	// emulates position unavailable
+	// see also: https://habr.com/ru/post/518862/ 
 	public void doFakeGeoLocation()
 			throws IOException, WebSocketException, InterruptedException {
 		CDPClient.sendMessage(

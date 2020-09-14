@@ -59,6 +59,9 @@ public class MessageBuilder {
 		return message.toJson();
 	}
 
+	// https://chromedevtools.github.io/devtools-protocol/tot/Emulation/#method-setGeolocationOverride
+	// see also: https://developers.google.com/web/tools/chrome-devtools/device-mode/geolocation
+	// https://dev.to/coffeestain/emulate-geolocation-for-automated-testing-with-webdriverio-5e2e
 	public static String buildGeoLocationMessage(int id, double latitude,
 			double longitude) {
 		method = "Emulation.setGeolocationOverride";
@@ -74,12 +77,19 @@ public class MessageBuilder {
 
 		}
 		return buildMessage(id, method, params);
-		/*
-		 * return
-		 * String.format("{\"id\":%s,\"method\":\"Emulation.setGeolocationOverride\"," +
-		 * "\"params\":{\"latitude\":%s,\"longitude\":%s,\"accuracy\":100}}",id,latitude
-		 * ,longitude);
-		 */
+	}
+
+        // https://chromedevtools.github.io/devtools-protocol/tot/Emulation/#method-setTimezoneOverride
+	public static String buildTimezoneOverrideMessage(int id, String timezoneId) {
+		method = "Emulation.setTimezoneOverride";
+		params = new HashMap<>();
+		params.put("timezoneId", timezoneId);
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n{\"id\":%s,\"method\":\"Emulation.setTimezoneOverride\","
+							+ "\"params\":{\"timezoneId\":\"%s\"}}",id, timezoneId));
+		}
+		return buildMessage(id, method, params);
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-setExtraHTTPHeaders
@@ -252,6 +262,23 @@ public class MessageBuilder {
 				"Browser.getVersion");
 		/*
 		 * return String.format("{\"id\":%s,\"method\":\"Browser.getVersion\"}", id);
+		 */
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Emulation/#method-setVisibleSize 
+	public static String buildEmulationSetVisibleSizeMessage(int id, int width,  int height) {
+		method = "Emulation.setVisibleSize";
+		params = new HashMap<>();
+		params.put("width", width);
+		params.put("height", height);
+		return
+
+		buildMessage(id, method, params);
+		/*
+		 * return String.format(
+		 * "{\"id\":%s,\"method\":\"Emulation.setVisibleSize\","+
+		 * "\"params\":{\"origin\":\"%s\",\"width\":%d,\"height\":%d}}",
+		 * id, width, height);
 		 */
 	}
 
