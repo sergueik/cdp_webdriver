@@ -105,6 +105,9 @@ Alternatively, have JDK and maven in the Docker container and run the tests comp
   * SeleniumHQ devtools-specific [tests](https://github.com/SeleniumHQ/selenium/tree/cdp_codegen/java/client/test/org/openqa/selenium/devtools) - one has to switch to __cdp_codegen__ branch.
   * another [Chrome DevTools Java Client](https://github.com/kklisura/chrome-devtools-java-client) said to be able of Java generation from `protocol.json` (cdt-client-test branch )
  * blog on [running Chrome in Docker](https://medium.com/@sahajamit/can-selenium-chrome-dev-tools-recipe-works-inside-a-docker-container-afff92e9cce5)
+ * [Java Client is a DevTools client](https://github.com/kklisura/chrome-devtools-java-client)
+ * example using the `com.github.kklisura.cdt.services.ChromeDevToolsService` to [connect](https://github.com/barancev/selenium-cdp-integration-example) Selenium 3.14.x to Chrome DevTools
+ * https://github.com/SrinivasanTarget/selenium4CDPsamples/blob/master/src/test/java/DevToolsTest.java
 
 ### Author
 [Serguei Kouzmine](kouzmine_serguei@yahoo.com)
