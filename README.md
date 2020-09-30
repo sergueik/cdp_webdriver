@@ -69,22 +69,22 @@ this for an e.g. `Emulation.setGeolocationOverride` creates payload which looks 
 ### Docker Testing
 
 Currently the test described in the original repository author's [blog](https://medium.com/@sahajamit/can-selenium-chrome-dev-tools-recipe-works-inside-a-docker-container-afff92e9cce5) does not appear to work:
+
 #### Setup
 * download stock Docker image with chrome and selenium proxy
 ```sh
 docker pull selenium/standalone-chrome
 ```
-Note: the defauld docker image is based on ubuntu and its size is 908 Mb compared to some 384 Mb of custom alpine based image with chromium browser (which is a work in progress).
+Note: the defauld docker image is based on ubuntu and its size is 908 Mb compared to some 384 Mb of custom [alpine based image with chromium browser](https://github.com/sergueik/springboot_study/tree/master/basic-chromium).
 
 * run the Docker container with additional port published
-``sh
+```sh
 docker run -d --expose=9222 -p 4444:4444 -p 0.0.0.0:9222:9222 --name selenium-standalone-chrome -v /dev/shm:/dev/shm selenium/standalone-chrome
 ```
 alternatively can specify custom debugging port and omit volume:
 ```sh
 docker container prune -f
 docker run -d --expose=10000 -p 4444:4444 -p 0.0.0.0:10000:10000 --name selenium-standalone-chrome selenium/standalone-chrome
-
 ```
 #### Run Test	
 run the Docker tests
@@ -93,12 +93,21 @@ mvn test -DdebugPort=10000
 ```
 will see the error:
 ```sh
+???
 ```
+
+Alternatively, have JDK and maven in the Docker container and run the tests completely in the container from mapped volume (this is how it is done in [maven/jdk8 apline]( https://hub.docker.com/r/zenika/alpine-maven/tags) base image).
+
 ### See Also:
+
   * intro to [headless chrome](https://developers.google.com/web/updates/2017/04/headless-chrome)
   * original project author's [blog](https://medium.com/@sahajamit/selenium-chrome-dev-tools-makes-a-perfect-browser-automation-recipe-c35c7f6a2360)
   * SeleniumHQ devtools-specific [tests](https://github.com/SeleniumHQ/selenium/tree/cdp_codegen/java/client/test/org/openqa/selenium/devtools) - one has to switch to __cdp_codegen__ branch.
   * another [Chrome DevTools Java Client](https://github.com/kklisura/chrome-devtools-java-client) said to be able of Java generation from `protocol.json` (cdt-client-test branch )
+ * blog on [running Chrome in Docker](https://medium.com/@sahajamit/can-selenium-chrome-dev-tools-recipe-works-inside-a-docker-container-afff92e9cce5)
+ * [Java Client is a DevTools client](https://github.com/kklisura/chrome-devtools-java-client)
+ * example using the `com.github.kklisura.cdt.services.ChromeDevToolsService` to [connect](https://github.com/barancev/selenium-cdp-integration-example) Selenium 3.14.x to Chrome DevTools
+ * https://github.com/SrinivasanTarget/selenium4CDPsamples/blob/master/src/test/java/DevToolsTest.java
 
 ### Author
 [Serguei Kouzmine](kouzmine_serguei@yahoo.com)

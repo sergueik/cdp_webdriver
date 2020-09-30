@@ -74,8 +74,64 @@ public class DemoTest extends BaseTest {
 
 	}
 
-	// @Ignore
 	@Test
+	public void getBroswerVersionTest() {
+		// Arrange
+		// Act
+		try {
+			CDPClient.sendMessage(MessageBuilder.buildBrowserVersionMessage(id));
+			responseMessage = CDPClient.getResponseDataMessage(id);
+			// Assert
+			result = new JSONObject(responseMessage);
+			for (String field : Arrays.asList(new String[] { "protocolVersion",
+					"product", "revision", "userAgent", "jsVersion" })) {
+				assertThat(result.has(field), is(true));
+			}
+		} catch (Exception e) {
+			System.err.println("Exception (ignored): " + e.toString());
+		}
+
+	}
+
+	@Test(expected = example.messaging.CDPClient.MessageTimeOutException.class)
+	public void getRuntimeEvaluateTest() throws MessageTimeOutException {
+		// Arrange
+		int id1 = Utils.getInstance().getDynamicID();
+		// Act
+		try {
+			// System.err.println("getRuntimeEvaluateTest() message: "
+			// + MessageBuilder.buildEnableRuntimeMessage(id1));
+			CDPClient.sendMessage(MessageBuilder.buildEnableRuntimeMessage(id1));
+
+			// System.err.println("getRuntimeEvaluateTest() message: " +
+			// MessageBuilder
+			// .buildRuntimeEvaluateMessage(id1, "var x = 42; x;", false));
+			CDPClient.sendMessage(MessageBuilder.buildRuntimeEvaluateMessage(id1,
+					"var x = 42; x;", false));
+			responseMessage = CDPClient.getResponseDataMessage(id1);
+			// Assert
+			result = new JSONObject(responseMessage);
+			System.err.println("getRuntimeEvaluateTest Response: " + result);
+			for (String field : Arrays.asList(new String[] { "protocolVersion",
+					"product", "revision", "userAgent", "jsVersion" })) {
+				assertThat(result.has(field), is(true));
+			}
+		} catch (WebSocketException | IOException | InterruptedException e) {
+			System.err.println(
+					"Exception in getRuntimeEvaluateTest() (ignored): " + e.toString());
+		} catch (MessageTimeOutException e) {
+			throw (e);
+		}
+	}
+
+	// see also: https://habr.com/ru/post/185092/
+	// https://github.com/dunxrion/console.image
+	@Ignore
+	@Test
+	// TODO: "Location Unavailable" test 
+	// Omitting any of the parameters in Emulation.setGeolocationOverride
+	// emulates position unavailable
+	// see also: https://habr.com/ru/post/518862/ 
 	public void doFakeGeoLocation()
 			throws IOException, WebSocketException, InterruptedException {
 		CDPClient.sendMessage(
@@ -88,7 +144,33 @@ public class DemoTest extends BaseTest {
 				.findElement(By.cssSelector(
 						"div[class *='widget-mylocation-button-icon-common']"), 120)
 				.click();
-		utils.sleep(10);
+		utils.waitFor(10);
+		uiUtils.takeScreenShot();
+	}
+
+	// NOTE: for doNetworkTracking, need to switch to headless, e.g.
+	// via setting BaseTest property and invoking super.beforeTest() explicitly
+	// @Before
+	// public void beforeTest() {
+	// }
+
+	@Ignore
+	@Test
+	public void doNetworkTracking()
+			throws IOException, WebSocketException, InterruptedException {
+		CDPClient.sendMessage(MessageBuilder.buildNetWorkEnableMessage(id));
+		URL = "http://petstore.swagger.io/v2/swagger.json";
+		driver.navigate().to(URL);
+		utils.waitFor(3);
+		responseMessage = CDPClient.getResponseMessage("Network.requestWillBeSent");
+		result = new JSONObject(responseMessage);
+		String reqId = result.getJSONObject("params").getString("requestId");
+		int id2 = Utils.getInstance().getDynamicID();
+		CDPClient
+				.sendMessage(MessageBuilder.buildGetResponseBodyMessage(id2, reqId));
+		String networkResponse = CDPClient.getResponseBodyMessage(id2);
+		System.err.println("Here is the network Response: " + networkResponse);
+		utils.waitFor(1);
 		uiUtils.takeScreenShot();
 	}
 
@@ -154,6 +236,10 @@ public class DemoTest extends BaseTest {
 		// uiUtils.takeScreenShot();
 	}
 
+	// @Ignore
+	// No message received
+	// {"error":{"code":-32000,"message":"PrintToPDF is not implemented"}}
+	// @Test(expected = example.messaging.CDPClient.MessageTimeOutException.class)
 	@Test
 	public void doprintPDF() throws Exception {
 		URL = "https://www.wikipedia.com/";
@@ -172,8 +258,8 @@ public class DemoTest extends BaseTest {
 		}
 	}
 
-	@Ignore
-	@Test
+	// @Ignore
+	@Test(expected = example.messaging.CDPClient.MessageTimeOutException.class)
 	public void doFullPageScreenshot() throws Exception {
 		URL = "https://www.meetup.com/";
 		driver.navigate().to(URL);
@@ -182,6 +268,9 @@ public class DemoTest extends BaseTest {
 		long docHeight = (long) uiUtils
 				.executeJavaScript("return document.body.offsetHeight");
 		int scale = 1;
+		System.err.println("doFullPageScreenshot() message: "
+				+ MessageBuilder.buildTakeElementScreenShotMessage(id, 0, 0, docHeight,
+						docWidth, scale));
 		CDPClient.sendMessage(MessageBuilder.buildTakeElementScreenShotMessage(id,
 				0, 0, docHeight, docWidth, scale));
 		responseMessage = CDPClient.getResponseDataMessage(id);
