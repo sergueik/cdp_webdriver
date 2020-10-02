@@ -3,30 +3,25 @@ package example;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasKey;
 
 import java.io.File;
 import java.io.IOException;
-
 import java.nio.file.Files;
-
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
-
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
@@ -128,10 +123,10 @@ public class DemoTest extends BaseTest {
 	// https://github.com/dunxrion/console.image
 	@Ignore
 	@Test
-	// TODO: "Location Unavailable" test 
+	// TODO: "Location Unavailable" test
 	// Omitting any of the parameters in Emulation.setGeolocationOverride
 	// emulates position unavailable
-	// see also: https://habr.com/ru/post/518862/ 
+	// see also: https://habr.com/ru/post/518862/
 	public void doFakeGeoLocation()
 			throws IOException, WebSocketException, InterruptedException {
 		CDPClient.sendMessage(
@@ -389,6 +384,23 @@ public class DemoTest extends BaseTest {
 			assertThat("get past authentication", element.getAttribute("innerHTML"),
 					containsString("Your browser made it!"));
 			utils.sleep(3);
+		} catch (WebDriverException | IOException | WebSocketException e) {
+			System.err.println("Exception (ignored): " + e.getMessage());
+		}
+	}
+
+	@Test
+	public void getBlockUrlsTest() {
+		List<String> urls = Arrays.asList(new String[] {
+				"https://www.linux.org.ru/adv/*", "https://www.linux.org.ru/adv" });
+		try {
+			CDPClient.sendMessage(MessageBuilder.buildNetworkClearBrowserCache(id));
+
+			CDPClient
+					.sendMessage(MessageBuilder.buildNetworkSetBlockedURLs(id, urls));
+			driver.get("https://www.linux.org.ru");
+			// TODO:screen shot
+			//
 		} catch (WebDriverException | IOException | WebSocketException e) {
 			System.err.println("Exception (ignored): " + e.getMessage());
 		}
