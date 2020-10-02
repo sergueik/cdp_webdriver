@@ -17,7 +17,7 @@ public class MessageBuilder {
 
 	private static String method = null;
 	private static Message message = null;
-	private static final boolean debug = false;
+	private static final boolean debug = true; // false;
 	private static Map<String, Object> params = new HashMap<>();
 	private static Map<String, Object> data = new HashMap<>();
 
@@ -50,7 +50,8 @@ public class MessageBuilder {
 		return (new Message(id, method)).toJson();
 	}
 
-	private static String buildMessage(int id, String method, Map<String, Object> params) {
+	private static String buildMessage(int id, String method,
+			Map<String, Object> params) {
 		message = new Message(id, method);
 		for (String key : params.keySet()) {
 			message.addParam(key, params.get(key));
@@ -62,7 +63,8 @@ public class MessageBuilder {
 	// see also:
 	// https://developers.google.com/web/tools/chrome-devtools/device-mode/geolocation
 	// https://dev.to/coffeestain/emulate-geolocation-for-automated-testing-with-webdriverio-5e2e
-	public static String buildGeoLocationMessage(int id, double latitude, double longitude) {
+	public static String buildGeoLocationMessage(int id, double latitude,
+			double longitude) {
 		method = "Emulation.setGeolocationOverride";
 		params = new HashMap<>();
 		params.put("latitude", latitude);
@@ -84,14 +86,20 @@ public class MessageBuilder {
 		params = new HashMap<>();
 		params.put("timezoneId", timezoneId);
 		if (debug) {
-			System.err.println(String.format("Sending:\n{\"id\":%s,\"method\":\"Emulation.setTimezoneOverride\","
-					+ "\"params\":{\"timezoneId\":\"%s\"}}", id, timezoneId));
+			System.err
+					.println(
+							String
+									.format(
+											"Sending:\n{\"id\":%s,\"method\":\"Emulation.setTimezoneOverride\","
+													+ "\"params\":{\"timezoneId\":\"%s\"}}",
+											id, timezoneId));
 		}
 		return buildMessage(id, method, params);
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-setExtraHTTPHeaders
-	public static String buildNetWorkSetExtraHTTPHeadersMessage(int id, Map<String, String> headers) {
+	public static String buildNetWorkSetExtraHTTPHeadersMessage(int id,
+			Map<String, String> headers) {
 		method = "Network.setExtraHTTPHeaders";
 		params = new HashMap<>();
 		params.put("headers", headers);
@@ -104,7 +112,8 @@ public class MessageBuilder {
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-setExtraHTTPHeaders
-	public static String buildNetWorkSetExtraHTTPHeadersMessage(int id, String headerKey, String headerValue) {
+	public static String buildNetWorkSetExtraHTTPHeadersMessage(int id,
+			String headerKey, String headerValue) {
 		method = "Network.setExtraHTTPHeaders";
 		params = new HashMap<>();
 		Map<String, String> headers = new HashMap<>();
@@ -131,8 +140,9 @@ public class MessageBuilder {
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-enable
-	public static String buildNetWorkEnableMessage(int id, final long maxTotalBufferSize,
-			final long maxResourceBufferSize, final long maxPostDataSize) {
+	public static String buildNetWorkEnableMessage(int id,
+			final long maxTotalBufferSize, final long maxResourceBufferSize,
+			final long maxPostDataSize) {
 		method = "Network.enable";
 		params = new HashMap<>();
 		params.put("maxTotalBufferSize", maxTotalBufferSize);
@@ -155,7 +165,8 @@ public class MessageBuilder {
 		 */
 	}
 
-	public static String buildRequestInterceptorPatternMessage(int id, String urlPattern, String resourceType) {
+	public static String buildRequestInterceptorPatternMessage(int id,
+			String urlPattern, String resourceType) {
 		method = "Network.setRequestInterception";
 		params = new HashMap<>();
 		data = new HashMap<>();
@@ -175,7 +186,8 @@ public class MessageBuilder {
 		 */
 	}
 
-	public static String buildGetResponseBodyForInterceptionMessage(int id, String interceptionId) {
+	public static String buildGetResponseBodyForInterceptionMessage(int id,
+			String interceptionId) {
 		method = "Network.getResponseBodyForInterception";
 		params = new HashMap<>();
 		params.put("interceptionId", interceptionId);
@@ -188,11 +200,13 @@ public class MessageBuilder {
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Network#method-continueInterceptedRequest
-	public static String buildGetContinueInterceptedRequestMessage(int id, String interceptionId, String rawResponse) {
+	public static String buildGetContinueInterceptedRequestMessage(int id,
+			String interceptionId, String rawResponse) {
 		method = "Network.getResponseBodyForInterception";
 		params = new HashMap<>();
 		params.put("interceptionId", interceptionId);
-		params.put("rawResponse", new String(Base64.encodeBase64(rawResponse.getBytes())));
+		params.put("rawResponse",
+				new String(Base64.encodeBase64(rawResponse.getBytes())));
 		return buildMessage(id, method, params);
 		/*
 		 * return String.format(
@@ -203,8 +217,8 @@ public class MessageBuilder {
 	}
 
 	// TODO: debug the role of encoded
-	public static String buildGetContinueInterceptedRequestEncodedMessage(int id, String interceptionId,
-			String encodedResponse) {
+	public static String buildGetContinueInterceptedRequestEncodedMessage(int id,
+			String interceptionId, String encodedResponse) {
 		method = "Network.getResponseBodyForInterception";
 		params = new HashMap<>();
 		params.put("interceptionId", interceptionId);
@@ -237,7 +251,8 @@ public class MessageBuilder {
 		 */
 	}
 
-	public static String buildQuerySelectorMessage(int id, long nodeId, String selector) {
+	public static String buildQuerySelectorMessage(int id, long nodeId,
+			String selector) {
 		method = "DOM.querySelector";
 		params = new HashMap<>();
 		params.put("nodeId", nodeId);
@@ -259,14 +274,16 @@ public class MessageBuilder {
 	}
 
 	public static String buildBrowserVersionMessage() {
-		return buildMessage(Utils.getInstance().getDynamicID(), "Browser.getVersion");
+		return buildMessage(Utils.getInstance().getDynamicID(),
+				"Browser.getVersion");
 		/*
 		 * return String.format("{\"id\":%s,\"method\":\"Browser.getVersion\"}", id);
 		 */
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Emulation/#method-setVisibleSize
-	public static String buildEmulationSetVisibleSizeMessage(int id, int width, int height) {
+	public static String buildEmulationSetVisibleSizeMessage(int id, int width,
+			int height) {
 		method = "Emulation.setVisibleSize";
 		params = new HashMap<>();
 		params.put("width", width);
@@ -290,7 +307,8 @@ public class MessageBuilder {
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/ServiceWorker/#method-inspectWorker
-	public static String buildServiceWorkerInspectMessage(int id, String versionId) {
+	public static String buildServiceWorkerInspectMessage(int id,
+			String versionId) {
 		method = "ServiceWorker.inspectWorker";
 		params = new HashMap<>();
 		params.put("versionId", versionId);
@@ -303,7 +321,8 @@ public class MessageBuilder {
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/ServiceWorker/#method-deliverPushMessage
-	public static String buildSendPushNotificationMessage(int id, String origin, String registrationId, String data) {
+	public static String buildSendPushNotificationMessage(int id, String origin,
+			String registrationId, String data) {
 		method = "ServiceWorker.deliverPushMessage";
 		params = new HashMap<>();
 		params.put("origin", origin);
@@ -359,9 +378,11 @@ public class MessageBuilder {
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/1-2/Runtime/#method-evaluate
-	public static String buildRuntimeEvaluateMessage(int id, final String selector, Boolean returnByValue) {
+	public static String buildRuntimeEvaluateMessage(int id,
+			final String selector, Boolean returnByValue) {
 		String method = "Runtime.evaluate";
-		String expression = String.format(((selector.charAt(0) == '/') ? "$x(\\\"%s\\\")[0]" : "$(\\\"%s\\\")"),
+		String expression = String.format(
+				((selector.charAt(0) == '/') ? "$x(\\\"%s\\\")[0]" : "$(\\\"%s\\\")"),
 				selector);
 		message = new Message(Utils.getInstance().getDynamicID(), method);
 		params = new HashMap<>();
@@ -375,7 +396,8 @@ public class MessageBuilder {
 		 */
 	}
 
-	public static String buildRuntimeEvaluateMessage(int id, final String selector) {
+	public static String buildRuntimeEvaluateMessage(int id,
+			final String selector) {
 		return buildRuntimeEvaluateMessage(id, selector, false);
 	}
 
@@ -427,7 +449,8 @@ public class MessageBuilder {
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-deleteCookies
-	public static String buildDeleteCookiesMessage(int id, String name, String url, String domain, String path) {
+	public static String buildDeleteCookiesMessage(int id, String name,
+			String url, String domain, String path) {
 		method = "Network.deleteCookies";
 		params = new HashMap<>();
 		params.put("name", name);
@@ -453,7 +476,8 @@ public class MessageBuilder {
 		 */
 	}
 
-	public static String buildTakeElementScreenShotMessage(int id, long x, long y, long height, long width, int scale) {
+	public static String buildTakeElementScreenShotMessage(int id, long x, long y,
+			long height, long width, int scale) {
 		method = "Page.captureScreenshot";
 		params = new HashMap<>();
 		data = new HashMap<>();
@@ -476,8 +500,9 @@ public class MessageBuilder {
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Target/#method-createTarget
-	public static String buildCreateTargetMessage(int id, String url, int width, int height, String browserContextId,
-			boolean enableBeginFrameControl, boolean newWindow, boolean background) {
+	public static String buildCreateTargetMessage(int id, String url, int width,
+			int height, String browserContextId, boolean enableBeginFrameControl,
+			boolean newWindow, boolean background) {
 
 		method = "Target.createTarget";
 		params = new HashMap<>();
@@ -491,8 +516,10 @@ public class MessageBuilder {
 		return buildMessage(id, method, params);
 	}
 
-	public static String buildCreateTargetMessage(int id, String url, boolean newWindow) {
-		return buildCreateTargetMessage(id, url, 0, 0, null, false, newWindow, false);
+	public static String buildCreateTargetMessage(int id, String url,
+			boolean newWindow) {
+		return buildCreateTargetMessage(id, url, 0, 0, null, false, newWindow,
+				false);
 	}
 
 	public static String buildRequestInterceptorEnabledMessage() {
@@ -509,14 +536,17 @@ public class MessageBuilder {
 		 */
 	}
 
-	public static String buildBasicHttpAuthenticationMessage(String username, String password) {
-		byte[] encodedBytes = Base64.encodeBase64(String.format("%s:%s", username, password).getBytes());
+	public static String buildBasicHttpAuthenticationMessage(String username,
+			String password) {
+		byte[] encodedBytes = Base64
+				.encodeBase64(String.format("%s:%s", username, password).getBytes());
 		String base64EncodedCredentials = new String(encodedBytes);
 		String method = "Network.setExtraHTTPHeaders";
 		int id = 2;
 		params = new HashMap<>();
 		data = new HashMap<>();
-		data.put("Authorization", String.format("Basic %s", base64EncodedCredentials));
+		data.put("Authorization",
+				String.format("Basic %s", base64EncodedCredentials));
 		params.put("headers", data);
 		return buildMessage(id, method, params);
 		/*
@@ -540,7 +570,8 @@ public class MessageBuilder {
 		 */
 	}
 
-	public static String buildSetUserAgentOverrideMessage(String userAgent, String platform) {
+	public static String buildSetUserAgentOverrideMessage(String userAgent,
+			String platform) {
 		String method = "Network.setUserAgentOverride";
 		message = new Message(Utils.getInstance().getDynamicID(), method);
 		params = new HashMap<>();
@@ -564,7 +595,8 @@ public class MessageBuilder {
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Performance/#method-setTimeDomain
-	public static String buildSetTimeDomainMessage(int id, final String timeDomain) {
+	public static String buildSetTimeDomainMessage(int id,
+			final String timeDomain) {
 
 		String method = "Performance.setTimeDomain";
 		params = new HashMap<>();
@@ -602,7 +634,8 @@ public class MessageBuilder {
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Emulation/#method-setDeviceMetricsOverride
-	public static String buildEmulationSetUserAgen(int id, final String userAgent) {
+	public static String buildEmulationSetUserAgen(int id,
+			final String userAgent) {
 		method = "Emulation.setUserAgentOverride";
 		params = new HashMap<>();
 		params.put("userAgent", userAgent);
@@ -615,8 +648,9 @@ public class MessageBuilder {
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Emulation/#method-setDeviceMetricsOverride
-	public static String buildEmulationSetDeviceMetrics(int id, final int width, final int height,
-			final int scaleFactor, final boolean isMobile, final int scale) {
+	public static String buildEmulationSetDeviceMetrics(int id, final int width,
+			final int height, final int scaleFactor, final boolean isMobile,
+			final int scale) {
 		method = "Emulation.setDeviceMetricsOverride";
 		params = new HashMap<>();
 		params.put("width", width);
@@ -631,13 +665,45 @@ public class MessageBuilder {
 		 */
 	}
 
-	public static String buildEmulationSetDeviceMetrics(int id, final int width, final int height,
-			final int scaleFactor) {
-		return buildEmulationSetDeviceMetrics(id, width, height, scaleFactor, true, 1);
+	public static String buildEmulationSetDeviceMetrics(int id, final int width,
+			final int height, final int scaleFactor) {
+		return buildEmulationSetDeviceMetrics(id, width, height, scaleFactor, true,
+				1);
 	}
 
-	public static String buildEmulationSetDeviceMetrics(int id, final int width, final int height) {
+	public static String buildEmulationSetDeviceMetrics(int id, final int width,
+			final int height) {
 		return buildEmulationSetDeviceMetrics(id, width, height, 1, true, 1);
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-clearBrowserCache/
+
+	public static String buildNetworkClearBrowserCache(int id) {
+		return buildMessage(id, "Network.clearBrowserCache");
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-setBlockedURLs
+	public static String buildNetworkSetBlockedURLs(int id, String[] urls) {
+		method = "Network.setBlockedURLs";
+		params = new HashMap<>();
+		params.put("urls", urls);
+		return buildMessage(id, method, params);
+		/*
+		 * return String.format(
+		 * "message: {"id":%d,"method":"Network.setBlockedURLs","params":{"urls":[%s]}}", id, Arrays.asList(urls));
+		 */
+	}
+
+	public static String buildNetworkSetBlockedURLs(int id, List<String> urls) {
+		method = "Network.setBlockedURLs";
+		params = new HashMap<>();
+		params.put("urls", urls.toArray());
+		// params.put("urls", urls);
+		return buildMessage(id, method, params);
+		/*
+		 * return String.format(
+		 * "message: {"id":%d,"method":"Network.setBlockedURLs","params":{"urls":[%s]}}", id, urls.toString());
+		 */
 	}
 
 	public static String buildEmulationResetPageScale(int id) {
