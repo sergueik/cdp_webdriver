@@ -389,18 +389,23 @@ public class DemoTest extends BaseTest {
 		}
 	}
 
+	// see also:
+	// https://groups.google.com/a/chromium.org/g/headless-dev/c/D3tUxpzmqw8/m/sV4gNeebDAAJ
+	// https://securityboulevard.com/2018/09/intercepting-and-modifying-responses-with-chrome-via-the-devtools-protocol/
 	@Test
 	public void getBlockUrlsTest() {
-		List<String> urls = Arrays.asList(new String[] {
-				"https://www.linux.org.ru/adv/*", "https://www.linux.org.ru/adv" });
+		List<String> urls = Arrays
+				.asList(new String[] { "https://openx.software-testing.ru/*" });
 		try {
 			CDPClient.sendMessage(MessageBuilder.buildNetworkClearBrowserCache(id));
 
 			CDPClient
 					.sendMessage(MessageBuilder.buildNetworkSetBlockedURLs(id, urls));
-			driver.get("https://www.linux.org.ru");
-			// TODO:screen shot
-			//
+			driver.get(
+					"https://software-testing.ru/forum/index.php?/forum/129-selenium-functional-testing/");
+			utils.waitFor(10);
+			uiUtils.takeScreenShot();
+			System.err.println("Sreenshot path: " + uiUtils.getImagePath());
 		} catch (WebDriverException | IOException | WebSocketException e) {
 			System.err.println("Exception (ignored): " + e.getMessage());
 		}

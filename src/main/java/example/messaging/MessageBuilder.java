@@ -677,12 +677,12 @@ public class MessageBuilder {
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-clearBrowserCache/
-
 	public static String buildNetworkClearBrowserCache(int id) {
 		return buildMessage(id, "Network.clearBrowserCache");
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-setBlockedURLs
+	// NOTE: not available in stable or stable RC branches
 	public static String buildNetworkSetBlockedURLs(int id, String[] urls) {
 		method = "Network.setBlockedURLs";
 		params = new HashMap<>();

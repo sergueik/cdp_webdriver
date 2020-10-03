@@ -15,10 +15,16 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class UIUtils {
+
 	private static UIUtils instance = null;
 	private static final Logger LOGGER = LoggerFactory.getLogger(UIUtils.class);
 	private WebDriver driver;
+	private String imageName = null;
+	private String imagePath = null;
 
+	public String getImagePath() {
+		return imagePath;
+	}
 	public static UIUtils getInstance() {
 		if (instance == null) {
 			instance = new UIUtils();
@@ -35,6 +41,7 @@ public class UIUtils {
 	}
 
 	public WebElement findElement(By locator, int loadTimeout) {
+		@SuppressWarnings("unchecked")
 		Wait<WebDriver> wait = (new FluentWait(driver))
 				.withTimeout((long) loadTimeout, TimeUnit.SECONDS)
 				.pollingEvery(1L, TimeUnit.SECONDS)
@@ -49,12 +56,12 @@ public class UIUtils {
 		try {
 			String start_time = (new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss"))
 					.format(new Date());
-			String imageName = "selenium_img_" + start_time + ".png";
+			imageName = "selenium_img_" + start_time + ".png";
 			File imageFolder = new File(System.getProperty("user.dir") + "/target");
 			if (!imageFolder.exists()) {
 				imageFolder.mkdir();
 			}
-			String imagePath = imageFolder.getAbsolutePath() + "/" + imageName;
+			imagePath = imageFolder.getAbsolutePath() + "/" + imageName;
 			driver = (new Augmenter()).augment(this.driver);
 			File scrFile = (File) ((TakesScreenshot) driver)
 					.getScreenshotAs(OutputType.FILE);
@@ -66,15 +73,15 @@ public class UIUtils {
 	}
 
 	public Object executeJavaScript(String script) {
-		Object obj = ((JavascriptExecutor) driver).executeScript(script,
+		Object result = ((JavascriptExecutor) driver).executeScript(script,
 				new Object[0]);
-		return obj;
+		return result;
 	}
 
 	public Object executeJavaScript(String script, WebElement element) {
-		Object obj = ((JavascriptExecutor) driver).executeScript(script,
+		Object result = ((JavascriptExecutor) driver).executeScript(script,
 				new Object[] { element });
-		return obj;
+		return result;
 	}
 
 	public void scrollToElement(WebElement element) {
