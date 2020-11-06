@@ -609,7 +609,7 @@ public class MessageBuilder {
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Performance/#method-enable
-	public static String buildPerformancEnableMessage(int id) {
+	public static String buildPerformanceEnableMessage(int id) {
 		return buildMessage(id, "Performance.enable");
 		/*
 		 * return String.format("{\"id\":%d,\"method\":\"Performance.enable\"}", id);
@@ -617,7 +617,7 @@ public class MessageBuilder {
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Performance/#method-disable
-	public static String buildPerformancDisableMessage(int id) {
+	public static String buildPerformanceDisableMessage(int id) {
 		return buildMessage(id, "Performance.disable");
 		/*
 		 * return String.format("{\"id\":%d,\"method\":\"Performance.disable\"}", id);
@@ -625,7 +625,7 @@ public class MessageBuilder {
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Performance/#method-getMetrics
-	public static String buildPerformancGetMetrics(int id) {
+	public static String buildPerformanceGetMetrics(int id) {
 		return buildMessage(id, "Performance.getMetrics");
 		/*
 		 * return String.format("{\"id\":%d,\"method\":\"Performance.getMetrics\"}",

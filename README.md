@@ -108,6 +108,7 @@ Alternatively, have JDK and maven in the Docker container and run the tests comp
  * [Java Client is a DevTools client](https://github.com/kklisura/chrome-devtools-java-client)
  * example using the `com.github.kklisura.cdt.services.ChromeDevToolsService` to [connect](https://github.com/barancev/selenium-cdp-integration-example) Selenium 3.14.x to Chrome DevTools
  * https://github.com/SrinivasanTarget/selenium4CDPsamples/blob/master/src/test/java/DevToolsTest.java
+ * [new features available in selenium 4](https://github.com/ShamaUgale/Selenium4Examples)
 
 ### Author
 [Serguei Kouzmine](kouzmine_serguei@yahoo.com)

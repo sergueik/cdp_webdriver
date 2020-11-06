@@ -62,8 +62,8 @@ public class HeadlessTest extends BaseTest {
 			responseMessage = CDPClient.getResponseDataMessage(id);
 			// Assert
 			result = new JSONObject(responseMessage);
-			for (String field : Arrays
-					.asList(new String[] { "protocolVersion", "product", "revision", "userAgent", "jsVersion" })) {
+			for (String field : Arrays.asList(new String[] { "protocolVersion",
+					"product", "revision", "userAgent", "jsVersion" })) {
 				assertThat(result.has(field), is(true));
 			}
 		} catch (Exception e) {
@@ -86,8 +86,8 @@ public class HeadlessTest extends BaseTest {
 			System.err.println("Response to " + testName + ": " + responseMessage);
 			// Assert
 			result = new JSONObject(responseMessage);
-			for (String field : Arrays
-					.asList(new String[] { "protocolVersion", "product", "revision", "userAgent", "jsVersion" })) {
+			for (String field : Arrays.asList(new String[] { "protocolVersion",
+					"product", "revision", "userAgent", "jsVersion" })) {
 				assertThat(result.has(field), is(true));
 			}
 			System.err.println("Completed " + testName);
@@ -99,9 +99,11 @@ public class HeadlessTest extends BaseTest {
 
 	// @Ignore
 	@Test
-	public void doCustomHeaders() throws IOException, WebSocketException, InterruptedException {
+	public void doCustomHeaders()
+			throws IOException, WebSocketException, InterruptedException {
 		CDPClient.sendMessage(MessageBuilder.buildNetWorkEnableMessage(id));
-		CDPClient.sendMessage(MessageBuilder.buildNetWorkSetExtraHTTPHeadersMessage(id, "customHeaderName",
+		CDPClient.sendMessage(MessageBuilder.buildNetWorkSetExtraHTTPHeadersMessage(
+				id, "customHeaderName",
 				this.getClass().getSimpleName() + " " + "customHeaderValue"));
 		driver.navigate().to("http://127.0.0.1:8080/demo/Demo");
 	}
@@ -109,7 +111,8 @@ public class HeadlessTest extends BaseTest {
 	@Ignore
 	// java.lang.RuntimeException: No message received with this id : '683369'
 	@Test
-	public void doNetworkTracking() throws IOException, WebSocketException, InterruptedException {
+	public void doNetworkTracking()
+			throws IOException, WebSocketException, InterruptedException {
 		CDPClient.sendMessage(MessageBuilder.buildNetWorkEnableMessage(id));
 		URL = "http://petstore.swagger.io/v2/swagger.json";
 		driver.navigate().to(URL);
@@ -118,7 +121,8 @@ public class HeadlessTest extends BaseTest {
 		result = new JSONObject(responseMessage);
 		String reqId = result.getJSONObject("params").getString("requestId");
 		int id2 = Utils.getInstance().getDynamicID();
-		CDPClient.sendMessage(MessageBuilder.buildGetResponseBodyMessage(id2, reqId));
+		CDPClient
+				.sendMessage(MessageBuilder.buildGetResponseBodyMessage(id2, reqId));
 		String networkResponse = CDPClient.getResponseBodyMessage(id2);
 		System.err.println("Here is the network Response: " + networkResponse);
 		// utils.sleep(1);
@@ -129,14 +133,17 @@ public class HeadlessTest extends BaseTest {
 	public void doprintPDF() throws Exception {
 		testName = "Print PDF";
 		URL = "https://www.wikipedia.com/";
-		imageName = "cdp_img_" + (new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss")).format(new Date()) + ".pdf";
+		imageName = "cdp_img_"
+				+ (new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss")).format(new Date())
+				+ ".pdf";
 
 		driver.navigate().to(URL);
 		CDPClient.sendMessage(MessageBuilder.buildPrintPDFMessage(id));
 		// responseMessage = CDPClient.getResponseBodyMessage(id);
 		// TODO: assertNull
 		responseMessage = CDPClient.getResponseDataMessage(id);
-		System.err.println("Response to " + testName + ": " + responseMessage.substring(0, 100));
+		System.err.println(
+				"Response to " + testName + ": " + responseMessage.substring(0, 100));
 		byte[] bytes = Base64.getDecoder().decode(responseMessage);
 		File f = new File(filePath + "/" + imageName);
 		if (f.exists())
@@ -149,18 +156,21 @@ public class HeadlessTest extends BaseTest {
 		testName = "Get Performance Metrics";
 		try {
 
-			CDPClient.sendMessage(MessageBuilder.buildPerformancEnableMessage(id));
-			CDPClient.sendMessage(MessageBuilder.buildSetTimeDomainMessage(id, "threadTicks"));
+			CDPClient.sendMessage(MessageBuilder.buildPerformanceEnableMessage(id));
+			CDPClient.sendMessage(
+					MessageBuilder.buildSetTimeDomainMessage(id, "threadTicks"));
 			driver.get("https://www.wikipedia.org");
 			int id2 = Utils.getInstance().getDynamicID();
-			CDPClient.sendMessage(MessageBuilder.buildPerformancGetMetrics(id2));
+			CDPClient.sendMessage(MessageBuilder.buildPerformanceGetMetrics(id2));
 			responseMessage = CDPClient.getResponseDataMessage(id2);
 			System.err.println("Response to " + testName + ": " + responseMessage);
 			// byte[] bytes = Base64.getDecoder().decode(responseMessage);
-			CDPClient.sendMessage(MessageBuilder.buildPerformancDisableMessage(id2));
-		} catch (WebDriverException | IOException | WebSocketException | MessageTimeOutException
-				| InterruptedException e) {
-			System.err.println("getPerformanceMetricsHeadlessTest Exception in ??? (ignored): " + e.getMessage());
+			CDPClient.sendMessage(MessageBuilder.buildPerformanceDisableMessage(id2));
+		} catch (WebDriverException | IOException | WebSocketException
+				| MessageTimeOutException | InterruptedException e) {
+			System.err.println(
+					"getPerformanceMetricsHeadlessTest Exception in ??? (ignored): "
+							+ e.getMessage());
 			// most likely, the
 			// example.messaging.CDPClient$MessageTimeOutException:
 			// No message received with this id

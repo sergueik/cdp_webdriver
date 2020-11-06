@@ -318,20 +318,41 @@ public class DemoTest extends BaseTest {
 
 	@Test
 	public void getPerformanceMetricsTest() {
+		int id2 = -1;
+		try {
+			CDPClient.sendMessage(MessageBuilder.buildPerformanceEnableMessage(id));
+			System.err.println("PerformanceEnable called");
+		} catch (WebDriverException | IOException | WebSocketException e) {
+			System.err.println(
+					"PerformanceEnable Exception in ??? (ignored): " + e.getMessage());
+		}
 		try {
 
-			CDPClient.sendMessage(MessageBuilder.buildPerformancEnableMessage(id));
 			CDPClient.sendMessage(
 					MessageBuilder.buildSetTimeDomainMessage(id, "threadTicks"));
+			System.err.println("SetTimeDomain called");
+		} catch (WebDriverException | IOException | WebSocketException e) {
+			System.err.println(
+					"SetTimeDomain Exception in ??? (ignored): " + e.getMessage());
+		}
+		try {
 			driver.get("https://www.wikipedia.org");
-			int id2 = Utils.getInstance().getDynamicID();
-			CDPClient.sendMessage(MessageBuilder.buildPerformancGetMetrics(id2));
+			new Utils().sleep(1);
+			id2 = Utils.getInstance().getDynamicID();
+			CDPClient.sendMessage(MessageBuilder.buildPerformanceGetMetrics(id2));
+			new Utils().sleep(1);
 			responseMessage = CDPClient.getResponseDataMessage(id2);
 			System.err.println("performanceMetricsTest response: " + responseMessage);
 			// byte[] bytes = Base64.getDecoder().decode(responseMessage);
-			CDPClient.sendMessage(MessageBuilder.buildPerformancDisableMessage(id2));
 		} catch (WebDriverException | IOException | WebSocketException
 				| MessageTimeOutException | InterruptedException e) {
+			System.err.println("performanceMetricsTest Exception in ??? (ignored): "
+					+ e.getMessage());
+		}
+		try {
+
+			CDPClient.sendMessage(MessageBuilder.buildPerformanceDisableMessage(id2));
+		} catch (WebDriverException | IOException | WebSocketException e) {
 			System.err.println("performanceMetricsTest Exception in ??? (ignored): "
 					+ e.getMessage());
 			// most likely, the
