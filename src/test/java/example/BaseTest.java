@@ -1,5 +1,8 @@
 package example;
 
+/**
+ * Copyright 2020,2021 Serguei Kouzmine
+ */
 import java.io.IOException;
 import java.util.Objects;
 
@@ -22,7 +25,8 @@ public class BaseTest {
 	protected static UIUtils uiUtils;
 	protected static CDPClient CDPClient;
 	protected int id;
-	private final static int debugPort = Integer.parseInt(TestUtils.getPropertyEnv("debugPort", "0"));
+	private final static int debugPort = Integer
+			.parseInt(TestUtils.getPropertyEnv("debugPort", "0"));
 	// used to override the default port 9222
 	@SuppressWarnings("unused")
 	private static boolean debug = false;
@@ -46,7 +50,8 @@ public class BaseTest {
 			utils.setDebugPort(debugPort);
 		}
 		// force the headless flag to be true to support Unix console execution
-		if (!(Utils.getOsName().equals("windows")) && !(System.getenv().containsKey("DISPLAY"))) {
+		if (!(Utils.getOsName().equals("windows"))
+				&& !(System.getenv().containsKey("DISPLAY"))) {
 			headless = true;
 		}
 		System.err.println("HEADLESS: " + headless);

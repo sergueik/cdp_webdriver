@@ -1,5 +1,7 @@
 package example;
-
+/**
+ * Copyright 2020,2021 Serguei Kouzmine
+ */
 import java.io.IOException;
 
 import org.json.JSONObject;
@@ -30,7 +32,7 @@ public class MobileEmulationTest extends BaseTest {
 	public void emulateDeviceTest() {
 		test = "emulateDeviceTest";
 		try {
-			CDPClient.sendMessage(MessageBuilder.buildEmulationSetUserAgen(id,
+			CDPClient.sendMessage(MessageBuilder.buildEmulationSetUserAgent(id,
 					"Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1"));
 			CDPClient.sendMessage(MessageBuilder.buildEmulationSetDeviceMetrics(id, 375, 812, 3));
 			driver.get(URL);

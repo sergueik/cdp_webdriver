@@ -1,5 +1,7 @@
 package example;
-
+/**
+ * Copyright 2020,2021 Serguei Kouzmine
+ */
 import example.messaging.CDPClient;
 import static java.lang.System.err;
 

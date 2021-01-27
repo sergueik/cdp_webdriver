@@ -1,5 +1,7 @@
 package example;
-
+/**
+ * Copyright 2020,2021 Serguei Kouzmine
+ */
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
