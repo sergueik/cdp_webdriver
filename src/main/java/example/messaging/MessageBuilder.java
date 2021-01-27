@@ -1,4 +1,7 @@
 package example.messaging;
+/**
+ * Copyright 2020,2021 Serguei Kouzmine
+ */
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -644,6 +647,34 @@ public class MessageBuilder {
 		 * return
 		 * String.format("{\"id\":%d,\"method\":\"Emulation.setUserAgentOverride\"}",
 		 * id);
+		 */
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-addScriptToEvaluateOnNewDocument
+	public static String buildPageAddScriptToEvaluateOnNewDocument(int id,
+			final String source) {
+		method = "Page.addScriptToEvaluateOnNewDocument";
+		params = new HashMap<>();
+		params.put("source", source);
+		return buildMessage(id, method, params);
+		/*
+		 * return
+		 * String.format("{\"id\":%d,\"method\":\"Page.addScriptToEvaluateOnNewDocument\", \"params\":{\"source\":\"\"}",
+		 * id, source);
+		 */
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-removeScriptToEvaluateOnNewDocument
+	public static String buildPageRemoveScriptToEvaluateOnNewDocument(int id,
+			final String identifier) {
+		method = "Page.removeScriptToEvaluateOnNewDocument";
+		params = new HashMap<>();
+		params.put("identifier", identifier);
+		return buildMessage(id, method, params);
+		/*
+		 * return
+		 * String.format("{\"id\":%d,\"method\":\"Page.removeScriptToEvaluateOnNewDocument\", \"params\":{\"identifier\":\"\"}",
+		 * id, identifier);
 		 */
 	}
 
