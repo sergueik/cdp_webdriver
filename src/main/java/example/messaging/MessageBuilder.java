@@ -235,7 +235,9 @@ public class MessageBuilder {
 	}
 
 	public static String buildGetDocumentMessage(int id) {
-		return buildMessage(id, "DOM.getDocument");
+		final String message = buildMessage(id, "DOM.getDocument");
+		// System.err.println("message: " + message);
+		return message;
 		/*
 		 * return String.format("{\"id\":%s,\"method\":\"DOM.getDocument\"}", id);
 		 */
@@ -637,7 +639,7 @@ public class MessageBuilder {
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Emulation/#method-setDeviceMetricsOverride
-	public static String buildEmulationSetUserAgen(int id,
+	public static String buildEmulationSetUserAgent(int id,
 			final String userAgent) {
 		method = "Emulation.setUserAgentOverride";
 		params = new HashMap<>();
