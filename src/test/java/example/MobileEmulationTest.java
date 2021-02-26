@@ -21,11 +21,10 @@ public class MobileEmulationTest extends BaseTest {
 
 	@BeforeClass
 	public static void beforeClass() throws IOException {
-		// BaseTest.headless = false;
+		BaseTest.headless = false;
 		BaseTest.beforeClass();
 	}
 
-	// @Ignore
 	// based on:
 	// https://github.com/SrinivasanTarget/selenium4CDPsamples/blob/master/src/test/java/DevToolsTest.java#L149
 	@Test

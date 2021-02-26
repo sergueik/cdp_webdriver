@@ -26,7 +26,7 @@ public class CDPClient {
 	private String webSocketUrl = null;
 	private WebSocket webSocket = null;
 	private WebSocketFactory webSocketFactory;
-	private boolean debug = true;
+	private boolean debug = false;
 	private final int capacity = 100000;
 	private final BlockingQueue<String> blockingQueue = new LinkedBlockingDeque<String>(capacity);
 	private final long pollTimeout = 5;
