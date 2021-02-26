@@ -1,9 +1,9 @@
 package example;
+
 /**
  * Copyright 2020,2021 Serguei Kouzmine
  */
 import example.messaging.CDPClient;
-import static java.lang.System.err;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
@@ -47,7 +47,6 @@ public class NavigationTest extends BaseTest {
 	private String responseMessage = null;
 	private JSONObject result = null;
 
-	@Ignore
 	// https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-getDocuments
 	// https://chromedevtools.github.io/devtools-protocol/tot/DOM#type-Node
 	// https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-querySelector
@@ -63,9 +62,10 @@ public class NavigationTest extends BaseTest {
 		driver.get("https://www.google.com");
 		try {
 			CDPClient.sendMessage(MessageBuilder.buildGetDocumentMessage(id));
-			responseMessage = CDPClient.getResponseDataMessage(id);
+			responseMessage = CDPClient.getResponseMessage(id, null);
 			result = new JSONObject(responseMessage);
 			assertThat(result.has("root"), is(true));
+
 			assertThat(result.getJSONObject("root").has("nodeId"), is(true));
 			nodeId = result.getJSONObject("root").getLong("nodeId");
 			assertTrue(nodeId != 0);
@@ -73,15 +73,16 @@ public class NavigationTest extends BaseTest {
 				| JSONException e) {
 			// ignore
 			System.err.println("Exception (ignored): " + e.toString());
-		} catch (CDPClient.MessageTimeOutException e) {
+		} catch (example.messaging.CDPClient.MessageTimeOutException e) {
 			throw new RuntimeException(e.toString());
 		}
 
 		try {
 			CDPClient
 					.sendMessage(MessageBuilder.buildDescribeNodeMessage(id, nodeId));
-			responseMessage = CDPClient.getResponseDataMessage(id);
+			responseMessage = CDPClient.getResponseMessage(id, null);
 			result = new JSONObject(responseMessage);
+
 			assertThat(result.has("node"), is(true));
 			JSONObject data = result.getJSONObject("node");
 			for (String field : Arrays.asList(
@@ -101,7 +102,7 @@ public class NavigationTest extends BaseTest {
 		try {
 			CDPClient.sendMessage(
 					MessageBuilder.buildQuerySelectorMessage(id, nodeId, selector));
-			responseMessage = CDPClient.getResponseDataMessage(id);
+			responseMessage = CDPClient.getResponseMessage(id, null);
 			result = new JSONObject(responseMessage);
 			assertThat(result.has("nodeId"), is(true));
 			nodeId = result.getLong("nodeId");

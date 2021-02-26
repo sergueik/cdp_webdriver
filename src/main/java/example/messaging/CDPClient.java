@@ -27,9 +27,11 @@ public class CDPClient {
 	private WebSocket webSocket = null;
 	private WebSocketFactory webSocketFactory;
 	private boolean debug = false;
-	private BlockingQueue<String> blockingQueue = new LinkedBlockingDeque<String>(
-			100000);
+	private final int capacity = 100000;
+	private final BlockingQueue<String> blockingQueue = new LinkedBlockingDeque<String>(
+			capacity);
 	private final long pollTimeout = 5;
+	private final int max_retry = 3;
 	private JSONObject jsonObject = null;
 	private JSONArray jsonArray = null;
 
@@ -63,6 +65,10 @@ public class CDPClient {
 								System.err.println("Received this ws message: " + message);
 							}
 							blockingQueue.add(message);
+							if (debug) {
+								System.err
+										.println("message queue size: " + blockingQueue.size());
+							}
 						}
 					}).connect();
 		}
@@ -122,7 +128,9 @@ public class CDPClient {
 	public String getResponseBodyMessage(int id) throws InterruptedException {
 		try {
 			while (true) {
-				String message = blockingQueue.poll(5, TimeUnit.SECONDS);
+				// TODO: setter
+				String message = blockingQueue.poll(pollTimeout, TimeUnit.SECONDS);
+
 				if (Objects.isNull(message))
 					throw new RuntimeException(
 							String.format("No message received with this id : '%s'", id));
@@ -148,19 +156,36 @@ public class CDPClient {
 
 	public String getResponseMessage(int id, String dataType)
 			throws InterruptedException, MessageTimeOutException {
+		int retry_cnt = max_retry;
 		while (true) {
-			String message = blockingQueue.poll(10, TimeUnit.SECONDS);
-			if (Objects.isNull(message))
-				throw new MessageTimeOutException(
-						String.format("No message received with this id : '%s'", id));
-			jsonObject = new JSONObject(message);
-			try {
-				int methodId = jsonObject.getInt("id");
-				if (id == methodId) {
-					return jsonObject.getJSONObject("result").getString(dataType);
+			String message = blockingQueue.poll(pollTimeout /* 10 */ ,
+					TimeUnit.SECONDS);
+			retry_cnt--;
+			if (Objects.isNull(message)) {
+
+				if (retry_cnt == 0) {
+					throw new MessageTimeOutException(
+							String.format("No message received with this id : '%s'", id));
 				}
-			} catch (JSONException e) {
-				// do nothing
+			} else {
+				jsonObject = new JSONObject(message);
+				try {
+					int methodId = jsonObject.getInt("id");
+					if (id == methodId) {
+						return (dataType == null)
+								? jsonObject.getJSONObject("result").toString()
+								: jsonObject.getJSONObject("result").getString(dataType);
+					}
+				} catch (JSONException e) {
+					// do nothing
+					// we may be hearing unrelated messages
+					// TODO: distinguisn no "result" from no "result/dataType"
+					/*
+					throw new MessageTimeOutException(String.format(
+							"Failed to parse JSON in the message with id %d: %s", id,
+							message));
+							*/
+				}
 			}
 		}
 	}

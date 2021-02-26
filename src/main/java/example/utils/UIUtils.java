@@ -25,6 +25,7 @@ public class UIUtils {
 	public String getImagePath() {
 		return imagePath;
 	}
+
 	public static UIUtils getInstance() {
 		if (instance == null) {
 			instance = new UIUtils();
@@ -74,7 +75,7 @@ public class UIUtils {
 
 	public Object executeJavaScript(String script) {
 		Object result = ((JavascriptExecutor) driver).executeScript(script,
-				new Object[0]);
+				new Object[] {});
 		return result;
 	}
 
