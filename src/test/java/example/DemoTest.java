@@ -1,10 +1,14 @@
 package example;
+
 /**
  * Copyright 2020,2021 Serguei Kouzmine
  */
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasKey;
 
 import java.io.File;
 import java.io.IOException;
@@ -77,7 +81,7 @@ public class DemoTest extends BaseTest {
 		// Act
 		try {
 			CDPClient.sendMessage(MessageBuilder.buildBrowserVersionMessage(id));
-			responseMessage = CDPClient.getResponseDataMessage(id);
+			responseMessage = CDPClient.getResponseMessage(id, null);
 			// Assert
 			result = new JSONObject(responseMessage);
 			for (String field : Arrays.asList(new String[] { "protocolVersion",
@@ -90,22 +94,22 @@ public class DemoTest extends BaseTest {
 
 	}
 
-	@Test(expected = example.messaging.CDPClient.MessageTimeOutException.class)
+	@Test
+	// @Test(expected = example.messaging.CDPClient.MessageTimeOutException.class)
 	public void getRuntimeEvaluateTest() throws MessageTimeOutException {
 		// Arrange
-		int id1 = Utils.getInstance().getDynamicID();
-		// Act
 		try {
 			// System.err.println("getRuntimeEvaluateTest() message: "
 			// + MessageBuilder.buildEnableRuntimeMessage(id1));
-			CDPClient.sendMessage(MessageBuilder.buildEnableRuntimeMessage(id1));
+			CDPClient.sendMessage(MessageBuilder.buildEnableRuntimeMessage(id));
 
 			// System.err.println("getRuntimeEvaluateTest() message: " +
 			// MessageBuilder
 			// .buildRuntimeEvaluateMessage(id1, "var x = 42; x;", false));
-			CDPClient.sendMessage(MessageBuilder.buildRuntimeEvaluateMessage(id1,
+			// Act
+			CDPClient.sendMessage(MessageBuilder.buildRuntimeEvaluateMessage(id,
 					"var x = 42; x;", false));
-			responseMessage = CDPClient.getResponseDataMessage(id1);
+			responseMessage = CDPClient.getResponseMessage(id, null);
 			// Assert
 			result = new JSONObject(responseMessage);
 			System.err.println("getRuntimeEvaluateTest Response: " + result);
@@ -223,7 +227,7 @@ public class DemoTest extends BaseTest {
 		int scale = 1;
 		CDPClient.sendMessage(MessageBuilder.buildTakeElementScreenShotMessage(id,
 				x, y, height, width, scale));
-		responseMessage = CDPClient.getResponseDataMessage(id);
+		responseMessage = CDPClient.getResponseMessage(id, null);
 		byte[] bytes = Base64.getDecoder().decode(responseMessage);
 		File f = new File(System.getProperty("user.dir") + "/target/img.png");
 		if (f.exists())
@@ -233,7 +237,8 @@ public class DemoTest extends BaseTest {
 		// uiUtils.takeScreenShot();
 	}
 
-	// @Ignore
+	@Ignore
+	// need to run CDPClient in debug mode for this test
 	// No message received
 	// {"error":{"code":-32000,"message":"PrintToPDF is not implemented"}}
 	// @Test(expected = example.messaging.CDPClient.MessageTimeOutException.class)
@@ -244,7 +249,8 @@ public class DemoTest extends BaseTest {
 		try {
 			CDPClient.sendMessage(MessageBuilder.buildPrintPDFMessage(id));
 			System.err.println("Reading response of PrintPDF");
-			responseMessage = CDPClient.getResponseBodyMessage(id);
+			//
+			responseMessage = CDPClient.getResponseMessage(id, null);
 			// TODO: assertNull
 		} catch (RuntimeException e) {
 			System.err.println("Exception (ignored): " + e.toString());
@@ -270,7 +276,7 @@ public class DemoTest extends BaseTest {
 						docWidth, scale));
 		CDPClient.sendMessage(MessageBuilder.buildTakeElementScreenShotMessage(id,
 				0, 0, docHeight, docWidth, scale));
-		responseMessage = CDPClient.getResponseDataMessage(id);
+		responseMessage = CDPClient.getResponseMessage(id, null);
 		byte[] bytes = Base64.getDecoder().decode(responseMessage);
 		String start_time = (new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss"))
 				.format(new Date());
@@ -339,11 +345,11 @@ public class DemoTest extends BaseTest {
 		}
 		try {
 			driver.get("https://www.wikipedia.org");
-			new Utils().sleep(1);
-			id2 = Utils.getInstance().getDynamicID();
+			utils.sleep(1);
+			id2 = utils.getDynamicID();
 			CDPClient.sendMessage(MessageBuilder.buildPerformanceGetMetrics(id2));
-			new Utils().sleep(1);
-			responseMessage = CDPClient.getResponseDataMessage(id2);
+			utils.sleep(1);
+			responseMessage = CDPClient.getResponseMessage(id2, null);
 			System.err.println("performanceMetricsTest response: " + responseMessage);
 			// byte[] bytes = Base64.getDecoder().decode(responseMessage);
 		} catch (WebDriverException | IOException | WebSocketException
@@ -433,4 +439,133 @@ public class DemoTest extends BaseTest {
 			System.err.println("Exception (ignored): " + e.getMessage());
 		}
 	}
+
+	@Test
+	public void addScriptToEvaluateOnNewDocumentTest() {
+		// Arrange
+		try {
+			// System.err.println("getRuntimeEvaluateTest() message: "
+			// + MessageBuilder.buildEnableRuntimeMessage(id1));
+			final String source = "Object.defineProperty(navigator, 'webdriver', { get: () => undefined })";
+			CDPClient.sendMessage(
+					MessageBuilder.buildPageAddScriptToEvaluateOnNewDocument(id, source));
+			// Act
+			responseMessage = CDPClient.getResponseMessage(id, null);
+			// Assert
+			result = new JSONObject(responseMessage);
+			System.err
+					.println("addScriptToEvaluateOnNewDocument response: " + result);
+			assertThat(result.has("identifier"), is(true));
+			String identifier = (String) result.get("identifier");
+
+			assertThat(identifier, notNullValue());
+			System.err.println("Script injected: " + identifier);
+			// Act
+			driver.get(
+					"https://intoli.com/blog/not-possible-to-block-chrome-headless/chrome-headless-test.html");
+			utils.waitFor(4);
+			CDPClient.sendMessage(MessageBuilder
+					.buildPageRemoveScriptToEvaluateOnNewDocument(id, identifier));
+
+		} catch (WebSocketException | IOException | InterruptedException e) {
+			System.err
+					.println("Exception in addScriptToEvaluateOnNewDocument() (ignored): "
+							+ e.toString());
+			// } catch (MessageTimeOutException e) {
+			// throw (e);
+		} catch (Exception e) {
+			System.err.println("Exception (ignored): " + e.toString());
+		}
+	}
+
+	// @Ignore
+	@Test
+	public void addScriptToEvaluateOnNewDocumentTest2() {
+
+		try {
+			// System.err.println("getRuntimeEvaluateTest() message: "
+			// + MessageBuilder.buildEnableRuntimeMessage(id1));
+			final String source = "Object.defineProperty(navigator, 'webdriver', { get: () => undefined })";
+			CDPClient.sendMessage(
+					MessageBuilder.buildPageAddScriptToEvaluateOnNewDocument(id, source));
+			utils.waitFor(4);
+
+			// Act
+			responseMessage = CDPClient.getResponseMessage(id, null);
+			// Assert
+			result = new JSONObject(responseMessage);
+			System.err
+					.println("addScriptToEvaluateOnNewDocument response: " + result);
+			assertThat(result.has("identifier"), is(true));
+			String identifier = (String) result.get("identifier");
+
+			assertThat(identifier, notNullValue());
+			System.err.println("Script injected: " + identifier);
+			// Act
+			driver.get(
+					"https://intoli.com/blog/not-possible-to-block-chrome-headless/chrome-headless-test.html");
+			utils.waitFor(1);
+			CDPClient.sendMessage(MessageBuilder
+					.buildPageRemoveScriptToEvaluateOnNewDocument(id, identifier));
+
+		} catch (WebSocketException | IOException | InterruptedException e) {
+			System.err
+					.println("Exception in addScriptToEvaluateOnNewDocument() (ignored): "
+							+ e.toString());
+			// } catch (MessageTimeOutException e) {
+			// throw (e);
+		} catch (Exception e) {
+			System.err.println("Exception (ignored): " + e.toString());
+		}
+	}
+
+	// @Ignore
+	@Test
+	public void addScriptToEvaluateOnNewDocumentTest3()
+			throws example.messaging.CDPClient.MessageTimeOutException {
+		final String baseURL = "https://www.wikipedia.org";
+		try {
+			// System.err.println("getRuntimeEvaluateTest() message: "
+			// + MessageBuilder.buildEnableRuntimeMessage(id1));
+			final String source = "var e = document.createElement('div'); e.id = 'data'; e.setAttribute('class', 'democlass'); e.style.display = 'none';  if (document.body != null) { document.body.appendChild(e); }";
+			CDPClient.sendMessage(
+					MessageBuilder.buildPageAddScriptToEvaluateOnNewDocument(id, source));
+			utils.waitFor(1);
+
+			responseMessage = CDPClient.getResponseMessage(id, null);
+			// Assert
+			result = new JSONObject(responseMessage);
+			System.err
+					.println("addScriptToEvaluateOnNewDocument response: " + result);
+			assertThat(result.has("identifier"), is(true));
+			String identifier = (String) result.get("identifier");
+
+			assertThat(identifier, notNullValue());
+			System.err.println("Script injected: " + identifier);
+			// Act
+			driver.get(baseURL);
+			utils.waitFor(1);
+
+			// protect against null values on the JS side
+			boolean was_here = (boolean) uiUtils
+					.executeJavaScript("return window.was_here || false");
+			// Assert
+
+			// assertThat(was_here, notNullValue());
+			assertThat(was_here, is(true));
+			// currently is failing
+			CDPClient.sendMessage(MessageBuilder
+					.buildPageRemoveScriptToEvaluateOnNewDocument(id, identifier));
+
+		} catch (WebSocketException | IOException | InterruptedException e) {
+			System.err
+					.println("Exception in addScriptToEvaluateOnNewDocument() (ignored): "
+							+ e.toString());
+		} catch (example.messaging.CDPClient.MessageTimeOutException e) {
+			throw (e);
+			// } catch (Exception e) {
+			// System.err.println("Exception (ignored): " + e.toString());
+		}
+	}
+
 }

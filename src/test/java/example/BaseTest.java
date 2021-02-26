@@ -30,7 +30,7 @@ public class BaseTest {
 	// used to override the default port 9222
 	@SuppressWarnings("unused")
 	private static boolean debug = false;
-	protected static boolean headless = true; // false;
+	protected static boolean headless = false; // false;
 	protected static ChromeDriverService chromeDriverService;
 
 	public void setDebug(boolean value) {

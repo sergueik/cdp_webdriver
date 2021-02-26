@@ -1,4 +1,5 @@
 package example;
+
 /**
  * Copyright 2020,2021 Serguei Kouzmine
  */
@@ -61,7 +62,7 @@ public class HeadlessTest extends BaseTest {
 		// Act
 		try {
 			CDPClient.sendMessage(MessageBuilder.buildBrowserVersionMessage(id));
-			responseMessage = CDPClient.getResponseDataMessage(id);
+			responseMessage = CDPClient.getResponseMessage(id, null);
 			// Assert
 			result = new JSONObject(responseMessage);
 			for (String field : Arrays.asList(new String[] { "protocolVersion",

@@ -658,7 +658,24 @@ public class MessageBuilder {
 		method = "Page.addScriptToEvaluateOnNewDocument";
 		params = new HashMap<>();
 		params.put("source", source);
+		params.put("worldName", null);
 		return buildMessage(id, method, params);
+		/*
+		 * return
+		 * String.format("{\"id\":%d,\"method\":\"Page.addScriptToEvaluateOnNewDocument\", \"params\":{\"source\":\"\"}",
+		 * id, source);
+		 */
+	}
+
+	public static String buildPageAddScriptToEvaluateOnNewDocument(
+			final String source) {
+
+		method = "Page.addScriptToEvaluateOnNewDocument";
+		params = new HashMap<>();
+		params.put("source", source);
+		params.put("worldName", null);
+
+		return buildMessage(Utils.getInstance().getDynamicID(), method, params);
 		/*
 		 * return
 		 * String.format("{\"id\":%d,\"method\":\"Page.addScriptToEvaluateOnNewDocument\", \"params\":{\"source\":\"\"}",
