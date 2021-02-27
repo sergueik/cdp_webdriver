@@ -198,6 +198,18 @@ public class CDPClient {
 											+ resultObject.toString());
 								}
 							}
+							try {
+								result = resultObject.getString(dataType);
+								if (debug) {
+									System.err.println("returning result: " + result);
+								}
+								return result;
+							} catch (JSONException e2) {
+								if (debug) {
+									System.err.println("failed to find string " + dataType + " in the result: "
+											+ resultObject.toString());
+								}
+							}
 
 						}
 					}

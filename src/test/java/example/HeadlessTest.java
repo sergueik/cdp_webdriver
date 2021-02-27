@@ -99,7 +99,7 @@ public class HeadlessTest extends BaseTest {
 		}
 	}
 
-	// @Ignore
+	@Ignore
 	@Test
 	public void doCustomHeaders()
 			throws IOException, WebSocketException, InterruptedException {
@@ -112,9 +112,9 @@ public class HeadlessTest extends BaseTest {
 
 	@Ignore
 	// java.lang.RuntimeException: No message received with this id : '683369'
-	@Test
+	// @Test
 	public void doNetworkTracking()
-			throws IOException, WebSocketException, InterruptedException {
+			throws IOException, WebSocketException, InterruptedException, example.messaging.CDPClient.MessageTimeOutException{
 		CDPClient.sendMessage(MessageBuilder.buildNetWorkEnableMessage(id));
 		URL = "http://petstore.swagger.io/v2/swagger.json";
 		driver.navigate().to(URL);
@@ -122,35 +122,12 @@ public class HeadlessTest extends BaseTest {
 		responseMessage = CDPClient.getResponseMessage("Network.requestWillBeSent");
 		result = new JSONObject(responseMessage);
 		String reqId = result.getJSONObject("params").getString("requestId");
-		int id2 = Utils.getInstance().getDynamicID();
 		CDPClient
-				.sendMessage(MessageBuilder.buildGetResponseBodyMessage(id2, reqId));
-		String networkResponse = CDPClient.getResponseBodyMessage(id2);
+				.sendMessage(MessageBuilder.buildGetResponseBodyMessage(id, reqId));
+		String networkResponse = CDPClient.getResponseMessage(id,null);
 		System.err.println("Here is the network Response: " + networkResponse);
 		// utils.sleep(1);
 		// uiUtils.takeScreenShot();
-	}
-
-	@Test
-	public void doprintPDF() throws Exception {
-		testName = "Print PDF";
-		URL = "https://www.wikipedia.com/";
-		imageName = "cdp_img_"
-				+ (new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss")).format(new Date())
-				+ ".pdf";
-
-		driver.navigate().to(URL);
-		CDPClient.sendMessage(MessageBuilder.buildPrintPDFMessage(id));
-		// responseMessage = CDPClient.getResponseBodyMessage(id);
-		// TODO: assertNull
-		responseMessage = CDPClient.getResponseDataMessage(id);
-		System.err.println(
-				"Response to " + testName + ": " + responseMessage.substring(0, 100));
-		byte[] bytes = Base64.getDecoder().decode(responseMessage);
-		File f = new File(filePath + "/" + imageName);
-		if (f.exists())
-			f.delete();
-		Files.write(f.toPath(), bytes);
 	}
 
 	@Test
