@@ -398,13 +398,37 @@ public class MessageBuilder {
 
 	// https://chromedevtools.github.io/devtools-protocol/1-2/Runtime/#method-evaluate
 	public static String buildRuntimeEvaluateMessage(int id,
+			final String expression, Boolean returnByValue) {
+		String method = "Runtime.evaluate";
+		params = new HashMap<>();
+		params.put("expression", expression);
+		params.put("returnByValue", returnByValue);
+		return buildMessage(id, method, params);
+
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/1-3/Runtime/#method-evaluate
+	public static String buildRuntimeEvaluateMessage(int id,
+			final String expression, Boolean silent, Boolean awaitPromise,
+			Boolean returnByValue) {
+		String method = "Runtime.evaluate";
+		params = new HashMap<>();
+		params.put("expression", expression);
+		params.put("silent", silent);
+		params.put("awaitPromise", awaitPromise);
+		params.put("returnByValue", returnByValue);
+		return buildMessage(id, method, params);
+
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/1-2/Runtime/#method-evaluate
+	public static String buildCustomRuntimeEvaluateMessage(int id,
 			final String selector, Boolean returnByValue) {
 		String method = "Runtime.evaluate";
 		// the $x() and $() do not quite work
 		// String expression = String.format(((selector.charAt(0) == '/') ?
 		// "$x(\\\"%s\\\")[0]" : "$(\\\"%s\\\")"), selector);
 		String expression = String.format("document.querySelector('%s')", selector);
-		message = new Message(Utils.getInstance().getDynamicID(), method);
 		params = new HashMap<>();
 		params.put("expression", expression);
 		params.put("returnByValue", returnByValue);
@@ -707,7 +731,7 @@ public class MessageBuilder {
 		 */
 	}
 
-		// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-removeScriptToEvaluateOnNewDocument
+	// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-removeScriptToEvaluateOnNewDocument
 	public static String buildPageRemoveScriptToEvaluateOnNewDocument(int id,
 			final String identifier) {
 		method = "Page.removeScriptToEvaluateOnNewDocument";
@@ -789,4 +813,3 @@ public class MessageBuilder {
 		 */
 	}
 }
-

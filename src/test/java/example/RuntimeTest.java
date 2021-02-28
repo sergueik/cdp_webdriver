@@ -24,8 +24,8 @@ public class RuntimeTest extends BaseTest {
 			driver.navigate().to(URL);
 
 			final String selector = "input";
-			CDPClient.sendMessage(
-					MessageBuilder.buildRuntimeEvaluateMessage(id, selector, false));
+			CDPClient.sendMessage(MessageBuilder.buildCustomRuntimeEvaluateMessage(id,
+					selector, false));
 			// Assert
 			responseMessage = new JSONObject(CDPClient.getResponseMessage(id, null));
 			assertThat(responseMessage, notNullValue());
@@ -43,4 +43,3 @@ public class RuntimeTest extends BaseTest {
 	}
 
 }
-

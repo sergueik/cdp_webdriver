@@ -24,7 +24,7 @@ import example.messaging.CDPClient.MessageTimeOutException;
 import example.messaging.MessageBuilder;
 
 public class PerformanceMetricsTest extends BaseTest {
-	private String URL = null;
+	private String URL = "https://www.wikipedia.org";
 	private String responseMessage = null;
 	private JSONObject result = null;
 	private JSONArray results = null;
@@ -48,7 +48,7 @@ public class PerformanceMetricsTest extends BaseTest {
 			CDPClient.sendMessage(
 					MessageBuilder.buildSetTimeDomainMessage(id, "threadTicks"));
 			CDPClient.sendMessage(MessageBuilder.buildPerformanceEnableMessage(id));
-			driver.get("https://www.wikipedia.org");
+			driver.get(URL);
 			// need a new id here
 			id2 = utils.getDynamicID();
 			CDPClient.sendMessage(MessageBuilder.buildPerformanceGetMetrics(id2));

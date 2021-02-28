@@ -18,7 +18,7 @@ import example.messaging.CDPClient.MessageTimeOutException;
 import example.messaging.MessageBuilder;
 
 public class NetworkTrackingTest extends BaseTest {
-	private String URL = "http://petstore.swagger.io/v2/swagger.json";
+	private String URL = "http://www.wikipedia.org";
 	private String responseMessage = null;
 	private String responseBodyMessage = null;
 	private int id2;
@@ -44,8 +44,9 @@ public class NetworkTrackingTest extends BaseTest {
 		id2 = utils.getDynamicID();
 		CDPClient
 				.sendMessage(MessageBuilder.buildGetResponseBodyMessage(id2, reqId));
-		// CDPClient.setDebug(true);
+		CDPClient.setDebug(true);
 		responseBodyMessage = CDPClient.getResponseBodyMessage(id2);
+		CDPClient.setDebug(false);
 		assertThat(responseBodyMessage, notNullValue());
 		System.err.println("Get Response Body response: " + responseBodyMessage);
 	}
