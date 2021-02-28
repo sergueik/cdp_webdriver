@@ -28,14 +28,23 @@ public class CDPClient {
 	private WebSocketFactory webSocketFactory;
 	private boolean debug = false;
 	private final int capacity = 100000;
-	private final BlockingQueue<String> blockingQueue = new LinkedBlockingDeque<String>(capacity);
+	private final BlockingQueue<String> blockingQueue = new LinkedBlockingDeque<String>(
+			capacity);
 	private final long pollTimeout = 5;
-	private final int max_retry = 3;
+	private int max_retry = 3;
 	private JSONObject jsonObject = null;
 	private JSONArray jsonArray = null;
 
 	public void setDebug(boolean value) {
-		this.debug = value;
+		debug = value;
+	}
+
+	public void setMaxRetry(int value) {
+		max_retry = value;
+	}
+
+	public int getMaxRetry() {
+		return max_retry;
 	}
 
 	public void setWebSocketUrl(String data) {
@@ -54,24 +63,27 @@ public class CDPClient {
 			if (debug) {
 				System.err.println("Making the new WS connection to: " + webSocketUrl);
 			}
-			webSocket = webSocketFactory.createSocket(webSocketUrl).addListener(new WebSocketAdapter() {
-				@Override
-				public void onTextMessage(WebSocket webSocket, String message) {
-					// Received a response. Print the received message.
-					// TODO: support debug flag
-					if (debug) {
-						System.err.println("Received this ws message: " + message);
-					}
-					blockingQueue.add(message);
-					if (debug) {
-						System.err.println("message queue size: " + blockingQueue.size());
-					}
-				}
-			}).connect();
+			webSocket = webSocketFactory.createSocket(webSocketUrl)
+					.addListener(new WebSocketAdapter() {
+						@Override
+						public void onTextMessage(WebSocket webSocket, String message) {
+							// Received a response. Print the received message.
+							// TODO: support debug flag
+							if (debug) {
+								System.err.println("Received this ws message: " + message);
+							}
+							blockingQueue.add(message);
+							if (debug) {
+								System.err
+										.println("message queue size: " + blockingQueue.size());
+							}
+						}
+					}).connect();
 		}
 	}
 
-	public void sendMessage(String message) throws IOException, WebSocketException {
+	public void sendMessage(String message)
+			throws IOException, WebSocketException {
 		if (Objects.isNull(webSocket))
 			this.connect();
 		if (debug) {
@@ -80,7 +92,8 @@ public class CDPClient {
 		webSocket.sendText(message);
 	}
 
-	public String getResponseMessage(String jsonPath, String expectedValue) throws InterruptedException {
+	public String getResponseMessage(String jsonPath, String expectedValue)
+			throws InterruptedException {
 		while (true) {
 			String message = blockingQueue.poll(this.pollTimeout, TimeUnit.SECONDS);
 			if (Objects.isNull(message))
@@ -92,17 +105,19 @@ public class CDPClient {
 		}
 	}
 
-	public String getResponseMessage(String methodName) throws InterruptedException {
+	public String getResponseMessage(String methodName)
+			throws InterruptedException {
 		return getResponseMessage(methodName, this.pollTimeout);
 	}
 
-	public String getResponseMessage(String methodName, long pollTimeout) throws InterruptedException {
+	public String getResponseMessage(String methodName, long pollTimeout)
+			throws InterruptedException {
 		try {
 			while (true) {
 				String message = blockingQueue.poll(pollTimeout, TimeUnit.SECONDS);
 				if (Objects.isNull(message))
-					throw new RuntimeException(
-							String.format("No message received with this method name : '%s'", methodName));
+					throw new RuntimeException(String.format(
+							"No message received with this method name : '%s'", methodName));
 				JSONObject jsonObject = new JSONObject(message);
 				try {
 					String method = jsonObject.getString("method");
@@ -128,7 +143,8 @@ public class CDPClient {
 
 				}
 				if (Objects.isNull(message))
-					throw new RuntimeException(String.format("No message received with this id : '%s'", id));
+					throw new RuntimeException(
+							String.format("No message received with this id : '%s'", id));
 				jsonObject = new JSONObject(message);
 				try {
 					int methodId = jsonObject.getInt("id");
@@ -144,14 +160,17 @@ public class CDPClient {
 		}
 	}
 
-	public String getResponseDataMessage(int id) throws InterruptedException, MessageTimeOutException {
+	public String getResponseDataMessage(int id)
+			throws InterruptedException, MessageTimeOutException {
 		return getResponseMessage(id, "data");
 	}
 
-	public String getResponseMessage(int id, String dataType) throws InterruptedException, MessageTimeOutException {
+	public String getResponseMessage(int id, String dataType)
+			throws InterruptedException, MessageTimeOutException {
 		int retry_cnt = max_retry;
 		while (retry_cnt >= 0) {
-			String message = blockingQueue.poll(pollTimeout /* 10 */ , TimeUnit.SECONDS);
+			String message = blockingQueue.poll(pollTimeout /* 10 */ ,
+					TimeUnit.SECONDS);
 			retry_cnt--;
 			if (debug) {
 				System.err.println("retry_cnt:" + retry_cnt + " message: " + message);
@@ -159,7 +178,8 @@ public class CDPClient {
 			}
 			if (Objects.isNull(message)) {
 				if (retry_cnt == 0) {
-					throw new MessageTimeOutException(String.format("No message received with this id : '%s'", id));
+					throw new MessageTimeOutException(
+							String.format("No message received with this id : '%s'", id));
 				}
 			} else {
 				jsonObject = new JSONObject(message);
@@ -168,7 +188,8 @@ public class CDPClient {
 					if (id == methodId) {
 						JSONObject resultObject = jsonObject.getJSONObject("result");
 						if (debug) {
-							System.err.println("processing result: " + resultObject.toString());
+							System.err
+									.println("processing result: " + resultObject.toString());
 						}
 						if (dataType == null) {
 							return resultObject.toString();
@@ -182,8 +203,8 @@ public class CDPClient {
 								return result;
 							} catch (JSONException e2) {
 								if (debug) {
-									System.err.println("failed to find array " + dataType + " in the result: "
-											+ resultObject.toString());
+									System.err.println("failed to find array " + dataType
+											+ " in the result: " + resultObject.toString());
 								}
 							}
 							try {
@@ -194,8 +215,8 @@ public class CDPClient {
 								return result;
 							} catch (JSONException e2) {
 								if (debug) {
-									System.err.println("failed to find object " + dataType + " in the result: "
-											+ resultObject.toString());
+									System.err.println("failed to find object " + dataType
+											+ " in the result: " + resultObject.toString());
 								}
 							}
 							try {
@@ -206,8 +227,20 @@ public class CDPClient {
 								return result;
 							} catch (JSONException e2) {
 								if (debug) {
-									System.err.println("failed to find string " + dataType + " in the result: "
-											+ resultObject.toString());
+									System.err.println("failed to find string " + dataType
+											+ " in the result: " + resultObject.toString());
+								}
+							}
+							try {
+								result = String.format("%d", resultObject.getInt(dataType));
+								if (debug) {
+									System.err.println("returning result: " + result);
+								}
+								return result;
+							} catch (JSONException e2) {
+								if (debug) {
+									System.err.println("failed to find integer " + dataType
+											+ " in the result: " + resultObject.toString());
 								}
 							}
 
@@ -231,12 +264,15 @@ public class CDPClient {
 	public void mockResponse(String mockMessage) {
 		new Thread(() -> {
 			try {
-				String message = this.getResponseMessage("Network.requestIntercepted", 5);
+				String message = this.getResponseMessage("Network.requestIntercepted",
+						5);
 				jsonObject = new JSONObject(message);
-				String interceptionId = jsonObject.getJSONObject("params").getString("interceptionId");
+				String interceptionId = jsonObject.getJSONObject("params")
+						.getString("interceptionId");
 				int id = Utils.getInstance().getDynamicID();
 				this.sendMessage(
-						MessageBuilder.buildGetContinueInterceptedRequestMessage(id, interceptionId, mockMessage));
+						MessageBuilder.buildGetContinueInterceptedRequestMessage(id,
+								interceptionId, mockMessage));
 				return;
 			} catch (Exception e) {
 				// do nothing
@@ -248,15 +284,18 @@ public class CDPClient {
 		new Thread(() -> {
 			try {
 				while (true) {
-					String message = this.getResponseMessage("Network.requestIntercepted", 10);
+					String message = this.getResponseMessage("Network.requestIntercepted",
+							10);
 					jsonObject = new JSONObject(message);
-					String interceptionId = jsonObject.getJSONObject("params").getString("interceptionId");
+					String interceptionId = jsonObject.getJSONObject("params")
+							.getString("interceptionId");
 					// int id1 = Utils.getInstance().getDynamicID();
 					// this.sendMessage(MessageBuilder.buildGetResponseBodyForInterceptionMessage(id1,interceptionId));
 					// String interceptedResponse = this.getResponseBodyMessage(id1);
 					int id = Utils.getInstance().getDynamicID();
-					this.sendMessage(MessageBuilder.buildGetContinueInterceptedRequestEncodedMessage(id, interceptionId,
-							encodedMessage));
+					this.sendMessage(
+							MessageBuilder.buildGetContinueInterceptedRequestEncodedMessage(
+									id, interceptionId, encodedMessage));
 				}
 			} catch (Exception e) {
 				// do nothing
@@ -264,10 +303,11 @@ public class CDPClient {
 		}).start();
 	}
 
-	public ServiceWorker getServiceWorker(String workerURL, int timeoutInSecs, String expectedStatus)
-			throws InterruptedException {
+	public ServiceWorker getServiceWorker(String workerURL, int timeoutInSecs,
+			String expectedStatus) throws InterruptedException {
 		while (true) {
-			String message = getResponseMessage("ServiceWorker.workerVersionUpdated", timeoutInSecs);
+			String message = getResponseMessage("ServiceWorker.workerVersionUpdated",
+					timeoutInSecs);
 			if (Objects.isNull(message))
 				return null;
 			jsonObject = new JSONObject(message);
@@ -275,12 +315,16 @@ public class CDPClient {
 			try {
 				String scriptURL = jsonArray.getJSONObject(0).getString("scriptURL");
 				String status = jsonArray.getJSONObject(0).getString("status");
-				if (scriptURL.contains(workerURL) && status.equalsIgnoreCase(expectedStatus)) {
+				if (scriptURL.contains(workerURL)
+						&& status.equalsIgnoreCase(expectedStatus)) {
 					String targetId = jsonArray.getJSONObject(0).getString("targetId");
 					String versionId = jsonArray.getJSONObject(0).getString("versionId");
-					String registrationId = jsonArray.getJSONObject(0).getString("registrationId");
-					String runningStatus = jsonArray.getJSONObject(0).getString("registrationId");
-					ServiceWorker serviceWorker = new ServiceWorker(versionId, registrationId, targetId);
+					String registrationId = jsonArray.getJSONObject(0)
+							.getString("registrationId");
+					String runningStatus = jsonArray.getJSONObject(0)
+							.getString("registrationId");
+					ServiceWorker serviceWorker = new ServiceWorker(versionId,
+							registrationId, targetId);
 					serviceWorker.setRunningStatus(runningStatus);
 					serviceWorker.setStatus(status);
 					return serviceWorker;
@@ -311,3 +355,4 @@ public class CDPClient {
 	}
 
 }
+
