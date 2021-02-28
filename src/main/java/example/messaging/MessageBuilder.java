@@ -367,7 +367,8 @@ public class MessageBuilder {
 	public static String buildRuntimeEvaluateMessage(int id, final String selector, Boolean returnByValue) {
 		String method = "Runtime.evaluate";
 		// the $x() and $() do not quite work
-		// String expression = String.format(((selector.charAt(0) == '/') ? "$x(\\\"%s\\\")[0]" : "$(\\\"%s\\\")"), selector);
+		// String expression = String.format(((selector.charAt(0) == '/') ?
+		// "$x(\\\"%s\\\")[0]" : "$(\\\"%s\\\")"), selector);
 		String expression = String.format("document.querySelector('%s')", selector);
 		message = new Message(Utils.getInstance().getDynamicID(), method);
 		params = new HashMap<>();
@@ -488,8 +489,8 @@ public class MessageBuilder {
 		method = "Target.createTarget";
 		params = new HashMap<>();
 		params.put("url", url);
-		// params.put("width", width);
-		// params.put("height", height);
+		params.put("width", width);
+		params.put("height", height);
 		// params.put("browserContextId", browserContextId);
 		// params.put("enableBeginFrameControl", enableBeginFrameControl);
 		params.put("newWindow", newWindow);
@@ -499,6 +500,15 @@ public class MessageBuilder {
 
 	public static String buildCreateTargetMessage(int id, String url, boolean newWindow) {
 		return buildCreateTargetMessage(id, url, 0, 0, null, false, newWindow, false);
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Target/#method-activateTarget
+	public static String buildActivateTargetMessage(int id, String targetId) {
+
+		method = "Target.activateTarget";
+		params = new HashMap<>();
+		params.put("targetId", targetId);
+		return buildMessage(id, method, params);
 	}
 
 	public static String buildRequestInterceptorEnabledMessage() {
@@ -625,7 +635,23 @@ public class MessageBuilder {
 		method = "Page.addScriptToEvaluateOnNewDocument";
 		params = new HashMap<>();
 		params.put("source", source);
+		params.put("worldName", null);
 		return buildMessage(id, method, params);
+		/*
+		 * return String.
+		 * format("{\"id\":%d,\"method\":\"Page.addScriptToEvaluateOnNewDocument\", \"params\":{\"source\":\"\"}"
+		 * , id, source);
+		 */
+	}
+
+	public static String buildPageAddScriptToEvaluateOnNewDocument(final String source) {
+
+		method = "Page.addScriptToEvaluateOnNewDocument";
+		params = new HashMap<>();
+		params.put("source", source);
+		params.put("worldName", null);
+
+		return buildMessage(Utils.getInstance().getDynamicID(), method, params);
 		/*
 		 * return String.
 		 * format("{\"id\":%d,\"method\":\"Page.addScriptToEvaluateOnNewDocument\", \"params\":{\"source\":\"\"}"
