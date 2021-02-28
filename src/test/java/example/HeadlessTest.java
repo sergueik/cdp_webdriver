@@ -1,10 +1,12 @@
 package example;
+
 /**
  * Copyright 2020,2021 Serguei Kouzmine
  */
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.hasKey;
 
 import java.io.File;
@@ -13,12 +15,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 import java.text.SimpleDateFormat;
+
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Iterator;
 
 import org.apache.commons.io.FileUtils;
+
 import org.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -41,18 +48,17 @@ public class HeadlessTest extends BaseTest {
 	private String URL = null;
 	private String responseMessage = null;
 	private JSONObject result = null;
+	private JSONArray results = null;
+	private Iterator<Object> resultsIterator = null;
+	private StringBuffer processResults = new StringBuffer();
 	private String imageName = null;
 	private final String filePath = System.getProperty("user.dir") + "/target";
-	private String testName = null;
+	private int id2;
 
 	@Before
 	public void beforeTest() throws IOException {
-		// protected member does not work
-		BaseTest.headless = true;
-		// setter does not work
 		super.setHeadless(true);
 		super.beforeTest();
-
 	}
 
 	@Test
@@ -61,12 +67,15 @@ public class HeadlessTest extends BaseTest {
 		// Act
 		try {
 			CDPClient.sendMessage(MessageBuilder.buildBrowserVersionMessage(id));
-			responseMessage = CDPClient.getResponseDataMessage(id);
+			responseMessage = CDPClient.getResponseMessage(id, null);
+			System.err.println("Get Broswer Version response: " + responseMessage);
+
 			// Assert
 			result = new JSONObject(responseMessage);
 			for (String field : Arrays.asList(new String[] { "protocolVersion",
 					"product", "revision", "userAgent", "jsVersion" })) {
-				assertThat(result.has(field), is(true));
+				assertThat(String.format("has key %s", field), result.has(field),
+						is(true));
 			}
 		} catch (Exception e) {
 			System.err.println("Exception (ignored): " + e.toString());
@@ -74,85 +83,53 @@ public class HeadlessTest extends BaseTest {
 	}
 
 	@Test
-	public void getAllCookiesTest() {
-		testName = "Get All Cookies";
+	public void getAllCookiesTest1() {
 		// Arrange
-		int id2 = Utils.getInstance().getDynamicID();
-		URL = "https://www.google.com";
-		driver.navigate().to(URL);
-		// Act
+		driver.navigate().to("https://www.google.com");
 		try {
-			System.err.println("Begin " + testName);
-			CDPClient.sendMessage(MessageBuilder.buildGetAllCookiesMessage(id2));
-			responseMessage = CDPClient.getResponseDataMessage(id2);
-			System.err.println("Response to " + testName + ": " + responseMessage);
+			// Act
+			CDPClient.sendMessage(MessageBuilder.buildGetAllCookiesMessage(id));
+			responseMessage = CDPClient.getResponseMessage(id, "cookies");
+			System.err.println("Get All Cookies response : " + responseMessage);
 			// Assert
-			result = new JSONObject(responseMessage);
-			for (String field : Arrays.asList(new String[] { "protocolVersion",
-					"product", "revision", "userAgent", "jsVersion" })) {
-				assertThat(result.has(field), is(true));
+			results = new JSONArray(responseMessage);
+			assertThat(results, notNullValue());
+			result = results.getJSONObject(0);
+			for (String field : Arrays.asList(new String[] { "path", "domain",
+					"expires", "name", "value", "secure", "session" })) {
+				assertThat(String.format("has key %s", field), result.has(field),
+						is(true));
 			}
-			System.err.println("Completed " + testName);
-		} catch (Exception e) {
-			System.err.println("Failed " + testName);
+		} catch (JSONException | InterruptedException | MessageTimeOutException
+				| IOException | WebSocketException e) {
 			System.err.println("Exception (ignored): " + e.toString());
 		}
 	}
 
-	@Ignore
 	@Test
-	public void doCustomHeaders()
-			throws IOException, WebSocketException, InterruptedException {
-		CDPClient.sendMessage(MessageBuilder.buildNetWorkEnableMessage(id));
-		CDPClient.sendMessage(MessageBuilder.buildNetWorkSetExtraHTTPHeadersMessage(
-				id, "customHeaderName",
-				this.getClass().getSimpleName() + " " + "customHeaderValue"));
-		driver.navigate().to("http://127.0.0.1:8080/demo/Demo");
-	}
-
-	@Ignore
-	// java.lang.RuntimeException: No message received with this id : '683369'
-	// @Test
-	public void doNetworkTracking()
-			throws IOException, WebSocketException, InterruptedException, example.messaging.CDPClient.MessageTimeOutException{
-		CDPClient.sendMessage(MessageBuilder.buildNetWorkEnableMessage(id));
-		URL = "http://petstore.swagger.io/v2/swagger.json";
-		driver.navigate().to(URL);
-		utils.sleep(3);
-		responseMessage = CDPClient.getResponseMessage("Network.requestWillBeSent");
-		result = new JSONObject(responseMessage);
-		String reqId = result.getJSONObject("params").getString("requestId");
-		CDPClient
-				.sendMessage(MessageBuilder.buildGetResponseBodyMessage(id, reqId));
-		String networkResponse = CDPClient.getResponseMessage(id,null);
-		System.err.println("Here is the network Response: " + networkResponse);
-		// utils.sleep(1);
-		// uiUtils.takeScreenShot();
-	}
-
-	@Test
-	public void getPerformanceMetricsHeadlessTest() {
-		testName = "Get Performance Metrics";
+	public void getAllCookiesTest2() {
+		// Arrange
+		driver.navigate().to("https://www.google.com");
 		try {
+			// Act
+			CDPClient.sendMessage(MessageBuilder.buildGetAllCookiesMessage(id));
+			responseMessage = CDPClient.getResponseMessage(id, null);
+			System.err.println("Get All Cookies response : " + responseMessage);
 
-			CDPClient.sendMessage(MessageBuilder.buildPerformanceEnableMessage(id));
-			CDPClient.sendMessage(
-					MessageBuilder.buildSetTimeDomainMessage(id, "threadTicks"));
-			driver.get("https://www.wikipedia.org");
-			int id2 = Utils.getInstance().getDynamicID();
-			CDPClient.sendMessage(MessageBuilder.buildPerformanceGetMetrics(id2));
-			responseMessage = CDPClient.getResponseDataMessage(id2);
-			System.err.println("Response to " + testName + ": " + responseMessage);
-			// byte[] bytes = Base64.getDecoder().decode(responseMessage);
-			CDPClient.sendMessage(MessageBuilder.buildPerformanceDisableMessage(id2));
-		} catch (WebDriverException | IOException | WebSocketException
-				| MessageTimeOutException | InterruptedException e) {
-			System.err.println(
-					"getPerformanceMetricsHeadlessTest Exception in ??? (ignored): "
-							+ e.getMessage());
-			// most likely, the
-			// example.messaging.CDPClient$MessageTimeOutException:
-			// No message received with this id
+			// Assert
+			results = new JSONObject(responseMessage).getJSONArray("cookies");
+
+			assertThat(results, notNullValue());
+			result = results.getJSONObject(0);
+			for (String field : Arrays.asList(new String[] { "path", "domain",
+					"expires", "name", "value", "secure", "session" })) {
+				assertThat(String.format("has key %s", field), result.has(field),
+						is(true));
+			}
+		} catch (JSONException | InterruptedException | MessageTimeOutException
+				| IOException | WebSocketException e) {
+			System.err.println("Exception (ignored): " + e.toString());
 		}
 	}
 }
+
