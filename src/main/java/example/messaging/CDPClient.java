@@ -31,12 +31,20 @@ public class CDPClient {
 	private final BlockingQueue<String> blockingQueue = new LinkedBlockingDeque<String>(
 			capacity);
 	private final long pollTimeout = 5;
-	private final int max_retry = 3;
+	private int max_retry = 3;
 	private JSONObject jsonObject = null;
 	private JSONArray jsonArray = null;
 
 	public void setDebug(boolean value) {
-		this.debug = value;
+		debug = value;
+	}
+
+	public void setMaxRetry(int value) {
+		max_retry = value;
+	}
+
+	public int getMaxRetry() {
+		return max_retry;
 	}
 
 	public void setWebSocketUrl(String data) {
@@ -130,7 +138,10 @@ public class CDPClient {
 			while (true) {
 				// TODO: setter
 				String message = blockingQueue.poll(pollTimeout, TimeUnit.SECONDS);
+				if (debug) {
+					System.err.println("message: " + message);
 
+				}
 				if (Objects.isNull(message))
 					throw new RuntimeException(
 							String.format("No message received with this id : '%s'", id));
@@ -157,12 +168,15 @@ public class CDPClient {
 	public String getResponseMessage(int id, String dataType)
 			throws InterruptedException, MessageTimeOutException {
 		int retry_cnt = max_retry;
-		while (true) {
+		while (retry_cnt >= 0) {
 			String message = blockingQueue.poll(pollTimeout /* 10 */ ,
 					TimeUnit.SECONDS);
 			retry_cnt--;
-			if (Objects.isNull(message)) {
+			if (debug) {
+				System.err.println("retry_cnt:" + retry_cnt + " message: " + message);
 
+			}
+			if (Objects.isNull(message)) {
 				if (retry_cnt == 0) {
 					throw new MessageTimeOutException(
 							String.format("No message received with this id : '%s'", id));
@@ -172,22 +186,79 @@ public class CDPClient {
 				try {
 					int methodId = jsonObject.getInt("id");
 					if (id == methodId) {
-						return (dataType == null)
-								? jsonObject.getJSONObject("result").toString()
-								: jsonObject.getJSONObject("result").getString(dataType);
+						JSONObject resultObject = jsonObject.getJSONObject("result");
+						if (debug) {
+							System.err
+									.println("processing result: " + resultObject.toString());
+						}
+						if (dataType == null) {
+							return resultObject.toString();
+						} else {
+							String result = null;
+							try {
+								result = resultObject.getJSONArray(dataType).toString();
+								if (debug) {
+									System.err.println("returning result: " + result);
+								}
+								return result;
+							} catch (JSONException e2) {
+								if (debug) {
+									System.err.println("failed to find array " + dataType
+											+ " in the result: " + resultObject.toString());
+								}
+							}
+							try {
+								result = resultObject.getJSONObject(dataType).toString();
+								if (debug) {
+									System.err.println("returning result: " + result);
+								}
+								return result;
+							} catch (JSONException e2) {
+								if (debug) {
+									System.err.println("failed to find object " + dataType
+											+ " in the result: " + resultObject.toString());
+								}
+							}
+							try {
+								result = resultObject.getString(dataType);
+								if (debug) {
+									System.err.println("returning result: " + result);
+								}
+								return result;
+							} catch (JSONException e2) {
+								if (debug) {
+									System.err.println("failed to find string " + dataType
+											+ " in the result: " + resultObject.toString());
+								}
+							}
+							try {
+								result = String.format("%d", resultObject.getInt(dataType));
+								if (debug) {
+									System.err.println("returning result: " + result);
+								}
+								return result;
+							} catch (JSONException e2) {
+								if (debug) {
+									System.err.println("failed to find integer " + dataType
+											+ " in the result: " + resultObject.toString());
+								}
+							}
+
+						}
 					}
 				} catch (JSONException e) {
+
 					// do nothing
 					// we may be hearing unrelated messages
 					// TODO: distinguisn no "result" from no "result/dataType"
 					/*
-					throw new MessageTimeOutException(String.format(
-							"Failed to parse JSON in the message with id %d: %s", id,
-							message));
-							*/
+					 * throw new MessageTimeOutException(String.format(
+					 * "Failed to parse JSON in the message with id %d: %s", id, message));
+					 */
 				}
 			}
 		}
+		return null;
 	}
 
 	public void mockResponse(String mockMessage) {
@@ -284,3 +355,4 @@ public class CDPClient {
 	}
 
 }
+

@@ -49,6 +49,8 @@ public class DemoTest extends BaseTest {
 	private static By locator = null;
 	private static WebElement element = null;
 	private static WebDriverWait wait;
+	private int id1;
+	private int id2;
 
 	@Ignore
 	@Test
@@ -106,10 +108,10 @@ public class DemoTest extends BaseTest {
 			// System.err.println("getRuntimeEvaluateTest() message: " +
 			// MessageBuilder
 			// .buildRuntimeEvaluateMessage(id1, "var x = 42; x;", false));
-			// Act
-			CDPClient.sendMessage(MessageBuilder.buildRuntimeEvaluateMessage(id,
+			id1 = utils.getDynamicID();
+			CDPClient.sendMessage(MessageBuilder.buildRuntimeEvaluateMessage(id1,
 					"var x = 42; x;", false));
-			responseMessage = CDPClient.getResponseMessage(id, null);
+			responseMessage = CDPClient.getResponseDataMessage(id1);
 			// Assert
 			result = new JSONObject(responseMessage);
 			System.err.println("getRuntimeEvaluateTest Response: " + result);
@@ -227,7 +229,7 @@ public class DemoTest extends BaseTest {
 		int scale = 1;
 		CDPClient.sendMessage(MessageBuilder.buildTakeElementScreenShotMessage(id,
 				x, y, height, width, scale));
-		responseMessage = CDPClient.getResponseMessage(id, null);
+		responseMessage = CDPClient.getResponseDataMessage(id);
 		byte[] bytes = Base64.getDecoder().decode(responseMessage);
 		File f = new File(System.getProperty("user.dir") + "/target/img.png");
 		if (f.exists())
@@ -276,7 +278,7 @@ public class DemoTest extends BaseTest {
 						docWidth, scale));
 		CDPClient.sendMessage(MessageBuilder.buildTakeElementScreenShotMessage(id,
 				0, 0, docHeight, docWidth, scale));
-		responseMessage = CDPClient.getResponseMessage(id, null);
+		responseMessage = CDPClient.getResponseDataMessage(id);
 		byte[] bytes = Base64.getDecoder().decode(responseMessage);
 		String start_time = (new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss"))
 				.format(new Date());
@@ -309,8 +311,8 @@ public class DemoTest extends BaseTest {
 		utils.sleep(5);
 		ServiceWorker serviceWorker = CDPClient.getServiceWorker(URL, 5,
 				"activated");
-		int id1 = Utils.getInstance().getDynamicID();
-		int id2 = Utils.getInstance().getDynamicID();
+		id1 = Utils.getInstance().getDynamicID();
+		id2 = Utils.getInstance().getDynamicID();
 
 		CDPClient.sendMessage(MessageBuilder.buildEnableLogMessage(id1));
 		CDPClient.sendMessage(MessageBuilder.buildEnableRuntimeMessage(id2));
@@ -326,46 +328,22 @@ public class DemoTest extends BaseTest {
 
 	@Test
 	public void getPerformanceMetricsTest() {
-		int id2 = -1;
 		try {
-			CDPClient.sendMessage(MessageBuilder.buildPerformanceEnableMessage(id));
-			System.err.println("PerformanceEnable called");
-		} catch (WebDriverException | IOException | WebSocketException e) {
-			System.err.println(
-					"PerformanceEnable Exception in ??? (ignored): " + e.getMessage());
-		}
-		try {
-
 			CDPClient.sendMessage(
 					MessageBuilder.buildSetTimeDomainMessage(id, "threadTicks"));
 			System.err.println("SetTimeDomain called");
-		} catch (WebDriverException | IOException | WebSocketException e) {
-			System.err.println(
-					"SetTimeDomain Exception in ??? (ignored): " + e.getMessage());
-		}
-		try {
+			CDPClient.sendMessage(MessageBuilder.buildPerformanceEnableMessage(id));
+			System.err.println("PerformanceEnable called");
 			driver.get("https://www.wikipedia.org");
-			utils.sleep(1);
-			id2 = utils.getDynamicID();
-			CDPClient.sendMessage(MessageBuilder.buildPerformanceGetMetrics(id2));
-			utils.sleep(1);
-			responseMessage = CDPClient.getResponseMessage(id2, null);
+			CDPClient.sendMessage(MessageBuilder.buildPerformanceGetMetrics(id));
+			responseMessage = CDPClient.getResponseMessage(id, "metrics");
 			System.err.println("performanceMetricsTest response: " + responseMessage);
 			// byte[] bytes = Base64.getDecoder().decode(responseMessage);
+			CDPClient.sendMessage(MessageBuilder.buildPerformanceDisableMessage(id));
 		} catch (WebDriverException | IOException | WebSocketException
-				| MessageTimeOutException | InterruptedException e) {
+				| InterruptedException | MessageTimeOutException e) {
 			System.err.println("performanceMetricsTest Exception in ??? (ignored): "
 					+ e.getMessage());
-		}
-		try {
-
-			CDPClient.sendMessage(MessageBuilder.buildPerformanceDisableMessage(id2));
-		} catch (WebDriverException | IOException | WebSocketException e) {
-			System.err.println("performanceMetricsTest Exception in ??? (ignored): "
-					+ e.getMessage());
-			// most likely, the
-			// example.messaging.CDPClient$MessageTimeOutException:
-			// No message received with this id
 		}
 	}
 

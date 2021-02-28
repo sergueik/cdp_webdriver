@@ -46,6 +46,8 @@ public class NavigationTest extends BaseTest {
 	private String URL = null;
 	private String responseMessage = null;
 	private JSONObject result = null;
+	private int id2;
+	private int max_retry = 0;
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-getDocuments
 	// https://chromedevtools.github.io/devtools-protocol/tot/DOM#type-Node
@@ -59,7 +61,7 @@ public class NavigationTest extends BaseTest {
 	public void getDocumentTest() {
 		// Arrange
 		long nodeId = (long) -1;
-		driver.get("https://www.google.com");
+		driver.get("https://www.wikipedia.org");
 		try {
 			CDPClient.sendMessage(MessageBuilder.buildGetDocumentMessage(id));
 			responseMessage = CDPClient.getResponseMessage(id, null);
@@ -80,34 +82,55 @@ public class NavigationTest extends BaseTest {
 		try {
 			CDPClient
 					.sendMessage(MessageBuilder.buildDescribeNodeMessage(id, nodeId));
-			responseMessage = CDPClient.getResponseMessage(id, null);
-			result = new JSONObject(responseMessage);
-
-			assertThat(result.has("node"), is(true));
-			JSONObject data = result.getJSONObject("node");
+			responseMessage = CDPClient.getResponseMessage(id, "node");
+			JSONObject data = new JSONObject(responseMessage);
 			for (String field : Arrays.asList(
 					new String[] { "nodeType", "nodeName", "localName", "nodeValue" })) {
 				assertThat(data.has(field), is(true));
 			}
+
+			nodeId = data.getInt("nodeId");
 			System.err.println("Command returned node: " + data.toString(2));
+			System.err.println("Command returned nodeid: " + nodeId);
 		} catch (IOException | WebSocketException | InterruptedException
-				| JSONException e) {
+				| JSONException | CDPClient.MessageTimeOutException e) {
 			// ignore
 			System.err.println("Exception (ignored): " + e.toString());
-		} catch (CDPClient.MessageTimeOutException e) {
-			throw new RuntimeException(e.toString());
 		}
-
-		String selector = "input[name='q']";
+		if (nodeId == 0) {
+			nodeId = 1;
+		}
 		try {
 			CDPClient.sendMessage(
-					MessageBuilder.buildQuerySelectorMessage(id, nodeId, selector));
-			responseMessage = CDPClient.getResponseMessage(id, null);
-			result = new JSONObject(responseMessage);
-			assertThat(result.has("nodeId"), is(true));
-			nodeId = result.getLong("nodeId");
-			assertTrue(nodeId != 0);
-			System.err.println("Command returned nodeId: " + nodeId);
+					MessageBuilder.buildGetOuterHTMLMessage(id, (int) nodeId));
+			responseMessage = CDPClient.getResponseMessage(id, "outerHTML");
+			System.err.println("Get Outer HTML response: " + responseMessage);
+		} catch (IOException | WebSocketException | InterruptedException
+				| JSONException | CDPClient.MessageTimeOutException e) {
+			System.err.println("Exception (ignored): " + e.toString());
+		}
+
+		try {
+			id2 = utils.getDynamicID();
+			String selector = "input";
+			CDPClient.sendMessage(
+					MessageBuilder.buildQuerySelectorMessage(id2, nodeId, selector));
+			System.err.println("id = " + id2);
+			// CDPClient.setDebug(true);
+			max_retry = CDPClient.getMaxRetry();
+			CDPClient.setMaxRetry(10);
+			nodeId = Integer.parseInt(CDPClient.getResponseMessage(id2, "nodeId"));
+			System.err.println("Query Selector response: " + nodeId);
+			CDPClient.sendMessage(
+					MessageBuilder.buildGetOuterHTMLMessage(id, (int) nodeId));
+			responseMessage = CDPClient.getResponseMessage(id, "outerHTML");
+			System.err.println("Found Node Outer HTML response: " + responseMessage);
+			CDPClient.setMaxRetry(max_retry);
+			// result = new JSONObject(responseMessage);
+			// assertThat(result.has("nodeId"), is(true));
+			// nodeId = result.getLong("nodeId");
+			// assertTrue(nodeId != 0);
+			// System.err.println("Command returned nodeId: " + nodeId);
 		} catch (IOException | WebSocketException | InterruptedException
 				| JSONException e) {
 			// ignore
@@ -177,3 +200,4 @@ public class NavigationTest extends BaseTest {
 		 */
 	}
 }
+
