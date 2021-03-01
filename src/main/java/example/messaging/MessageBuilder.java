@@ -75,7 +75,8 @@ public class MessageBuilder {
 		params.put("accuracy", 100);
 		if (debug) {
 			System.err.println(String.format(
-					"Sending:\n{\"id\":%s,\"method\":\"Emulation.setGeolocationOverride\","
+					"Sending:\n"
+							+ "{\"id\":%d,\"method\":\"Emulation.setGeolocationOverride\","
 							+ "\"params\":{\"latitude\":%s,\"longitude\":%s,\"accuracy\":100}}",
 					id, latitude, longitude));
 
@@ -89,13 +90,9 @@ public class MessageBuilder {
 		params = new HashMap<>();
 		params.put("timezoneId", timezoneId);
 		if (debug) {
-			System.err
-					.println(
-							String
-									.format(
-											"Sending:\n{\"id\":%s,\"method\":\"Emulation.setTimezoneOverride\","
-													+ "\"params\":{\"timezoneId\":\"%s\"}}",
-											id, timezoneId));
+			System.err.println(String.format("Sending:\n"
+					+ "{\"id\":%d,\"method\":\"Emulation.setTimezoneOverride\","
+					+ "\"params\":{\"timezoneId\":\"%s\"}}", id, timezoneId));
 		}
 		return buildMessage(id, method, params);
 	}
@@ -106,12 +103,13 @@ public class MessageBuilder {
 		method = "Network.setExtraHTTPHeaders";
 		params = new HashMap<>();
 		params.put("headers", headers);
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n"
+							+ "{\"id\":%d,\"method\":\"Network.setExtraHTTPHeaders\",\"params\":{\"headers\":{\"header key\":\"header value\"}}}",
+					id));
+		}
 		return buildMessage(id, method, params);
-		/*
-		 * return String.format(
-		 * "{\"id\":%s,\"method\":\"Network.setExtraHTTPHeaders\",\"params\":{\"headers\":{\"header key\":\"header value\"}}}"
-		 * , id);
-		 */
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-setExtraHTTPHeaders
@@ -122,24 +120,27 @@ public class MessageBuilder {
 		Map<String, String> headers = new HashMap<>();
 		headers.put(headerKey, headerValue);
 		params.put("headers", headers);
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n"
+							+ "{\"id\":%d,\"method\":\"Network.setExtraHTTPHeaders\",\"params\":{\"headers\":{\"%s\":\"%s\"}}}",
+					id, headerKey, headerValue));
+		}
 		return buildMessage(id, method, params);
-		/*
-		 * return String.format(
-		 * "{\"id\":%s,\"method\":\"Network.setExtraHTTPHeaders\",\"params\":{\"headers\":{\"%s\":\"%s\"}}}",
-		 * id, headerKey, headerValue);
-		 */
 	}
 
 	public static String buildGetResponseBodyMessage(int id, String requestId) {
 		method = "Network.getResponseBody";
 		params = new HashMap<>();
 		params.put("requestId", requestId);
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n"
+							+ "{\"id\":%d,\"method\":\"Network.getResponseBody\",\"params\":{\"requestId\":\"%s\"}}",
+					id, requestId));
+		}
 		return buildMessage(id, method, params);
-		/*
-		 * return String.format(
-		 * "{\"id\":%s,\"method\":\"Network.getResponseBody\",\"params\":{\"requestId\":\"%s\"}}",
-		 * id, requestId);
-		 */
+
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-enable
@@ -151,21 +152,24 @@ public class MessageBuilder {
 		params.put("maxTotalBufferSize", maxTotalBufferSize);
 		params.put("maxResourceBufferSize", maxResourceBufferSize);
 		params.put("maxPostDataSize", maxPostDataSize);
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n"
+							+ "{\"id\":%d,\"method\":\"Network.enable\",\"params\":{\"maxTotalBufferSize\":%d,\"maxResourceBufferSize\":%d, \"maxPostDataSize\":%d}}",
+					id, maxTotalBufferSize, maxResourceBufferSize, maxPostDataSize));
+		}
 		return buildMessage(id, method, params);
-		/*
-		 * return String.format(
-		 * "{\"id\":%s,\"method\":\"Network.enable\",\"params\":{\"maxTotalBufferSize\":%d,\"maxResourceBufferSize\":%d, \"maxPostDataSize\":%d}}"
-		 * , id, maxTotalBufferSize, maxResourceBufferSize, maxPostDataSize);
-		 */
 	}
 
 	public static String buildNetWorkEnableMessage(int id) {
+		if (debug) {
+			System.err.println(String.format(
+					"sending:\n"
+							+ "{\"id\":%d,\"method\":\"Network.enable\",\"params\":{\"maxTotalBufferSize\":10000000,\"maxResourceBufferSize\":5000000, \"maxPostDataSize\":5000000}}",
+					id));
+		}
+
 		return buildNetWorkEnableMessage(id, 10000000, 5000000, 5000000);
-		/*
-		 * return String.format(
-		 * "{\"id\":%s,\"method\":\"Network.enable\",\"params\":{\"maxTotalBufferSize\":10000000,\"maxResourceBufferSize\":5000000, \"maxPostDataSize\":5000000}}"
-		 * , id);
-		 */
 	}
 
 	public static String buildRequestInterceptorPatternMessage(int id,
@@ -180,13 +184,15 @@ public class MessageBuilder {
 		List<Map<String, Object>> patterns = new ArrayList<>();
 		patterns.add(data);
 		params.put("patterns", patterns);
+		if (debug) {
+			System.err.println(String.format(
+					"sending:\n" + "{\"id\":%d,"
+							+ "\"method\":\"Network.setRequestInterception\","
+							+ "\"params\":{\"patterns\":[{\"urlPattern\":\"%s\",\"resourceType\":\"%s\",\"interceptionStage\":\"HeadersReceived\"}]}}",
+					id, urlPattern, resourceType));
+		}
+
 		return buildMessage(id, method, params);
-		/*
-		 * return String.format( "{\"id\":%s," +
-		 * "\"method\":\"Network.setRequestInterception\"," +
-		 * "\"params\":{\"patterns\":[{\"urlPattern\":\"%s\",\"resourceType\":\"%s\",\"interceptionStage\":\"HeadersReceived\"}]}}",
-		 * id, urlPattern, resourceType);
-		 */
 	}
 
 	public static String buildGetResponseBodyForInterceptionMessage(int id,
@@ -194,12 +200,15 @@ public class MessageBuilder {
 		method = "Network.getResponseBodyForInterception";
 		params = new HashMap<>();
 		params.put("interceptionId", interceptionId);
+		if (debug) {
+			System.err
+					.println(String.format(
+							"sending:\n"
+									+ "{\"id\":%d,\"method\":\"Network.getResponseBodyForInterception\","
+									+ "\"params\":{\"interceptionId\":\"%s\"}}",
+							id, interceptionId));
+		}
 		return buildMessage(id, method, params);
-		/*
-		 * return String.format(
-		 * "{\"id\":%s,\"method\":\"Network.getResponseBodyForInterception\"," +
-		 * "\"params\":{\"interceptionId\":\"%s\"}}", id, interceptionId);
-		 */
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Network#method-continueInterceptedRequest
@@ -213,7 +222,7 @@ public class MessageBuilder {
 		return buildMessage(id, method, params);
 		/*
 		 * return String.format(
-		 * "{\"id\":%s,\"method\":\"Network.continueInterceptedRequest\","+
+		 * "{\"id\":%d,\"method\":\"Network.continueInterceptedRequest\","+
 		 * "\"params\":{\"interceptionId\":\"%s\",\"rawResponse\":\"%s\"}}", id,
 		 * interceptionId, new String(Base64.encodeBase64(rawResponse.getBytes())));
 		 */
@@ -229,7 +238,7 @@ public class MessageBuilder {
 		return buildMessage(id, method, params);
 		/*
 		 * return String.format(
-		 * "{\"id\":%s,\"method\":\"Network.continueInterceptedRequest\",\"params\":{\"interceptionId\":\"%s\",\"rawResponse\":\"%s\"}}",
+		 * "{\"id\":%d,\"method\":\"Network.continueInterceptedRequest\",\"params\":{\"interceptionId\":\"%s\",\"rawResponse\":\"%s\"}}",
 		 * id, interceptionId, encodedResponse);
 		 */
 	}
@@ -244,16 +253,33 @@ public class MessageBuilder {
 		// System.err.println("message: " + message);
 		return message;
 		/*
-		 * return String.format("{\"id\":%s,\"method\":\"DOM.getDocument\"}", id);
+		 * return String.format("{\"id\":%d,\"method\":\"DOM.getOuterHTMLt\", \"params\":{\"nodeId\":\"%d\"}}", id, nodeId);
 		 */
 	}
 
+	// https://chromedevtools.github.io/devtools-protocol/1-3/DOM/#method-getDocument
 	public static String buildGetDocumentMessage(int id) {
 		final String message = buildMessage(id, "DOM.getDocument");
 		// System.err.println("message: " + message);
 		return message;
 		/*
-		 * return String.format("{\"id\":%s,\"method\":\"DOM.getDocument\"}", id);
+		 * return String.format("{\"id\":%d,\"method\":\"DOM.getDocument\"}", id);
+		 */
+	}
+
+	public static String buildGetDocumentMessage(int id, Boolean pierce) {
+		return buildGetDocumentMessage(id, -1, pierce);
+	}
+
+	public static String buildGetDocumentMessage(int id, int depth,
+			Boolean pierce) {
+		method = "DOM.getDocument";
+		params = new HashMap<>();
+		params.put("pierce", pierce);
+		params.put("depth", depth);
+		return buildMessage(id, method, params);
+		/*
+		 * return String.format("{\"id\":%d,\"method\":\"DOM.getDocument\", \"params\":{\"pierce\":\"%b\"}}", id, pierce);
 		 */
 	}
 
@@ -265,7 +291,7 @@ public class MessageBuilder {
 		return buildMessage(id, method, params);
 		/*
 		 * return String.format(
-		 * "{\"id\":%s,\"method\":\"DOM.describeNode\"}\",\"params\":{\"nodeId\":\"%d\",\"depth\":\"%d\"}}",
+		 * "{\"id\":%d,\"method\":\"DOM.describeNode\",\"params\":{\"nodeId\":\"%d\",\"depth\":\"%d\"}}",
 		 * id, nodeId, 1);
 		 */
 	}
@@ -279,7 +305,7 @@ public class MessageBuilder {
 		return buildMessage(id, method, params);
 		/*
 		 * return String.
-		 * format("{\"id\":%s,\"method\":\"DOM.querySelector\"}\",\"params\":{\"nodeId\":\"%d\", \"selector\":\"%s\"}}"
+		 * format("{\"id\":%d,\"method\":\"DOM.querySelector\", \"params\":{\"nodeId\":\"%d\", \"selector\":\"%s\"}}"
 		 * , id, nodeId, selector);
 		 */
 	}
@@ -288,7 +314,7 @@ public class MessageBuilder {
 	public static String buildBrowserVersionMessage(int id) {
 		return buildMessage(id, "Browser.getVersion");
 		/*
-		 * return String.format("{\"id\":%s,\"method\":\"Browser.getVersion\"}", id);
+		 * return String.format("{\"id\":%d,\"method\":\"Browser.getVersion\"}", id);
 		 */
 	}
 
@@ -296,7 +322,7 @@ public class MessageBuilder {
 		return buildMessage(Utils.getInstance().getDynamicID(),
 				"Browser.getVersion");
 		/*
-		 * return String.format("{\"id\":%s,\"method\":\"Browser.getVersion\"}", id);
+		 * return String.format("{\"id\":%d,\"method\":\"Browser.getVersion\"}", id);
 		 */
 	}
 
@@ -311,7 +337,7 @@ public class MessageBuilder {
 
 		buildMessage(id, method, params);
 		/*
-		 * return String.format( "{\"id\":%s,\"method\":\"Emulation.setVisibleSize\","+
+		 * return String.format( "{\"id\":%d,\"method\":\"Emulation.setVisibleSize\","+
 		 * "\"params\":{\"origin\":\"%s\",\"width\":%d,\"height\":%d}}", id, width,
 		 * height);
 		 */
@@ -796,20 +822,23 @@ public class MessageBuilder {
 		method = "Network.setBlockedURLs";
 		params = new HashMap<>();
 		params.put("urls", urls.toArray());
-		// params.put("urls", urls);
+		if (debug) {
+			System.err.println(String.format(
+					"sending:\n"
+							+ "{\"id\":%d,\"method\":\"Network.setBlockedURLs\",\"params\":{\"urls\":[%s]}}",
+					id, urls.toString()));
+		}
 		return buildMessage(id, method, params);
-		/*
-		 * return String.format( "message: {"id":%d,"method":"Network.
-		 * setBlockedURLs","params":{"urls":[%s]}}", id, urls.toString());
-		 */
 	}
 
 	public static String buildEmulationResetPageScale(int id) {
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n"
+							+ "{\"id\":%d,\"method\":\"Emulation.resetPageScaleFactor\"}",
+					id));
+
+		}
 		return buildMessage(id, "Emulation.resetPageScaleFactor");
-		/*
-		 * return
-		 * String.format("{\"id\":%d,\"method\":\"Emulation.resetPageScaleFactor\"}",
-		 * id);
-		 */
 	}
 }
