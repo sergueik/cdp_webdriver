@@ -539,11 +539,14 @@ public class MessageBuilder {
 		params = new HashMap<>();
 		params.put("url", url);
 		params.put("storageTypes", "all");
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n" + "{\"id\":%s,\"method\":\"Storage.clearDataForOrigin\","
+							+ "\"params\":{\"origin\":\"%s\",\"storageTypes\":\"all\"}}",
+					id, url));
+
+		}
 		return buildMessage(id, method, params);
-		/*
-		 * return String.format("{\"id\":%s,\"method\":\"Storage.clearDataForOrigin\","
-		 * + "\"params\":{\"origin\":\"%s\",\"storageTypes\":\"all\"}}", id, url);
-		 */
 	}
 
 	public static String buildTakeElementScreenShotMessage(int id, long x, long y,
@@ -557,12 +560,15 @@ public class MessageBuilder {
 		data.put("width", width);
 		data.put("scale", 100);
 		params.put("clip", data);
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n" + "{\"id\":%s,\"method\":\"Page.captureScreenshot\","
+							+ "\"params\":{\"clip\":{\"x\":%s,\"y\":%s,\"width\":%s,\"height\":%s,\"scale\":%s}}}",
+					id, x, y, width, height, scale));
+
+		}
+
 		return buildMessage(id, method, params);
-		/*
-		 * return String.format("{\"id\":%s,\"method\":\"Page.captureScreenshot\"," +
-		 * "\"params\":{\"clip\":{\"x\":%s,\"y\":%s,\"width\":%s,\"height\":%s,\"scale\":%s}}}",
-		 * id, x, y, width, height, scale);
-		 */
 	}
 
 	public static String buildTakePageScreenShotMessage(int id) {
@@ -697,19 +703,23 @@ public class MessageBuilder {
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Performance/#method-disable
 	public static String buildPerformanceDisableMessage(int id) {
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n" + "{\"id\":%d,\"method\":\"Performance.disable\"}", id));
+
+		}
 		return buildMessage(id, "Performance.disable");
-		/*
-		 * return String.format("{\"id\":%d,\"method\":\"Performance.disable\"}", id);
-		 */
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Performance/#method-getMetrics
 	public static String buildPerformanceGetMetrics(int id) {
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n" + "{\"id\":%d,\"method\":\"Performance.getMetrics\"}",
+					id));
+
+		}
 		return buildMessage(id, "Performance.getMetrics");
-		/*
-		 * return String.format("{\"id\":%d,\"method\":\"Performance.getMetrics\"}",
-		 * id);
-		 */
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Emulation/#method-setDeviceMetricsOverride
@@ -718,12 +728,15 @@ public class MessageBuilder {
 		method = "Emulation.setUserAgentOverride";
 		params = new HashMap<>();
 		params.put("userAgent", userAgent);
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n"
+							+ "{\"id\":%d,\"method\":\"Emulation.setUserAgentOverride\"}",
+					id));
+
+		}
 		return buildMessage(id, method, params);
-		/*
-		 * return
-		 * String.format("{\"id\":%d,\"method\":\"Emulation.setUserAgentOverride\"}",
-		 * id);
-		 */
+
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-addScriptToEvaluateOnNewDocument
@@ -733,12 +746,14 @@ public class MessageBuilder {
 		params = new HashMap<>();
 		params.put("source", source);
 		params.put("worldName", null);
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n"
+							+ "{\"id\":%d,\"method\":\"Page.addScriptToEvaluateOnNewDocument\", \"params\":{\"source\":\"\"}",
+					id, source));
+
+		}
 		return buildMessage(id, method, params);
-		/*
-		 * return String.
-		 * format("{\"id\":%d,\"method\":\"Page.addScriptToEvaluateOnNewDocument\", \"params\":{\"source\":\"\"}"
-		 * , id, source);
-		 */
 	}
 
 	public static String buildPageAddScriptToEvaluateOnNewDocument(
@@ -748,13 +763,15 @@ public class MessageBuilder {
 		params = new HashMap<>();
 		params.put("source", source);
 		// params.put("worldName", null);
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n"
+							+ "{\"id\":%d,\"method\":\"Page.addScriptToEvaluateOnNewDocument\", \"params\":{\"source\":\"\"}",
+					Utils.getInstance().getDynamicID(), source));
+
+		}
 
 		return buildMessage(Utils.getInstance().getDynamicID(), method, params);
-		/*
-		 * return
-		 * String.format("{\"id\":%d,\"method\":\"Page.addScriptToEvaluateOnNewDocument\", \"params\":{\"source\":\"\"}",
-		 * id, source);
-		 */
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-removeScriptToEvaluateOnNewDocument
@@ -763,12 +780,14 @@ public class MessageBuilder {
 		method = "Page.removeScriptToEvaluateOnNewDocument";
 		params = new HashMap<>();
 		params.put("identifier", identifier);
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n"
+							+ "{\"id\":%d,\"method\":\"Page.removeScriptToEvaluateOnNewDocument\", \"params\":{\"identifier\":\"\"}",
+					id, identifier));
+
+		}
 		return buildMessage(id, method, params);
-		/*
-		 * return String.
-		 * format("{\"id\":%d,\"method\":\"Page.removeScriptToEvaluateOnNewDocument\", \"params\":{\"identifier\":\"\"}"
-		 * , id, identifier);
-		 */
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Emulation/#method-setDeviceMetricsOverride
@@ -782,11 +801,14 @@ public class MessageBuilder {
 		params.put("deviceScaleFactor", scaleFactor);
 		params.put("mobile", isMobile);
 		params.put("scale", scale);
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n"
+							+ "{\"id\":%d,\"method\":\"Emulation.setDeviceMetricsOverride\"}",
+					id));
+
+		}
 		return buildMessage(id, method, params);
-		/*
-		 * return String.format(
-		 * "{\"id\":%d,\"method\":\"Emulation.setDeviceMetricsOverride\"}", id);
-		 */
 	}
 
 	public static String buildEmulationSetDeviceMetrics(int id, final int width,
@@ -811,11 +833,14 @@ public class MessageBuilder {
 		method = "Network.setBlockedURLs";
 		params = new HashMap<>();
 		params.put("urls", urls);
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n"
+							+ "{\"id\":%d,\"method\":\"Network.setBlockedURLs\",\"params\":{\"urls\":[%s]}}",
+					id, Arrays.asList(urls)));
+
+		}
 		return buildMessage(id, method, params);
-		/*
-		 * return String.format( "message: {"id":%d,"method":"Network.
-		 * setBlockedURLs","params":{"urls":[%s]}}", id, Arrays.asList(urls));
-		 */
 	}
 
 	public static String buildNetworkSetBlockedURLs(int id, List<String> urls) {
