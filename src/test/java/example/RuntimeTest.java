@@ -3,10 +3,8 @@ package example;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-// TODO: fix dependencies
-// the import org.hamcrest.core.SubstringMatcher.containsString cannot be resolved
-// import static org.hamcrest.core.SubstringMatcher.containsString;
 import static org.hamcrest.CoreMatchers.containsString;
+
 import java.util.Arrays;
 
 import org.json.JSONObject;
@@ -112,7 +110,7 @@ public class RuntimeTest extends BaseTest {
 
 			driver.navigate().to(URL);
 
-			final String selector = "//input[[]]";
+			final String selector = "//input[";
 			CDPClient.setDebug(true);
 			CDPClient.sendMessage(MessageBuilder.buildCustomRuntimeEvaluateMessage(id,
 					selector, false));
