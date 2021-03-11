@@ -447,22 +447,34 @@ public class MessageBuilder {
 
 	}
 
+	// see also:
 	// https://chromedevtools.github.io/devtools-protocol/1-2/Runtime/#method-evaluate
+	// https://developer.mozilla.org/en-US/docs/Web/API/Document/evaluate
+	// https://developer.mozilla.org/en-US/docs/Web/XPath/Introduction_to_using_XPath_in_JavaScript
+	// NOTE: - heavy:
+	// https://github.com/google/wicked-good-xpath
 	public static String buildCustomRuntimeEvaluateMessage(int id,
 			final String selector, Boolean returnByValue) {
 		String method = "Runtime.evaluate";
 		// the $x() and $() do not quite work
-		// String expression = String.format(((selector.charAt(0) == '/') ?
-		// "$x(\\\"%s\\\")[0]" : "$(\\\"%s\\\")"), selector);
-		String expression = String.format("document.querySelector('%s')", selector);
+		String expression = String.format(((selector.charAt(0) == '/')
+				? "document.evaluate('%s', document, null, XPathResult.ANY_TYPE, null);"
+				: "document.querySelector('%s');"), selector);
 		params = new HashMap<>();
 		params.put("expression", expression);
 		params.put("returnByValue", returnByValue);
-		return buildMessage(id, method, params);
+		final String message = buildMessage(id, method, params);
+		if (debug) {
+			System.err.println("Sending message: " + message);
+		}
+		return message;
 		/*
-		 * return String.
-		 * format("{\"id\":%d,\"method\":\"Runtime.evaluate\", \"params\":{\"returnByValue\":false,\"expression\":\"$x(\\\"//body\\\")[0]\""
-		 * , id);
+		 * return
+		 * String.format("{\"id\":%d,\"method\":\"Runtime.evaluate\",\"params\":{\"returnByValue\":false,\"expression\":\"return document.evaluate(\u0027%s\u0027, document,null, XPathResult.ANY_TYPE, null); \" }}", id, selector);
+		 * 
+		 * return
+		 * String.format("{\"id\":%d,\"method\":\"Runtime.evaluate\",\"params\":{\"returnByValue\":false,\"expression\":\"return document.querySelector(\u0027%s\u0027);\"}	}", id, selector);
+		 * 
 		 */
 	}
 
