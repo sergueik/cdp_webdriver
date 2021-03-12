@@ -1,4 +1,5 @@
 package example;
+
 /**
  * Copyright 2020,2021 Serguei Kouzmine
  */
@@ -17,6 +18,8 @@ import example.utils.UIUtils;
 import example.utils.Utils;
 import example.utils.TestUtils;
 
+// this base class and descendant tests need Docker image to run:
+// https://github.com/sergueik/springboot_study/tree/master/basic-chromium
 public class DockerBaseTest {
 	protected WebDriver driver;
 	protected Utils utils;
@@ -43,7 +46,7 @@ public class DockerBaseTest {
 		}
 		driver = utils.launchBrowser(true, new URL("http://127.0.0.1:4444/wd/hub"));
 		CDPClient = new CDPClient(utils.getWebSocketURL());
-		id = Utils.getInstance().getDynamicID();
+		id = utils.getDynamicID();
 	}
 
 	@After

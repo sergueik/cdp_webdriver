@@ -1,4 +1,5 @@
 package example;
+
 /**
  * Copyright 2020,2021 Serguei Kouzmine
  */
@@ -47,22 +48,25 @@ public class DockerTest extends DockerBaseTest {
 		super.beforeTest();
 	}
 
+	// NOTE: this test is identical to DemoTest.getBroswerVersionTestd
 	@Test
 	public void getBroswerVersionTest() {
 		// Arrange
 		// Act
 		try {
+			CDPClient.setDebug(true);
 			CDPClient.sendMessage(MessageBuilder.buildBrowserVersionMessage(id));
-			responseMessage = CDPClient.getResponseDataMessage(id);
+			responseMessage = CDPClient.getResponseMessage(id, null);
 			// Assert
 			result = new JSONObject(responseMessage);
 			for (String field : Arrays
 					.asList(new String[] { "protocolVersion", "product", "revision", "userAgent", "jsVersion" })) {
 				assertThat(result.has(field), is(true));
 			}
-			ServiceWorker serviceWorker = CDPClient.getServiceWorker(URL, 10, "activated");
-			System.out.println(serviceWorker.toString());
-			Assert.assertEquals(serviceWorker.getStatus(), "activated");
+			// ServiceWorker serviceWorker = CDPClient.getServiceWorker(URL, 10,
+			// "activated");
+			// System.out.println(serviceWorker.toString());
+			// Assert.assertEquals(serviceWorker.getStatus(), "activated");
 		} catch (Exception e) {
 			System.err.println("Exception (ignored): " + e.toString());
 		}
