@@ -587,6 +587,10 @@ public class MessageBuilder {
 		return buildMessage(id, "Page.captureScreenshot");
 	}
 
+	// TODO:
+	// https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-getFrameOwner
+	//
+
 	// https://chromedevtools.github.io/devtools-protocol/tot/Target/#method-createTarget
 	public static String buildCreateTargetMessage(int id, String url, int width,
 			int height, String browserContextId, boolean enableBeginFrameControl,
@@ -868,6 +872,16 @@ public class MessageBuilder {
 		return buildMessage(id, method, params);
 	}
 
+	// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-getFrameTree
+	public static String buildPageGetFrameTree(int id) {
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n{\"id\":%d,\"method\":\"Page.getFrameTree\"}", id));
+
+		}
+		return buildMessage(id, "Page.getFrameTree");
+	}
+
 	public static String buildEmulationResetPageScale(int id) {
 		if (debug) {
 			System.err.println(String.format(
@@ -879,3 +893,4 @@ public class MessageBuilder {
 		return buildMessage(id, "Emulation.resetPageScaleFactor");
 	}
 }
+
