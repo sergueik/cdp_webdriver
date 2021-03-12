@@ -243,6 +243,21 @@ public class MessageBuilder {
 		 */
 	}
 
+	// NOTE: the nodeId is ignored
+	public static String buildGetOuterHTMLMessage(int id, int nodeId,
+			int backendNodeId) {
+
+		method = "DOM.getOuterHTML";
+		params = new HashMap<>();
+		params.put("backendNodeId", backendNodeId);
+
+		final String message = buildMessage(id, method, params);
+		return message;
+		/*
+		 * return String.format("{\"id\":%d,\"method\":\"DOM.getOuterHTMLt\", \"params\":{\"backendNodeId\":\"%d\"}}", id, backendNodeId);
+		 */
+	}
+
 	public static String buildGetOuterHTMLMessage(int id, int nodeId) {
 
 		method = "DOM.getOuterHTML";
@@ -880,6 +895,21 @@ public class MessageBuilder {
 
 		}
 		return buildMessage(id, "Page.getFrameTree");
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-getFrameOwner
+	public static String buildPageGetFrameOwner(int id, String frameId) {
+		method = "DOM.getFrameOwner";
+		params = new HashMap<>();
+		params.put("frameId", frameId);
+		/*
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n{\"id\":%d,\"method\":\"Page.getFrameTree\"}", id));
+		
+		}
+		*/
+		return buildMessage(id, method, params);
 	}
 
 	public static String buildEmulationResetPageScale(int id) {
