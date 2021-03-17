@@ -34,6 +34,9 @@ public class RuntimeTest extends BaseTest {
 			assertThat(responseMessage.has("result"), is(true));
 			result = responseMessage.getJSONObject("result");
 			System.err.println("getRuntimeEvaluateTest result: " + result);
+			// NOTE:
+			// http://hamcrest.org/JavaHamcrest/javadoc/1.3/org/hamcrest/CoreMatchers.html#allOf(java.lang.Iterable)
+			// is not handy
 			for (String field : Arrays
 					.asList(new String[] { "type", "className", "description" })) {
 				assertThat(result.has(field), is(true));

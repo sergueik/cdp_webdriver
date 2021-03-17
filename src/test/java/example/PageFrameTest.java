@@ -25,7 +25,8 @@ import example.messaging.MessageBuilder;
 
 public class PageFrameTest extends BaseTest {
 	private String data = null;
-	private long nodeId = 0;
+	private static long nodeId = 0;
+	private static long backendNodeId = (long) -1;
 	private String key = null;
 	private JSONObject responseMessage = null;
 	private JSONObject result = null;
@@ -37,13 +38,14 @@ public class PageFrameTest extends BaseTest {
 	Iterator<Object> results2Iterator = null;
 	Iterator<Object> results3Iterator = null;
 
-	private final String baseURL = "https://cloud.google.com/products/calculator";
+	private static String baseURL = null;
 	private final List<String> keys = Arrays
 			.asList(new String[] { "domainAndRegistry", "securityOrigin",
 					"secureContextType", "id", "url", "mimeType", "parentId" });
 
 	@Test
 	public void test1() {
+		baseURL = "https://cloud.google.com/products/calculator";
 		driver.navigate().to(baseURL);
 		try {
 			CDPClient.sendMessage(MessageBuilder.buildPageGetFrameTree(id));
@@ -90,6 +92,7 @@ public class PageFrameTest extends BaseTest {
 
 	@Test
 	public void test2() {
+		baseURL = "https://cloud.google.com/products/calculator";
 		driver.navigate().to(baseURL);
 		try {
 			CDPClient.sendMessage(MessageBuilder.buildPageGetFrameTree(id));
@@ -105,18 +108,30 @@ public class PageFrameTest extends BaseTest {
 				CDPClient.sendMessage(MessageBuilder.buildPageGetFrameOwner(id, key));
 				responseMessage = new JSONObject(
 						CDPClient.getResponseMessage(id, null));
-				// System.err.println("getFrameOwner response: " + responseMessage);
+				if (debug)
+					System.err.println("getFrameOwner response: " + responseMessage);
 				assertThat(responseMessage, notNullValue());
 				assertThat(responseMessage.has("backendNodeId"), is(true));
-				nodeId = responseMessage.getLong("backendNodeId");
+				backendNodeId = responseMessage.getLong("backendNodeId");
 
-				System.err.println("getFrameOwner nodeId: " + nodeId);
-				CDPClient.sendMessage(
-						MessageBuilder.buildGetOuterHTMLMessage(id, 0, (int) nodeId));
+				System.err.println("getFrameOwner backendNodeId: " + backendNodeId);
+				CDPClient.sendMessage(MessageBuilder.buildGetOuterHTMLMessage(id, 0,
+						(int) backendNodeId));
 
 				data = CDPClient.getResponseMessage(id, "outerHTML");
-				System.err.println("Get Outer HTML of frame " + key + " : " + data);
 
+				System.err.println("Get Outer HTML of frame " + key + " : " + data);
+				if (responseMessage.has("nodeId")) {
+					backendNodeId = responseMessage.getLong("nodeId");
+
+					System.err.println("getFrameOwner nodeId: " + nodeId);
+					CDPClient.sendMessage(
+							MessageBuilder.buildGetOuterHTMLMessage(id, (int) nodeId));
+
+					data = CDPClient.getResponseMessage(id, "outerHTML");
+
+					System.err.println("Get Outer HTML of frame " + key + " : " + data);
+				}
 			}
 		} catch (IOException | WebSocketException | InterruptedException |
 
@@ -126,4 +141,3 @@ public class PageFrameTest extends BaseTest {
 	}
 
 }
-
