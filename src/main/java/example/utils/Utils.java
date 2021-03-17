@@ -1,8 +1,10 @@
 package example.utils;
 
-import com.neovisionaries.ws.client.WebSocketException;
+import java.util.Random;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -11,6 +13,7 @@ import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -300,6 +303,15 @@ public class Utils {
 			throw new RuntimeException("webSocketDebuggerUrl not found");
 		}
 		return webSocketDebuggerUrl;
+	}
+
+	public static int getRandomColor(int min, int max) {
+		Random random = new Random();
+		return random.nextInt(max - min) + min;
+	}
+
+	public static int getRandomColor() {
+		return getRandomColor(0, 255);
 	}
 
 }

@@ -742,6 +742,50 @@ public class MessageBuilder {
 		return buildMessage(id, "Performance.disable");
 	}
 
+	//
+	// https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-enable
+	public static String buildDOMEnableMessage(int id) {
+		if (debug) {
+			System.err.println(String
+					.format("Sending:\n" + "{\"id\":%d,\"method\":\"DOM.enable\"}", id));
+
+		}
+		return buildMessage(id, "DOM.enable");
+	}
+	// https://chromedevtools.github.io/devtools-protocol/tot/Overlay/#method-highlightFrame
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Emulation/#method-setDeviceMetricsOverride
+	public static String buildOverlayHighlightFrameMessage(int id,
+			final String frameId) {
+		method = "Overlay.highlightFrame";
+		params = new HashMap<>();
+		Map<String, Integer> rgb_data = new HashMap<>();
+		rgb_data.put("r", Utils.getRandomColor());
+		rgb_data.put("g", Utils.getRandomColor());
+		rgb_data.put("b", Utils.getRandomColor());
+		rgb_data.put("a", 1);
+		params.put("frameId", frameId);
+		params.put("contentColor", rgb_data);
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n" + "{\"id\":%d,\"method\":\"Overlay.highlightFrame\"}",
+					id));
+
+		}
+		return buildMessage(id, method, params);
+
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Overlay/#method-enable
+	public static String buildOverlayEnableMessage(int id) {
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n" + "{\"id\":%d,\"method\":\"Overlay.enable\"}", id));
+
+		}
+		return buildMessage(id, "Overlay.enable");
+	}
+
 	// https://chromedevtools.github.io/devtools-protocol/tot/Performance/#method-getMetrics
 	public static String buildPerformanceGetMetrics(int id) {
 		if (debug) {
@@ -923,4 +967,3 @@ public class MessageBuilder {
 		return buildMessage(id, "Emulation.resetPageScaleFactor");
 	}
 }
-

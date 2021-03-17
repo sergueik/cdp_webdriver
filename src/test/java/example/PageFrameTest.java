@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.neovisionaries.ws.client.WebSocketException;
@@ -43,6 +44,7 @@ public class PageFrameTest extends BaseTest {
 			.asList(new String[] { "domainAndRegistry", "securityOrigin",
 					"secureContextType", "id", "url", "mimeType", "parentId" });
 
+	// @Ignore
 	@Test
 	public void test1() {
 		baseURL = "https://cloud.google.com/products/calculator";
@@ -90,6 +92,7 @@ public class PageFrameTest extends BaseTest {
 		}
 	}
 
+	// @Ignore
 	@Test
 	public void test2() {
 		baseURL = "https://cloud.google.com/products/calculator";
@@ -132,6 +135,52 @@ public class PageFrameTest extends BaseTest {
 
 					System.err.println("Get Outer HTML of frame " + key + " : " + data);
 				}
+			}
+		} catch (IOException | WebSocketException | InterruptedException |
+
+				MessageTimeOutException e) {
+			System.err.println("Exception (ignored): " + e.toString());
+		}
+	}
+
+	// NOTE: this test only works well alone
+	// when other tests are enabled, get the error
+	// {"id":330020,"method":"Overlay.highlightFrame"}
+	// Exception (ignored): example.messaging.CDPClient$MessageTimeOutException:
+	// No message received with this id : '330020'
+	@Test
+	public void test3() {
+		baseURL = "https://www.javatpoint.com/oprweb/test.jsp?filename=htmliframes";
+		driver.navigate().to(baseURL);
+		try {
+
+			CDPClient.sendMessage(MessageBuilder.buildPageGetFrameTree(id));
+			// Assert
+			result = new JSONObject(CDPClient.getResponseMessage(id, "frameTree"));
+			data = result.getJSONObject("frame").getString("id");
+			results2Iterator = result.getJSONArray("childFrames").iterator();
+			while (results2Iterator.hasNext()) {
+				result2 = (JSONObject) results2Iterator.next();
+				assertThat(result2.has("frame"), is(true));
+				key = result2.getJSONObject("frame").getString("id");
+				assertThat(key, notNullValue());
+
+				System.err.println("Attempted to highlight frame " + key);
+				int id2 = utils.getDynamicID();
+				CDPClient.sendMessage(MessageBuilder.buildDOMEnableMessage(id2));
+				responseMessage = new JSONObject(
+						CDPClient.getResponseMessage(id2, null));
+				int id3 = utils.getDynamicID();
+				CDPClient.sendMessage(MessageBuilder.buildOverlayEnableMessage(id3));
+				responseMessage = new JSONObject(
+						CDPClient.getResponseMessage(id3, null));
+
+				CDPClient.sendMessage(
+						MessageBuilder.buildOverlayHighlightFrameMessage(id, key));
+				responseMessage = new JSONObject(
+						CDPClient.getResponseMessage(id, null));
+				System.err.println("getFrameOwner response: " + responseMessage);
+				utils.sleep(3);
 			}
 		} catch (IOException | WebSocketException | InterruptedException |
 

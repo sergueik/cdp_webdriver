@@ -29,7 +29,7 @@ public class BaseTest {
 			.parseInt(TestUtils.getPropertyEnv("debugPort", "0"));
 	// used to override the default port 9222
 	@SuppressWarnings("unused")
-	private static boolean debug = false;
+	protected static boolean debug = false;
 	protected static boolean headless = false; // false;
 	protected static ChromeDriverService chromeDriverService;
 
