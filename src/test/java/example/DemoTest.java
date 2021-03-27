@@ -53,25 +53,6 @@ public class DemoTest extends BaseTest {
 	private int id2;
 
 	@Test
-	public void getBroswerVersionTest() {
-		// Arrange
-		// Act
-		try {
-			CDPClient.sendMessage(MessageBuilder.buildBrowserVersionMessage(id));
-			responseMessage = CDPClient.getResponseMessage(id, null);
-			// Assert
-			result = new JSONObject(responseMessage);
-			for (String field : Arrays.asList(new String[] { "protocolVersion",
-					"product", "revision", "userAgent", "jsVersion" })) {
-				assertThat(result.has(field), is(true));
-			}
-		} catch (Exception e) {
-			System.err.println("Exception (ignored): " + e.toString());
-		}
-
-	}
-
-	@Test
 	// @Test(expected = example.messaging.CDPClient.MessageTimeOutException.class)
 	public void getRuntimeEvaluateTest() throws MessageTimeOutException {
 		// Arrange
