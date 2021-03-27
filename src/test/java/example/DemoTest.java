@@ -52,31 +52,6 @@ public class DemoTest extends BaseTest {
 	private int id1;
 	private int id2;
 
-	@Ignore
-	@Test
-	public void setUserAgentOverrideTest() {
-		// Arrange
-		driver.get("https://www.whoishostingthis.com/tools/user-agent/");
-		By locator = By.cssSelector("div.user-agent");
-		WebElement element = driver.findElement(locator);
-		assertThat(element.getAttribute("innerText"), containsString("Mozilla"));
-		// Act
-		try {
-			CDPClient.sendMessage(MessageBuilder
-					.buildSetUserAgentOverrideMessage("python 2.7", "windows"));
-		} catch (IOException | WebSocketException e) {
-			// ignore
-			System.err.println("Exception (ignored): " + e.toString());
-		}
-		driver.navigate().refresh();
-		utils.sleep(1);
-
-		element = driver.findElement(locator);
-		assertThat(element.isDisplayed(), is(true));
-		assertThat(element.getAttribute("innerText"), is("python 2.7"));
-
-	}
-
 	@Test
 	public void getBroswerVersionTest() {
 		// Arrange
@@ -518,3 +493,4 @@ public class DemoTest extends BaseTest {
 	}
 
 }
+
