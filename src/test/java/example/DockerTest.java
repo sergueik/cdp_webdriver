@@ -22,6 +22,7 @@ import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -48,9 +49,10 @@ public class DockerTest extends DockerBaseTest {
 		super.beforeTest();
 	}
 
-	// NOTE: this test is identical to DemoTest.getBroswerVersionTestd
+	// NOTE: this test is identical to DemoTest.getBroswerVersionTest
 	@Test
 	public void getBroswerVersionTest() {
+
 		// Arrange
 		// Act
 		try {
@@ -59,8 +61,8 @@ public class DockerTest extends DockerBaseTest {
 			responseMessage = CDPClient.getResponseMessage(id, null);
 			// Assert
 			result = new JSONObject(responseMessage);
-			for (String field : Arrays
-					.asList(new String[] { "protocolVersion", "product", "revision", "userAgent", "jsVersion" })) {
+			for (String field : Arrays.asList(new String[] { "protocolVersion",
+					"product", "revision", "userAgent", "jsVersion" })) {
 				assertThat(result.has(field), is(true));
 			}
 			// ServiceWorker serviceWorker = CDPClient.getServiceWorker(URL, 10,
