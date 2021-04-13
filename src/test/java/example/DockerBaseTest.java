@@ -44,6 +44,9 @@ public class DockerBaseTest {
 		utils = Utils.getInstance();
 		uiUtils = UIUtils.getInstance();
 		utils.setDebug(debug);
+		// see also:
+		// https://howtodoinjava.com/junit/assumption-based-testcases-in-junit-4/
+		// https://reflectoring.io/conditional-junit4-junit5-tests/
 		Assume.assumeTrue(pingHost("127.0.0.1", 4444, 3));
 		// optionally configure to use Docker mapped log directory
 		// utils.setChromeDriverLogFile("/dev/shm/chromedriver.log");
