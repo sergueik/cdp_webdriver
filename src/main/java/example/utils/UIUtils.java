@@ -63,12 +63,13 @@ public class UIUtils {
 				imageFolder.mkdir();
 			}
 			imagePath = imageFolder.getAbsolutePath() + "/" + imageName;
+			LOGGER.info("Screeenshot: " + imagePath);
 			driver = (new Augmenter()).augment(this.driver);
 			File scrFile = (File) ((TakesScreenshot) driver)
 					.getScreenshotAs(OutputType.FILE);
 			FileUtils.copyFile(scrFile, new File(imagePath));
-		} catch (IOException var9) {
-			LOGGER.error("Error", var9);
+		} catch (IOException e) {
+			LOGGER.error("Error", e);
 			throw new IllegalStateException("Error taking screenshot");
 		}
 	}

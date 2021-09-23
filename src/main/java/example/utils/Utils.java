@@ -82,7 +82,8 @@ public class Utils {
 		LoggingPreferences logPrefs = new LoggingPreferences();
 		logPrefs.enable(LogType.BROWSER, Level.ALL);
 		ChromeOptions options = new ChromeOptions();
-		options.addArguments(Arrays.asList("--start-maximized",
+		options.addArguments(Arrays.asList(/* "--start-maximized", */
+				// maximized is somewhat uncomfortable
 				"--ssl-protocol=any", "--ignore-ssl-errors=true",
 				"--disable-extensions", "--ignore-certificate-errors"));
 		if (debugPort != 0) {
@@ -115,6 +116,17 @@ public class Utils {
 		System.setProperty(ChromeDriverService.CHROME_DRIVER_EXE_PROPERTY,
 				Paths.get(System.getProperty("user.home")).resolve("Downloads")
 						.resolve(browserDriver).toAbsolutePath().toString());
+		/*
+		System.setProperty(ChromeDriverService.CHROME_DRIVER_EXE_PROPERTY,
+				System.getProperty("os.name").toLowerCase().contains("windows")
+						? Paths.get(System.getProperty("user.home")).resolve("Downloads")
+								.resolve("chromedriver.exe").toAbsolutePath().toString()
+						: new File("/usr/local/bin/chromedriver").exists()
+								? "/usr/local/bin/chromedriver"
+								: Paths.get(System.getProperty("user.home"))
+										.resolve("Downloads").resolve("chromedriver")
+										.toAbsolutePath().toString());
+		 */
 
 		chromeDriverService = new ChromeDriverService.Builder().usingAnyFreePort()
 				.withVerbose(true).build();
@@ -148,7 +160,8 @@ public class Utils {
 		LoggingPreferences logPrefs = new LoggingPreferences();
 		logPrefs.enable(LogType.BROWSER, Level.ALL);
 		ChromeOptions options = new ChromeOptions();
-		options.addArguments(Arrays.asList("--start-maximized",
+		options.addArguments(Arrays.asList(/* "--start-maximized", */
+				// maximized is somewhat uncomfortable
 				"--ssl-protocol=any", "--ignore-ssl-errors=true",
 				"--disable-extensions", "--ignore-certificate-errors"));
 		if (debugPort != 0) {
