@@ -669,6 +669,60 @@ public class MessageBuilder {
 		 */
 	}
 
+	// https://chromedevtools.github.io/devtools-protocol/tot/Target/#method-detachFromTarget
+	public static String buildDetachFromTargetMessage(int id, String sessionID,
+			String targetId) {
+
+		method = "Target.detachFromTarget";
+		params = new HashMap<>();
+		params.put("targetId", targetId);
+		params.put("sessionID", sessionID);
+		return buildMessage(id, method, params);
+	}
+
+	private static String buildDetachFromTargetMessage(String sessionID,
+			String targetId) {
+
+		method = "Target.detachFromTarget";
+		params = new HashMap<>();
+		params.put("targetId", targetId);
+		params.put("sessionID", sessionID);
+		return buildMessage(Utils.getInstance().getDynamicID(), method, params);
+		/*
+		 * return String.format("{\"id\":%d,\"method\":\"Target.detachFromTarget\"," +
+		 * "\"params\":{\"targetId\":\"%s\", \"sessionId\":\"%s\"}}", Utils.getInstance().getDynamicID(),
+		 * targetId, sessionId);
+		 */
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Target/#method-getTargetInfo
+	public static String buildTargetInfoMessage(int id, String targetId) {
+
+		method = "Target.TargetInfo";
+		params = new HashMap<>();
+		params.put("targetId", targetId);
+		return buildMessage(id, method, params);
+	}
+
+	private static String buildTargetInfoMessage(String targetId) {
+
+		method = "Target.TargetInfo";
+		params = new HashMap<>();
+		params.put("targetId", targetId);
+		return buildMessage(Utils.getInstance().getDynamicID(), method, params);
+		/*
+		 * return String.format("{\"id\":%d,\"method\":\"Target.TargetInfo\"," +
+		 * "\"params\":{\"targetId\":\"%s\"}}", Utils.getInstance().getDynamicID(),
+		 * targetId);
+		 */
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Target/#method-getTargetInfo
+	public static String buildGetTargetsMessage(int id) {
+		return buildMessage(id, "Target.getTargets");
+	}
+
+	//
 	public static String buildRequestInterceptorEnabledMessage() {
 		String method = "Network.setRequestInterception";
 		int id = 4;

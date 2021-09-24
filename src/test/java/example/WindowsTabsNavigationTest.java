@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,10 @@ import com.neovisionaries.ws.client.WebSocketException;
 
 import example.messaging.CDPClient.MessageTimeOutException;
 import example.messaging.MessageBuilder;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Selected test scenarios for Selenium 3.x Chrome Developer Tools bridge inspired
@@ -34,6 +39,7 @@ public class WindowsTabsNavigationTest extends BaseTest {
 	private static Map<Integer, String> data = new HashMap<>();
 	private static String responseMessage = null;
 	private static String targetId;
+	private static String sessionID;
 
 	@Before
 	public void beforeTest() throws IOException {
@@ -62,9 +68,14 @@ public class WindowsTabsNavigationTest extends BaseTest {
 
 				CDPClient.sendMessage(
 						MessageBuilder.buildAttachToTargetMessage(id, targetId));
-				responseMessage = CDPClient.getResponseMessage(id, "sessionId");
-				System.err
-						.println("Attach To Target response sessionId: " + responseMessage);
+				sessionID = CDPClient.getResponseMessage(id, "sessionId");
+				System.err.println("Attach To Target response sessionId: " + sessionID);
+				// generate a new id to get Target Info
+				int id2 = utils.getDynamicID();
+				CDPClient
+						.sendMessage(MessageBuilder.buildTargetInfoMessage(id2, targetId));
+				responseMessage = CDPClient.getResponseMessage(id2, null);
+				System.err.println("Target Info response: " + responseMessage);
 				utils.sleep(4);
 				uiUtils.takeScreenShot();
 			} catch (IOException | WebSocketException | InterruptedException
@@ -72,6 +83,35 @@ public class WindowsTabsNavigationTest extends BaseTest {
 				// ignore
 				System.err.println("Exception (ignored): " + e.toString());
 			}
+		}
+
+		try {
+			CDPClient.sendMessage(MessageBuilder.buildGetTargetsMessage(id));
+			responseMessage = CDPClient.getResponseMessage(id, "targetInfos");
+			System.err
+					.println("Get Targets response[\"targetInfos\"]: " + responseMessage);
+			JSONArray targetInfos = new JSONArray(responseMessage);
+			int l = targetInfos.length();
+			for (int i = 0; i < l; i++) {
+				JSONObject targetInfo = targetInfos.getJSONObject(i);
+				System.err.println("Can process object: " + targetInfo.toString());
+
+				@SuppressWarnings("unchecked")
+				Iterator<String> targetInfoKeysIterator = targetInfo.keys();
+
+				while (targetInfoKeysIterator.hasNext()) {
+					String key = targetInfoKeysIterator.next();
+					System.err.println("observed row key: " + key);
+				}
+				for (String key : Arrays.asList("url", "title", "targetId")) {
+					String val = targetInfo.getString(key);
+					System.err.println("Observed key: " + key + ": " + val);
+				}
+			}
+		} catch (IOException | WebSocketException | InterruptedException
+				| MessageTimeOutException e) {
+			// ignore
+			System.err.println("Exception (ignored): " + e.toString());
 		}
 		// NOTE: local var shadow
 		for (String targetId : targets) {
@@ -105,24 +145,44 @@ public class WindowsTabsNavigationTest extends BaseTest {
 
 				CDPClient.sendMessage(
 						MessageBuilder.buildAttachToTargetMessage(id, targetId));
-				responseMessage = CDPClient.getResponseMessage(id, "sessionId");
+				sessionID = CDPClient.getResponseMessage(id, "sessionId");
+				System.err.println("Attach To Target response sessionId: " + sessionID);
+
+				// generate a new id to get Target Info
+				int id2 = utils.getDynamicID();
+
+				CDPClient
+						.sendMessage(MessageBuilder.buildTargetInfoMessage(id2, targetId));
+				responseMessage = CDPClient.getResponseMessage(id2, null);
+				System.err.println("Target Info response: " + responseMessage);
+
 				utils.sleep(4);
 				uiUtils.takeScreenShot();
-				System.err
-						.println("Attach To Target response sessionId: " + responseMessage);
 			} catch (IOException | WebSocketException | InterruptedException
 					| MessageTimeOutException e) {
 				System.err.println("Exception (ignored): " + e.toString());
 			}
+		}
+		try {
+			CDPClient.sendMessage(MessageBuilder.buildGetTargetsMessage(id));
+			responseMessage = CDPClient.getResponseMessage(id, null);
+			System.err.println("Get Targets response: " + responseMessage);
+		} catch (IOException | WebSocketException | InterruptedException
+				| MessageTimeOutException e) {
+			// ignore
+			System.err.println("Exception (ignored): " + e.toString());
 		}
 		// NOTE: local var shadow
 		for (String targetId : targets) {
 			try {
 				CDPClient.sendMessage(
 						MessageBuilder.buildAttachToTargetMessage(id, targetId));
-				responseMessage = CDPClient.getResponseMessage(id, "sessionId");
-				System.err
-						.println("Attach To Target response sessionId: " + responseMessage);
+				sessionID = CDPClient.getResponseMessage(id, "sessionId");
+				System.err.println("Attach To Target response sessionId: " + sessionID);
+
+				CDPClient.sendMessage(MessageBuilder.buildDetachFromTargetMessage(id,
+						sessionID, targetId));
+
 				CDPClient
 						.sendMessage(MessageBuilder.buildCloseTargetMessage(id, targetId));
 				responseMessage = CDPClient.getResponseMessage(id, null);
