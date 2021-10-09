@@ -82,7 +82,8 @@ public class Utils {
 		LoggingPreferences logPrefs = new LoggingPreferences();
 		logPrefs.enable(LogType.BROWSER, Level.ALL);
 		ChromeOptions options = new ChromeOptions();
-		options.addArguments(Arrays.asList("--start-maximized",
+		options.addArguments(Arrays.asList(/* "--start-maximized", */
+				// maximized is somewhat uncomfortable
 				"--ssl-protocol=any", "--ignore-ssl-errors=true",
 				"--disable-extensions", "--ignore-certificate-errors"));
 		if (debugPort != 0) {
@@ -127,7 +128,6 @@ public class Utils {
 										.toAbsolutePath().toString());
 		 */
 
-
 		chromeDriverService = new ChromeDriverService.Builder().usingAnyFreePort()
 				.withVerbose(true).build();
 		chromeDriverService.start();
@@ -160,7 +160,8 @@ public class Utils {
 		LoggingPreferences logPrefs = new LoggingPreferences();
 		logPrefs.enable(LogType.BROWSER, Level.ALL);
 		ChromeOptions options = new ChromeOptions();
-		options.addArguments(Arrays.asList("--start-maximized",
+		options.addArguments(Arrays.asList(/* "--start-maximized", */
+				// maximized is somewhat uncomfortable
 				"--ssl-protocol=any", "--ignore-ssl-errors=true",
 				"--disable-extensions", "--ignore-certificate-errors"));
 		if (debugPort != 0) {
