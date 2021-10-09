@@ -104,12 +104,16 @@ Alternatively, have JDK and maven in the Docker container and run the tests comp
   * original project author's [blog](https://medium.com/@sahajamit/selenium-chrome-dev-tools-makes-a-perfect-browser-automation-recipe-c35c7f6a2360)
   * SeleniumHQ devtools-specific [tests](https://github.com/SeleniumHQ/selenium/tree/cdp_codegen/java/client/test/org/openqa/selenium/devtools) - one has to switch to __cdp_codegen__ branch.
   * another [Chrome DevTools Java Client](https://github.com/kklisura/chrome-devtools-java-client) said to be able of Java generation from `protocol.json` (cdt-client-test branch )
+ * yet another Selenium 3.x + websocket CDP [client](https://github.com/pgtoopx/chrome-devtools-protocol-jvm)
  * blog on [running Chrome in Docker](https://medium.com/@sahajamit/can-selenium-chrome-dev-tools-recipe-works-inside-a-docker-container-afff92e9cce5)
  * [Java Client is a DevTools client](https://github.com/kklisura/chrome-devtools-java-client)
  * example using the `com.github.kklisura.cdt.services.ChromeDevToolsService` to [connect](https://github.com/barancev/selenium-cdp-integration-example) Selenium 3.14.x to Chrome DevTools
  * https://github.com/SrinivasanTarget/selenium4CDPsamples/blob/master/src/test/java/DevToolsTest.java
  * [new features available in selenium 4](https://github.com/ShamaUgale/Selenium4Examples)
   * .net projects for [CDP](https://github.com/InfiniSwiss/InfiniSwiss.CdpSharp) and [Chrome_devtools](https://github.com/DumbPrograms/ChromeDevTools) - require Visual Studio 2019, need at lest for C# 5 compiler for [async/await semantics](https://www.sitepoint.com/asynchronous-programming-using-async-await-in-c/), target platform: __netstandard 2.0__
+ * [rubycdp/ferrum](https://github.com/rubycdp/ferrum) Ruby port of CDP [homepage](https://evrone.com/ferrum-ruby-chrome-driver)
+ * __ferrum__ and derivative gems (__vessel__, __foot-traffic__) [overview](https://dev.to/libsyz/modern-ruby-web-automation-and-scraping-with-ferrum-10dh)
+
 
 ### Author
 [Serguei Kouzmine](kouzmine_serguei@yahoo.com)

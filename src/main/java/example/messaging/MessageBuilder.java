@@ -638,6 +638,29 @@ public class MessageBuilder {
 		return buildMessage(id, method, params);
 	}
 
+	// https://chromedevtools.github.io/devtools-protocol/tot/Target/#method-attachToTarget
+	public static String buildAttachToTargetMessage(int id, String targetId) {
+
+		method = "Target.attachToTarget";
+		params = new HashMap<>();
+		params.put("targetId", targetId);
+		return buildMessage(id, method, params);
+	}
+
+	private static String buildAttachToTargetMessage(String targetId) {
+
+		method = "Target.attachToTarget";
+		// message = new Message(Utils.getInstance().getDynamicID(), method);
+		params = new HashMap<>();
+		params.put("targetId", targetId);
+		return buildMessage(Utils.getInstance().getDynamicID(), method, params);
+		/*
+		 * return String.format("{\"id\":%d,\"method\":\"Target.attachToTarget\"," +
+		 * "\"params\":{\"targetId\":\"%s\"}}", Utils.getInstance().getDynamicID(),
+		 * targetId);
+		 */
+	}
+
 	public static String buildRequestInterceptorEnabledMessage() {
 		String method = "Network.setRequestInterception";
 		int id = 4;
@@ -694,20 +717,6 @@ public class MessageBuilder {
 		params.put("userAgent", userAgent);
 		params.put("platform", platform);
 		return buildMessage(Utils.getInstance().getDynamicID(), method, params);
-	}
-
-	private static String buildAttachToTargetMessage(String targetId) {
-
-		String method = "BackgroundService.clearEvents";
-		message = new Message(Utils.getInstance().getDynamicID(), method);
-		params = new HashMap<>();
-		params.put("targetId", targetId);
-		return buildMessage(Utils.getInstance().getDynamicID(), method, params);
-		/*
-		 * return String.format("{\"id\":%d,\"method\":\"Target.attachToTarget\"," +
-		 * "\"params\":{\"targetId\":\"%s\"}}", Utils.getInstance().getDynamicID(),
-		 * targetId);
-		 */
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Performance/#method-setTimeDomain
