@@ -66,6 +66,70 @@ this for an e.g. `Emulation.setGeolocationOverride` creates payload which looks 
   }
 }
 ```
+### Supported Messages
+
+Every CDP API becomes a statting "message builder" class of `example.messaging.MessageBuilder` class:
+
+
+  * `buildActivateTargetMessage`
+  * `buildAttachToTargetMessage`
+  * `buildBasicHttpAuthenticationMessage`
+  * `buildBrowserVersionMessage`
+  * `buildClearBrowserCacheMessage`
+  * `buildClearBrowserCookiesMessage`
+  * `buildClearDataForOriginMessage`
+  * `buildCloseTargetMessage`
+  * `buildCreateTargetMessage`
+  * `buildCustomRuntimeEvaluateMessage`
+  * `buildDOMEnableMessage`
+  * `buildDeleteCookiesMessage`
+  * `buildDescribeNodeMessage`
+  * `buildDetachFromTargetMessage`
+  * `buildEmulationResetPageScale`
+  * `buildEmulationSetDeviceMetrics`
+  * `buildEmulationSetUserAgent`
+  * `buildEmulationSetVisibleSizeMessage`
+  * `buildEnableLogMessage`
+  * `buildEnableRuntimeMessage`
+  * `buildGeoLocationMessage`
+  * `buildGetAllCookiesMessage`
+  * `buildGetBrowserContextMessage`
+  * `buildGetContinueInterceptedRequestEncodedMessage`
+  * `buildGetContinueInterceptedRequestMessage`
+  * `buildGetDocumentMessage`
+  * `buildGetOuterHTMLMessage`
+  * `buildGetResponseBodyForInterceptionMessage`
+  * `buildGetResponseBodyMessage`
+  * `buildGetTargetsMessage`
+  * `buildNetWorkEnableMessage`
+  * `buildNetWorkSetExtraHTTPHeadersMessage`
+  * `buildNetworkClearBrowserCache`
+  * `buildNetworkSetBlockedURLs`
+  * `buildObserveBackgroundServiceMessage`
+  * `buildOverlayEnableMessage`
+  * `buildOverlayHighlightFrameMessage`
+  * `buildPageAddScriptToEvaluateOnNewDocument`
+  * `buildPageGetFrameOwner`
+  * `buildPageGetFrameTree`
+  * `buildPageRemoveScriptToEvaluateOnNewDocument`
+  * `buildPerformanceDisableMessage`
+  * `buildPerformanceEnableMessage`
+  * `buildPerformanceGetMetrics`
+  * `buildPrintPDFMessage`
+  * `buildQuerySelectorMessage`
+  * `buildRequestInterceptorEnabledMessage`
+  * `buildRequestInterceptorPatternMessage`
+  * `buildRuntimeEvaluateMessage`
+  * `buildSendObservingPushMessage`
+  * `buildSendPushNotificationMessage`
+  * `buildServiceWorkerEnableMessage`
+  * `buildServiceWorkerInspectMessage`
+  * `buildSetTimeDomainMessage`
+  * `buildSetUserAgentOverrideMessage`
+  * `buildTakeElementScreenShotMessage`
+  * `buildTakePageScreenShotMessage`
+  * `buildTargetInfoMessage`
+  * `buildTimezoneOverrideMessage`
 ### Docker Testing
 
 Currently the test described in the original repository author's [blog](https://medium.com/@sahajamit/can-selenium-chrome-dev-tools-recipe-works-inside-a-docker-container-afff92e9cce5) does not appear to work:
