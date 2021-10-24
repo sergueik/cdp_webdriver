@@ -838,16 +838,32 @@ public class MessageBuilder {
 		return buildMessage(id, method, params);
 
 	}
+	
+	
+	// DEPRECATED - not returning result when invoked
+	// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-addScriptToEvaluateOnLoad
+	public static String buildPageAddScriptToEvaluateOnLoadMessage(int id, final String source) {
+		method = "Page.addScriptToEvaluateOnLoad";
+		params = new HashMap<>();
+		params.put("source", source);
+		if (debug) {
+			System.err.println(String.format("Sending:\n"
+					+ "{\"id\":%d,\"method\":\"Page.addScriptToEvaluateOnLoad\", \"params\":{\"source\":\"%s\"}", id,
+					source));
+
+		}
+		return buildMessage(id, method, params);
+	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-addScriptToEvaluateOnNewDocument
 	public static String buildPageAddScriptToEvaluateOnNewDocumentMessage(int id, final String source) {
 		method = "Page.addScriptToEvaluateOnNewDocument";
 		params = new HashMap<>();
 		params.put("source", source);
-		params.put("worldName", null);
+		// params.put("worldName", null);
 		if (debug) {
 			System.err.println(String.format("Sending:\n"
-					+ "{\"id\":%d,\"method\":\"Page.addScriptToEvaluateOnNewDocument\", \"params\":{\"source\":\"\"}",
+					+ "{\"id\":%d,\"method\":\"Page.addScriptToEvaluateOnNewDocument\", \"params\":{\"source\":\"%s\"}",
 					id, source));
 
 		}
