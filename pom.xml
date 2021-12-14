@@ -21,7 +21,7 @@
     <json.version>20201115</json.version>
 -->
     <junit.version>4.13.1</junit.version>
-    <log4j-core.version>2.13.3</log4j-core.version>
+    <log4j-core.version>2.15.0</log4j-core.version>
     <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
     <maven-surefire-plugin.version>2.20</maven-surefire-plugin.version>
     <maven.compiler.source>1.8</maven.compiler.source>
