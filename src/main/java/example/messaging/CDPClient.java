@@ -96,8 +96,11 @@ public class CDPClient {
 			throws InterruptedException {
 		while (true) {
 			String message = blockingQueue.poll(this.pollTimeout, TimeUnit.SECONDS);
-			if (Objects.isNull(message))
+			if (Objects.isNull(message)){
+				System.err.println("got no message: ");	
 				return null;
+			}
+			System.err.println("got raw message: " + message);
 			DocumentContext parse = JsonPath.parse(message);
 			String value = parse.read(jsonPath.trim()).toString();
 			if (value.equalsIgnoreCase(expectedValue))
@@ -355,4 +358,3 @@ public class CDPClient {
 	}
 
 }
-
