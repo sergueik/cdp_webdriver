@@ -1,6 +1,6 @@
 package example.messaging;
 /**
- * Copyright 2020,2021 Serguei Kouzmine
+ * Copyright 2020-2022 Serguei Kouzmine
  */
 
 import java.util.ArrayList;
@@ -283,6 +283,16 @@ public class MessageBuilder {
 		return message;
 		/*
 		 * return String.format("{\"id\":%d,\"method\":\"DOM.getDocument\"}", id);
+		 */
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/SystemInfo/#method-getInfo
+	public static String buildSystemInfoGetInfoMessage(int id) {
+		final String message = buildMessage(id, "SystemInfo.getInfo");
+		// System.err.println("message: " + message);
+		return message;
+		/*
+		 * return String.format("{\"id\":%d,\"method\":\"SystemInfo.getInfo\"}", id);
 		 */
 	}
 
