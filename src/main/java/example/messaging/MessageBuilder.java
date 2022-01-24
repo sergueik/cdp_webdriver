@@ -1063,6 +1063,40 @@ public class MessageBuilder {
 		return buildMessage(id, method, params);
 	}
 
+	// https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-getFrameOwner
+	public static String buildBrowserResetDownloadBehaviorMessage(int id) {
+		method = "Browser.setDownloadBehavior";
+		params = new HashMap<>();
+		params.put("behavior", "default");
+		/*
+		 * if (debug) { System.err.println(String.format(
+		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"behavior\":\"default\"}}}", id, method ));
+		 * 
+		 * }
+		 */
+		return buildMessage(id, method, params);
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-getFrameOwner
+	public static String buildBrowserSetDownloadBehaviorMessage(int id,
+			String downloadPath) {
+		method = "Browser.setDownloadBehavior";
+		params = new HashMap<>();
+
+		params.put("behavior", "allow");
+		// NOTE: the "allowAndName" will randomly name the downloaded file
+		params.put("downloadPath", downloadPath);
+
+		params.put("eventsEnabled", true);
+		/*
+		 * if (debug) { System.err.println(String.format(
+		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"behavior\":\"allow\", \"downloadPath\":\"%s\"}}}", id, method, downloadPath));
+		 * 
+		 * }
+		 */
+		return buildMessage(id, method, params);
+	}
+
 	public static String buildEmulationResetPageScaleMessage(int id) {
 		if (debug) {
 			System.err.println(String.format(
