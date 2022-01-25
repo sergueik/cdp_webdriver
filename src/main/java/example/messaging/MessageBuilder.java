@@ -1080,17 +1080,20 @@ public class MessageBuilder {
 	// https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-getFrameOwner
 	public static String buildBrowserSetDownloadBehaviorMessage(int id,
 			String downloadPath) {
+		return buildBrowserSetDownloadBehaviorMessage(id, downloadPath, false);
+	}
+
+	// NOTE: the "allowAndName" will randomly name the downloaded file public
+	public static String buildBrowserSetDownloadBehaviorMessage(int id,
+			String downloadPath, boolean randomlyName) {
 		method = "Browser.setDownloadBehavior";
 		params = new HashMap<>();
-
-		params.put("behavior", "allow");
-		// NOTE: the "allowAndName" will randomly name the downloaded file
+		params.put("behavior", randomlyName ? "allowAndName" : "allow");
 		params.put("downloadPath", downloadPath);
-
 		params.put("eventsEnabled", true);
 		/*
 		 * if (debug) { System.err.println(String.format(
-		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"behavior\":\"allow\", \"downloadPath\":\"%s\"}}}", id, method, downloadPath));
+		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"behavior\":\"%s\", \"downloadPath\":\"%s\"}}}", id, method, (randomlyName ? "allowAndName" : "allow"), downloadPath));
 		 * 
 		 * }
 		 */
