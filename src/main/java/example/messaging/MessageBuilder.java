@@ -1077,7 +1077,7 @@ public class MessageBuilder {
 		return buildMessage(id, method, params);
 	}
 
-	// https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-getFrameOwner
+	// https://chromedevtools.github.io/devtools-protocol/tot/Browser/#method-setDownloadBehavior
 	public static String buildBrowserSetDownloadBehaviorMessage(int id,
 			String downloadPath) {
 		return buildBrowserSetDownloadBehaviorMessage(id, downloadPath, false);
@@ -1095,6 +1095,34 @@ public class MessageBuilder {
 		 * if (debug) { System.err.println(String.format(
 		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"behavior\":\"%s\", \"downloadPath\":\"%s\"}}}", id, method, (randomlyName ? "allowAndName" : "allow"), downloadPath));
 		 * 
+		 * }
+		 */
+		return buildMessage(id, method, params);
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-setDownloadBehavior
+	public static String buildPageResetDownloadBehaviorMessage(int id) {
+		method = "Page.setDownloadBehavior";
+		params = new HashMap<>();
+		params.put("behavior", "default");
+		/*
+		 * if (debug) { System.err.println(String.format(
+		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"behavior\":\"default\"}}}", id, method ));
+		 * 
+		 * }
+		 */
+		return buildMessage(id, method, params);
+	}
+
+	public static String buildPageSetDownloadBehaviorMessage(int id,
+			String downloadPath) {
+		method = "Page.setDownloadBehavior";
+		params = new HashMap<>();
+		params.put("behavior", "allow");
+		params.put("downloadPath", downloadPath);
+		/*
+		 * if (debug) { System.err.println(String.format(
+		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"behavior\":\"allow\", \"downloadPath\":\"%s\"}}}", id, method,downloadPath));
 		 * }
 		 */
 		return buildMessage(id, method, params);

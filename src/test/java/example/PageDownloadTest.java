@@ -21,18 +21,18 @@ import org.junit.Test;
 
 import example.messaging.MessageBuilder;
 
-public class BrowserDownloadTest extends BaseTest {
+public class PageDownloadTest extends BaseTest {
 
 	private final static String url = "https://scholar.harvard.edu/files/torman_personal/files/samplepptx.pptx";
 	private final static String filename = url.replaceAll("^.*/", "");
-	private static String downloadPath = null;
+	private static String downloadPath = getTempDownloadDir();
 
 	@After
 	public void after() {
 		// Arrange
 		try {
 			CDPClient.sendMessage(
-					MessageBuilder.buildBrowserResetDownloadBehaviorMessage(id));
+					MessageBuilder.buildPageResetDownloadBehaviorMessage(id));
 		} catch (Exception e) {
 			System.err.println("Exception (ignored): " + e.toString());
 		}
@@ -40,7 +40,6 @@ public class BrowserDownloadTest extends BaseTest {
 		try {
 			Files.delete((Paths.get(Paths.get(downloadPath).resolve(filename)
 					.toAbsolutePath().toString())));
-			Files.delete(Paths.get(downloadPath));
 		} catch (IOException e) {
 			System.err.println("Exception (ignored): " + e.toString());
 		}
@@ -50,15 +49,14 @@ public class BrowserDownloadTest extends BaseTest {
 	public void before() {
 		// Arrange
 		driver.get("about:blank");
-		downloadPath = createTempDownloadDir();
 	}
 
 	@Test
 	public void test1() {
 		// Arrange
 		try {
-			CDPClient.sendMessage(MessageBuilder
-					.buildBrowserSetDownloadBehaviorMessage(id, downloadPath));
+			CDPClient.sendMessage(
+					MessageBuilder.buildPageSetDownloadBehaviorMessage(id, downloadPath));
 		} catch (Exception e) {
 			System.err.println("Exception (ignored): " + e.toString());
 		}
@@ -76,37 +74,6 @@ public class BrowserDownloadTest extends BaseTest {
 			System.err.println("Exception (ignored): " + e.toString());
 		}
 	}
-
-	@Test
-	public void test2() {
-		// Arrange
-		try {
-			CDPClient.sendMessage(MessageBuilder
-					.buildBrowserSetDownloadBehaviorMessage(id, downloadPath, true));
-		} catch (Exception e) {
-			System.err.println("Exception (ignored): " + e.toString());
-		}
-		try {
-			// Act
-			driver.get(url);
-			utils.sleep(10);
-			List<Path> files = Files.list(Paths.get(downloadPath))
-					.collect(Collectors.toList());
-			assertThat(files.size(), is(1));
-			Path filePath = files.get(0);
-
-			assertThat(new File(filePath.toAbsolutePath().toString()).exists(),
-					is(true));
-			System.err.println(String.format("Verified downloaded file: %s in %s",
-					filePath.getFileName().toString(), downloadPath));
-			Files.delete(filePath);
-		} catch (Exception e) {
-			System.err.println("Exception (ignored): " + e.toString());
-		}
-	}
-
-	// TODO: shadow DOM test
-	// https://stackoverflow.com/questions/57780426/selenium-headless-chrome-how-to-query-status-of-downloads
 
 	// http://www.java2s.com/example/java-utility-method/temp-directory-get/gettempdir-466ee.html
 	public static String getTempDownloadDir() {
