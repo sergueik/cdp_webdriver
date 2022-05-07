@@ -1138,4 +1138,43 @@ public class MessageBuilder {
 		}
 		return buildMessage(id, "Emulation.resetPageScaleFactor");
 	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Browser/#method-getHistograms
+	public static String buildBrowserGHistogramsMessage(int id) {
+		return buildBrowserGHistogramsMessage(id, "");
+	}
+
+	public static String buildBrowserGHistogramsMessage(int id, String query) {
+		method = "Browser.getHistograms";
+		params = new HashMap<>();
+
+		params.put("query", query);
+		params.put("delta", false);
+
+		/*
+		 * if (debug) { System.err.println(String.format(
+		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"behavior\":\"default\"}}}", id, method ));
+		 * 
+		 * }
+		 */
+		return buildMessage(id, method, params);
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Browser/#method-getHistogram
+	public static String buildBrowserGHistogramMessage(int id, String name) {
+		method = "Browser.getHistogram";
+		params = new HashMap<>();
+
+		params.put("name", name);
+		params.put("delta", false);
+
+		/*
+		 * if (debug) { System.err.println(String.format(
+		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"behavior\":\"default\"}}}", id, method ));
+		 * 
+		 * }
+		 */
+		return buildMessage(id, method, params);
+	}
+
 }
