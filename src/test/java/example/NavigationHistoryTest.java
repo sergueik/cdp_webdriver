@@ -2,6 +2,7 @@ package example;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.greaterThan;
 
 import java.io.IOException;
@@ -37,9 +38,9 @@ public class NavigationHistoryTest extends BaseTest {
 	@Before
 	public void beforeTest() throws IOException {
 		// protected member does not work
-		BaseTest.headless = false;
+		BaseTest.headless = true;
 		// setter does not work
-		super.setHeadless(false);
+		super.setHeadless(true);
 		super.beforeTest();
 		// Arrange
 		for (String url : urls)
@@ -71,11 +72,13 @@ public class NavigationHistoryTest extends BaseTest {
 			for (String key : Arrays.asList("currentIndex", "entries")) {
 				assertThat(result.has(key), is(true));
 			}
-			assertThat(result.getJSONArray("entries") instanceof JSONArray, is(true));
-			assertThat(((JSONArray) result.getJSONArray("entries")).toList().size(),
+			// https://www.tabnine.com/code/java/methods/org.json.JSONObject/optJSONArray
+			assertThat(result.optJSONArray("entries"), notNullValue());
+			assertThat(result.optJSONArray("entries") instanceof JSONArray, is(true));
+			assertThat(result.getJSONArray("entries").toList().size(),
 					greaterThan(1));
-			JSONObject entry = ((JSONArray) result.getJSONArray("entries"))
-					.getJSONObject(1);
+			int index = 1;
+			JSONObject entry = result.getJSONArray("entries").getJSONObject(index);
 			for (String key : Arrays.asList("id", "url", "userTypedURL", "title",
 					"transitionType")) {
 				assertThat(String.format("expect the key %s", key), entry.has(key),

@@ -62,7 +62,7 @@ public class HistorgramTest extends BaseTest {
 		// Arrange
 		// Act
 		try {
-			CDPClient.sendMessage(MessageBuilder.buildBrowserGHistogramsMessage(id));
+			CDPClient.sendMessage(MessageBuilder.buildBrowserHistogramsMessage(id));
 			responseMessage = CDPClient.getResponseMessage(id, null);
 			// Assert
 			result = new JSONObject(responseMessage);
@@ -84,7 +84,7 @@ public class HistorgramTest extends BaseTest {
 			}
 			String name = histogram.getString("name");
 			CDPClient
-					.sendMessage(MessageBuilder.buildBrowserGHistogramMessage(id, name));
+					.sendMessage(MessageBuilder.buildBrowserHistogramMessage(id, name));
 			responseMessage = CDPClient.getResponseMessage(id, null);
 			// Assert
 			result = new JSONObject(responseMessage);
