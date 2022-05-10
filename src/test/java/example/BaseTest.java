@@ -1,7 +1,7 @@
 package example;
 
 /**
- * Copyright 2020,2021 Serguei Kouzmine
+ * Copyright 2020,2021,2022 Serguei Kouzmine
  */
 import java.io.IOException;
 import java.util.Objects;
@@ -11,6 +11,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriverService;
 
 import example.messaging.CDPClient;
@@ -74,7 +75,11 @@ public class BaseTest {
 	public static void afterClass() {
 		if (!Objects.isNull(CDPClient))
 			CDPClient.disconnect();
-		utils.stopChrome();
+		try {
+			utils.stopChrome();
+		} catch (WebDriverException e) {
+			// chrome not reachable
+		}
 		if (!Objects.isNull(chromeDriverService))
 			chromeDriverService.stop();
 	}

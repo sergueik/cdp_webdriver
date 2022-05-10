@@ -1140,11 +1140,11 @@ public class MessageBuilder {
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Browser/#method-getHistograms
-	public static String buildBrowserGHistogramsMessage(int id) {
-		return buildBrowserGHistogramsMessage(id, "");
+	public static String buildBrowserHistogramsMessage(int id) {
+		return buildBrowserHistogramsMessage(id, "");
 	}
 
-	public static String buildBrowserGHistogramsMessage(int id, String query) {
+	public static String buildBrowserHistogramsMessage(int id, String query) {
 		method = "Browser.getHistograms";
 		params = new HashMap<>();
 
@@ -1153,15 +1153,14 @@ public class MessageBuilder {
 
 		/*
 		 * if (debug) { System.err.println(String.format(
-		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"behavior\":\"default\"}}}", id, method ));
-		 * 
+		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"query\":\"%s\", \"delta\": \"false\"}}}", id, method,query));
 		 * }
 		 */
 		return buildMessage(id, method, params);
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Browser/#method-getHistogram
-	public static String buildBrowserGHistogramMessage(int id, String name) {
+	public static String buildBrowserHistogramMessage(int id, String name) {
 		method = "Browser.getHistogram";
 		params = new HashMap<>();
 
@@ -1170,11 +1169,46 @@ public class MessageBuilder {
 
 		/*
 		 * if (debug) { System.err.println(String.format(
-		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"behavior\":\"default\"}}}", id, method ));
-		 * 
+		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"name\":\"%s\", \"delta\": \"false\"}}}", id, method,name ));
 		 * }
 		 */
 		return buildMessage(id, method, params);
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-getNavigationHistory
+	public static String buildPageGetNavigationHistoryMessage(int id) {
+		method = "Page.getNavigationHistory";
+		/*
+		 * if (debug) { System.err.println(String.format(
+		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{}}}", id, method ));
+		 * }
+		 */
+		return buildMessage(id, method);
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-navigateToHistoryEntry
+	public static String buildPageNavigateToHistoryEntryMessage(int id,
+			int entryId) {
+		method = "Page.navigateToHistoryEntry";
+		params = new HashMap<>();
+		params.put("entryId", entryId);
+		/*
+		 * if (debug) { System.err.println(String.format(
+		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"entryId\":  %d}}}", id, method, entryId ));
+		 * }
+		 */
+		return buildMessage(id, method, params);
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-resetNavigationHistory
+	public static String buildPageResetNavigationHistoryMessage(int id) {
+		method = "Page.resetNavigationHistory";
+		/*
+		 * if (debug) { System.err.println(String.format(
+		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{}}}", id, method ));
+		 * }
+		 */
+		return buildMessage(id, method);
 	}
 
 }
