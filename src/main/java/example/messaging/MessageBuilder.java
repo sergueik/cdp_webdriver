@@ -1175,6 +1175,32 @@ public class MessageBuilder {
 		return buildMessage(id, method, params);
 	}
 
+	// https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-getAllCookies
+	public static String buildNetworkGetAllCookiesMessage(int id) {
+		method = "Network.getAllCookies";
+		/*
+		 * if (debug) { System.err.println(String.format(
+		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{}}}", id, method ));
+		 * }
+		 */
+		return buildMessage(id, method);
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-getCookies
+	public static String buildNetworkGetCookiesMessage(int id,
+			List<String> urls) {
+		method = "Network.getCookies";
+		params = new HashMap<>();
+
+		params.put("urls", urls);
+		/*
+		 * if (debug) { System.err.println(String.format(
+		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"urls\":\"%s\"}}}", id, method,urls ));
+		 * }
+		 */
+		return buildMessage(id, method, params);
+	}
+
 	// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-getNavigationHistory
 	public static String buildPageGetNavigationHistoryMessage(int id) {
 		method = "Page.getNavigationHistory";

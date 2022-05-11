@@ -58,7 +58,7 @@ public class HistorgramTest extends BaseTest {
 	}
 
 	@Test
-	public void getBroswerVersionTest() {
+	public void test() {
 		// Arrange
 		// Act
 		try {
