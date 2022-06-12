@@ -143,6 +143,10 @@ public class MessageBuilder {
 
 	}
 
+	public static String buildNetWorkDisableMessage(int id) {
+		return buildMessage(id, "Network.disable");
+	}
+
 	// https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-enable
 	public static String buildNetWorkEnableMessage(int id,
 			final long maxTotalBufferSize, final long maxResourceBufferSize,
