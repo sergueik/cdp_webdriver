@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.codec.binary.Base64;
+import org.openqa.selenium.devtools.v103.network.Network;
 
 import com.google.gson.Gson;
 
@@ -1012,6 +1013,15 @@ public class MessageBuilder {
 	// https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-clearBrowserCache/
 	public static String buildNetworkClearBrowserCache(int id) {
 		return buildMessage(id, "Network.clearBrowserCache");
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-setCacheDisabled
+	public static String buildNetworkSetCacheDisabled(int id,
+			boolean cacheDisabled) {
+		params = new HashMap<>();
+		method = "Network.setCacheDisabled";
+		params.put("cacheDisabled", cacheDisabled);
+		return buildMessage(id, method, params);
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-setBlockedURLs
