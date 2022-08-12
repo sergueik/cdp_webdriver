@@ -41,6 +41,7 @@ public class UIUtils {
 		this.driver = driver;
 	}
 
+	@SuppressWarnings("deprecation")
 	public WebElement findElement(By locator, int loadTimeout) {
 		@SuppressWarnings("unchecked")
 		Wait<WebDriver> wait = (new FluentWait(driver))

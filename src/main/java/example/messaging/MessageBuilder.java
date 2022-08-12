@@ -8,10 +8,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 
 import org.apache.commons.codec.binary.Base64;
-import org.openqa.selenium.devtools.v103.network.Network;
 
 import com.google.gson.Gson;
 
@@ -61,6 +61,25 @@ public class MessageBuilder {
 			message.addParam(key, params.get(key));
 		}
 		return message.toJson();
+	}
+
+	public static String buildCustomMessage(int id, String method,
+			Map<String, Object> params) {
+		if (debug) {
+			StringBuffer paramArg = new StringBuffer();
+			for (String key : params.keySet()) {
+				paramArg.append(String.format("\"%s\":%s, ", key, params.get(key)));
+			}
+			System.err.println(String.format(
+					"Sending:\n" + "{\"id\":%d,\"method\":\"%s\"," + "\"params\":{ %s }}",
+					id, method, paramArg.toString()));
+
+		}
+		return buildMessage(id, method, params);
+	}
+
+	public static String buildClearGeoLocationMessage(int id) {
+		return buildMessage(id, "Emulation.clearGeolocationOverride");
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Emulation/#method-setGeolocationOverride
