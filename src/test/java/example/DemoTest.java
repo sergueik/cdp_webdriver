@@ -1,7 +1,7 @@
 package example;
 
 /**
- * Copyright 2020,2021 Serguei Kouzmine
+ * Copyright 2020-2022 Serguei Kouzmine
  */
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -69,30 +69,6 @@ public class DemoTest extends BaseTest {
 		}
 	}
 
-	// see also: https://habr.com/ru/post/185092/
-	// https://github.com/dunxrion/console.image
-	@Ignore
-	@Test
-	// TODO: "Location Unavailable" test
-	// Omitting any of the parameters in Emulation.setGeolocationOverride
-	// emulates position unavailable
-	// see also: https://habr.com/ru/post/518862/
-	public void doFakeGeoLocation()
-			throws IOException, WebSocketException, InterruptedException {
-		CDPClient.sendMessage(
-				MessageBuilder.buildGeoLocationMessage(id, 37.422290, -122.084057));
-		// google HQ
-		utils.sleep(3);
-		URL = "https://www.google.com.sg/maps";
-		driver.navigate().to(URL);
-		uiUtils
-				.findElement(By.cssSelector(
-						"div[class *='widget-mylocation-button-icon-common']"), 120)
-				.click();
-		utils.waitFor(10);
-		uiUtils.takeScreenShot();
-	}
-
 	// NOTE: for doNetworkTracking, need to switch to headless, e.g.
 	// via setting BaseTest property and invoking super.beforeTest() explicitly
 	// @Before
@@ -141,7 +117,7 @@ public class DemoTest extends BaseTest {
 		CDPClient.mockFunResponse(encodedString);
 		URL = "https://sg.carousell.com/";
 		driver.navigate().to(URL);
-		utils.sleep(300);
+		utils.sleep(3);
 	}
 
 	@Ignore
