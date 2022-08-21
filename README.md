@@ -178,7 +178,7 @@ Alternatively, have JDK and maven in the Docker container and run the tests comp
   * .net projects for [CDP](https://github.com/InfiniSwiss/InfiniSwiss.CdpSharp) and [Chrome_devtools](https://github.com/DumbPrograms/ChromeDevTools) - require Visual Studio 2019, need at lest for C# 5 compiler for [async/await semantics](https://www.sitepoint.com/asynchronous-programming-using-async-await-in-c/), target platform: __netstandard 2.0__
   * [rubycdp/ferrum](https://github.com/rubycdp/ferrum) Ruby port of CDP [homepage](https://evrone.com/ferrum-ruby-chrome-driver)
   * __ferrum__ and derivative gems (__vessel__, __foot-traffic__) [overview](https://dev.to/libsyz/modern-ruby-web-automation-and-scraping-with-ferrum-10dh)
-
+  * [websocket client for the CDP](https://github.com/HubSpot/ChromeDevToolsClient)
 
 ### Author
 [Serguei Kouzmine](kouzmine_serguei@yahoo.com)

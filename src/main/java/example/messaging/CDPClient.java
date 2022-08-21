@@ -96,11 +96,12 @@ public class CDPClient {
 			throws InterruptedException {
 		while (true) {
 			String message = blockingQueue.poll(this.pollTimeout, TimeUnit.SECONDS);
-			if (Objects.isNull(message)){
-				System.err.println("got no message: ");	
+			if (Objects.isNull(message)) {
+				System.err.println("got no messages in queue.");
 				return null;
 			}
-			System.err.println("got raw message: " + message);
+			if (debug)
+				System.err.println("got raw message: " + message);
 			DocumentContext parse = JsonPath.parse(message);
 			String value = parse.read(jsonPath.trim()).toString();
 			if (value.equalsIgnoreCase(expectedValue))
@@ -120,7 +121,7 @@ public class CDPClient {
 				String message = blockingQueue.poll(pollTimeout, TimeUnit.SECONDS);
 				if (Objects.isNull(message))
 					throw new RuntimeException(String.format(
-							"No message received with this method name : '%s'", methodName));
+							"No message received with method name: \"%s\"", methodName));
 				JSONObject jsonObject = new JSONObject(message);
 				try {
 					String method = jsonObject.getString("method");
@@ -147,7 +148,7 @@ public class CDPClient {
 				}
 				if (Objects.isNull(message))
 					throw new RuntimeException(
-							String.format("No message received with this id : '%s'", id));
+							String.format("No message received with id: %s", id));
 				jsonObject = new JSONObject(message);
 				try {
 					int methodId = jsonObject.getInt("id");
@@ -182,7 +183,7 @@ public class CDPClient {
 			if (Objects.isNull(message)) {
 				if (retry_cnt == 0) {
 					throw new MessageTimeOutException(
-							String.format("No message received with this id : '%s'", id));
+							String.format("No message received with id : %s", id));
 				}
 			} else {
 				jsonObject = new JSONObject(message);
@@ -200,9 +201,8 @@ public class CDPClient {
 							String result = null;
 							try {
 								result = resultObject.getJSONArray(dataType).toString();
-								if (debug) {
+								if (debug)
 									System.err.println("returning result: " + result);
-								}
 								return result;
 							} catch (JSONException e2) {
 								if (debug) {

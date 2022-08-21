@@ -6,12 +6,15 @@ package example;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.is;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -33,11 +36,18 @@ public class GeolocationOverrideTest extends BaseTest {
 	private static By locator = By
 			.cssSelector("div[jsaction*='mouseover:mylocation.main']");
 
+	@Before
+	public void before() throws IOException, WebSocketException,
+			MessageTimeOutException, InterruptedException {
+		setLocation();
+
+	}
+
 	@Test
 	public void test1() throws IOException, WebSocketException,
 			MessageTimeOutException, InterruptedException {
 		URL = "https://www.google.com/maps";
-		setLocation();
+
 		driver.navigate().to(URL);
 		element = uiUtils.findElement(locator, 120);
 		element.click();
@@ -45,15 +55,12 @@ public class GeolocationOverrideTest extends BaseTest {
 		uiUtils.takeScreenShot();
 	}
 
-	@Test(expected = MessageTimeOutException.class)
+	@Test
 	// "Location Unavailable" test
-	// Omitting any of the parameters in Emulation.setGeolocationOverride
-	// emulates position unavailable
 	// NOTE: also leads to NPE in AfterClass when run alone
 	public void test2() throws IOException, WebSocketException,
 			MessageTimeOutException, InterruptedException {
 		URL = "https://mycurrentlocation.net";
-		// NOTE: the MessageBuilder.buildMessage is private
 		final Map<String, Object> params = new HashMap<>();
 		final String method = "Emulation.setGeolocationOverride";
 		final Double latitude = 37.422290;
@@ -62,26 +69,27 @@ public class GeolocationOverrideTest extends BaseTest {
 		params.put("longitude", longitude);
 		params.put("accuracy", 100);
 		params.remove("longitude");
+		// Omitting any of the parameters in Emulation.setGeolocationOverride
+		// leads to emulates position unavailable
 		try {
 			CDPClient.setDebug(true);
 			int id2 = Utils.getInstance().getDynamicID();
-			MessageBuilder.buildCustomMessage(id2, method, params);
+			CDPClient
+					.sendMessage(MessageBuilder.buildCustomMessage(id2, method, params));
 
 			String responseMessage = CDPClient.getResponseDataMessage(id2);
-			assertThat(responseMessage, notNullValue());
-			// unreached due to MessageTimeOutException
-			System.err
-					.println("Incomplete \"Emulation.setGeolocationOverride\" response: "
-							+ responseMessage);
+			assertThat(responseMessage, nullValue());
 			CDPClient.setDebug(false);
 		} catch (MessageTimeOutException e) {
 			System.err
 					.println("Exception in \"Location Unavailable\" test (ignored): "
 							+ e.getMessage());
-
 			throw e;
 		}
 		driver.navigate().to(URL);
+		element = uiUtils.findElement(By.id("placename"), 120);
+		// confirm that #placename is empty
+		assertThat(element.getText(), is(""));
 	}
 
 	@Test
@@ -92,6 +100,7 @@ public class GeolocationOverrideTest extends BaseTest {
 		element = uiUtils.findElement(locator, 120);
 		assertThat(element.getText(), containsString("Mountain View"));
 		System.err.println("Location explained: " + element.getText());
+		utils.sleep(120);
 	}
 
 	@Override
@@ -99,11 +108,10 @@ public class GeolocationOverrideTest extends BaseTest {
 	public void afterTest() {
 		try {
 			// org.openqa.selenium.WebDriverException:
-			// unknown error: cannot determine
-			// loading status
-			MessageBuilder.buildClearGeoLocationMessage(id);
+			// unknown error: cannot determine loading status
+			CDPClient.sendMessage(MessageBuilder.buildClearGeoLocationMessage(id));
 			driver.navigate().to("about:blank");
-		} catch (WebDriverException e) {
+		} catch (WebDriverException | IOException | WebSocketException e) {
 			System.err.println(
 					"Web Driver exception in afterTest (ignored): " + e.getMessage());
 		}

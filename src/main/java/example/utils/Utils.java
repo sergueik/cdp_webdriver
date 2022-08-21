@@ -241,7 +241,7 @@ public class Utils {
 	public void waitFor(long interval) {
 		try {
 			TimeUnit.SECONDS.sleep(interval);
-			Thread.sleep(interval);
+			// Thread.sleep(interval);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

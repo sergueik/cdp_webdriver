@@ -68,6 +68,9 @@ public class BaseTest {
 
 	@After
 	public void afterTest() {
+		// org.openqa.selenium.WebDriverException:
+		// unknown error: cannot determine
+		// loading status
 		driver.navigate().to("about:blank");
 	}
 
