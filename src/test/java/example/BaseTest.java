@@ -33,6 +33,11 @@ public class BaseTest {
 	protected static boolean debug = false;
 	protected static boolean headless = false; // false;
 	protected static ChromeDriverService chromeDriverService;
+	protected static String webSocketURL;
+
+	protected static String GetWebSocketURL() {
+		return BaseTest.webSocketURL;
+	}
 
 	public void setDebug(boolean value) {
 		BaseTest.debug = value;
@@ -58,7 +63,8 @@ public class BaseTest {
 		System.err.println("HEADLESS: " + headless);
 		driver = utils.launchBrowser(headless);
 		uiUtils.setDriver(driver);
-		CDPClient = new CDPClient(utils.getWebSocketURL());
+		webSocketURL = utils.getWebSocketURL();
+		CDPClient = new CDPClient(webSocketURL);
 	}
 
 	@Before

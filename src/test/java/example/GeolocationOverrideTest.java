@@ -29,6 +29,7 @@ import example.utils.Utils;
 // see also: https://habr.com/ru/post/518862/
 
 public class GeolocationOverrideTest extends BaseTest {
+
 	private String URL = null;
 	private static WebElement element = null;
 	// private static By locator = By
@@ -39,8 +40,10 @@ public class GeolocationOverrideTest extends BaseTest {
 	@Before
 	public void before() throws IOException, WebSocketException,
 			MessageTimeOutException, InterruptedException {
+		this.setDebug(true);
+		System.err.println("WebSocketURL: " + GetWebSocketURL());
 		setLocation();
-
+		utils.sleep(240);
 	}
 
 	@Test
