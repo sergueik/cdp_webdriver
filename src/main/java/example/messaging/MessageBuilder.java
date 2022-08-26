@@ -1045,15 +1045,16 @@ public class MessageBuilder {
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-setBlockedURLs
 	// NOTE: not available in stable or stable RC branches
+	// found not working with Selenium 3.x
 	public static String buildNetworkSetBlockedURLs(int id, String[] urls) {
 		method = "Network.setBlockedURLs";
 		params = new HashMap<>();
 		params.put("urls", urls);
 		if (debug) {
 			System.err.println(String.format(
-					"Sending:\n"
-							+ "{\"id\":%d,\"method\":\"Network.setBlockedURLs\",\"params\":{\"urls\":[%s]}}",
-					id, Arrays.asList(urls)));
+					"sending:\n"
+							+ "{\"id\":%d,\"method\":\"%s\",\"params\":{\"urls\":[%s]}}",
+					id, method, Arrays.asList(urls)));
 
 		}
 		return buildMessage(id, method, params);
@@ -1061,13 +1062,14 @@ public class MessageBuilder {
 
 	public static String buildNetworkSetBlockedURLs(int id, List<String> urls) {
 		method = "Network.setBlockedURLs";
+		          
 		params = new HashMap<>();
 		params.put("urls", urls.toArray());
 		if (debug) {
 			System.err.println(String.format(
 					"sending:\n"
-							+ "{\"id\":%d,\"method\":\"Network.setBlockedURLs\",\"params\":{\"urls\":[%s]}}",
-					id, urls.toString()));
+							+ "{\"id\":%d,\"method\":\"%s\",\"params\":{\"urls\":[%s]}}",
+					id, method, urls.toString()));
 		}
 		return buildMessage(id, method, params);
 	}
