@@ -76,7 +76,7 @@ public class MessageBuilder {
 		return buildMessage(id, method, params);
 	}
 
-	// https://chromedevtools.github.io/devtools-protocol/tot/DOMSnapshot/#method-enable
+	// https://chromedevtools.github.io/devtools-protocol/tot/Emulation/#method-clearGeolocationOverride
 	public static String buildClearGeoLocationMessage(int id) {
 		return buildMessage(id, "Emulation.clearGeolocationOverride");
 	}
