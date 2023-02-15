@@ -1,7 +1,7 @@
 package example.messaging;
 
 /**
- * Copyright 2020-2022 Serguei Kouzmine
+ * Copyright 2020-2023 Serguei Kouzmine
  */
 
 import java.util.ArrayList;
@@ -382,6 +382,19 @@ public class MessageBuilder {
 		 * return String.
 		 * format("{\"id\":%d,\"method\":\"DOM.querySelector\", \"params\":{\"nodeId\":\"%d\", \"selector\":\"%s\"}}"
 		 * , id, nodeId, selector);
+		 */
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/CSS/#method-getComputedStyleForNode
+	public static String buildGetComputedStyleForNode(int id, long nodeId) {
+		method = "CSS.getComputedStyleForNode";
+		params = new HashMap<>();
+		params.put("nodeId", nodeId);
+		return buildMessage(id, method, params);
+		/*
+		 * return String.
+		 * format("{\"id\":%d,\"method\":\"CSS.getComputedStyleForNode\", \"params\":{\"nodeId\":\"%d\"}}"
+		 * , id, nodeId);
 		 */
 	}
 
@@ -887,6 +900,37 @@ public class MessageBuilder {
 		}
 		return buildMessage(id, "DOM.enable");
 	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-disable
+	public static String buildDOMDisableMessage(int id) {
+		if (debug) {
+			System.err.println(String
+					.format("Sending:\n" + "{\"id\":%d,\"method\":\"DOM.disable\"}", id));
+
+		}
+		return buildMessage(id, "DOM.disable");
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/CSS/#method-enable
+	public static String buildCSSEnableMessage(int id) {
+		if (debug) {
+			System.err.println(String
+					.format("Sending:\n" + "{\"id\":%d,\"method\":\"DOM.enable\"}", id));
+
+		}
+		return buildMessage(id, "CSS.enable");
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/CSS/#method-disable
+	public static String buildCSSDisableMessage(int id) {
+		if (debug) {
+			System.err.println(String
+					.format("Sending:\n" + "{\"id\":%d,\"method\":\"CSS.disable\"}", id));
+
+		}
+		return buildMessage(id, "CSS.disable");
+	}
+
 	// https://chromedevtools.github.io/devtools-protocol/tot/Overlay/#method-highlightFrame
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Emulation/#method-setDeviceMetricsOverride
