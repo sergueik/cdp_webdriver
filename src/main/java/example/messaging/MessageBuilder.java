@@ -344,6 +344,7 @@ public class MessageBuilder {
 		return buildGetDocumentMessage(id, -1, pierce);
 	}
 
+	// https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-getDocument
 	public static String buildGetDocumentMessage(int id, int depth,
 			Boolean pierce) {
 		method = "DOM.getDocument";
@@ -358,11 +359,14 @@ public class MessageBuilder {
 		 */
 	}
 
+	// https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-describeNode
 	public static String buildDescribeNodeMessage(int id, long nodeId) {
 		method = "DOM.describeNode";
 		params = new HashMap<>();
 		params.put("nodeId", nodeId);
+		// params.put("backendNodeId", backendNodeId);
 		params.put("depth", 1);
+		// params.put("pierce", pierce);
 		return buildMessage(id, method, params);
 		/*
 		 * return String.format(
@@ -371,6 +375,23 @@ public class MessageBuilder {
 		 */
 	}
 
+	// https://chromedevtools.github.io/devtools-protocol/tot/CSS/#method-setEffectivePropertyValueForNode
+	public static String buildSetEffectivePropertyValueForNode(int id,
+			long nodeId, String propertyName, String value) {
+		method = "CSS.setEffectivePropertyValueForNode";
+		params = new HashMap<>();
+		params.put("nodeId", nodeId);
+		params.put("propertyName", propertyName);
+		params.put("value", value);
+
+		return buildMessage(id, method, params);
+		/*
+		 * return String.format(
+		 * "{\"id\":%d,\"method\":\"CSS.setEffectivePropertyValueForNode\",\"params\":{\"nodeId\":\"%d\",\"propertyName\":\"%s\",\"value\":\"%s\"}}", id, nodeId, propertyName, value);
+		 */
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-querySelector
 	public static String buildQuerySelectorMessage(int id, long nodeId,
 			String selector) {
 		method = "DOM.querySelector";
@@ -381,6 +402,21 @@ public class MessageBuilder {
 		/*
 		 * return String.
 		 * format("{\"id\":%d,\"method\":\"DOM.querySelector\", \"params\":{\"nodeId\":\"%d\", \"selector\":\"%s\"}}"
+		 * , id, nodeId, selector);
+		 */
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-querySelector
+	public static String buildQuerySelectorAllMessage(int id, long nodeId,
+			String selector) {
+		method = "DOM.querySelectorAll";
+		params = new HashMap<>();
+		params.put("nodeId", nodeId);
+		params.put("selector", selector);
+		return buildMessage(id, method, params);
+		/*
+		 * return String.
+		 * format("{\"id\":%d,\"method\":\"DOM.querySelectorAll\", \"params\":{\"nodeId\":\"%d\", \"selector\":\"%s\"}}"
 		 * , id, nodeId, selector);
 		 */
 	}

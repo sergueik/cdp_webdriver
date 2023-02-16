@@ -43,6 +43,8 @@ public class ComputedStyleTest extends BaseTest {
 	private String responseMessage = null;
 	private JSONObject result = null;
 	private JSONArray result2 = null;
+	private static final String propertyName = "background-color";
+	private static final String value = "rgb(10,10,10)";
 
 	@Before
 	public void beforeTest() throws IOException {
@@ -50,7 +52,9 @@ public class ComputedStyleTest extends BaseTest {
 		super.beforeTest();
 		driver.navigate().to(url);
 		try {
+			id = utils.getDynamicID();
 			CDPClient.sendMessage(MessageBuilder.buildDOMEnableMessage(id));
+			id = utils.getDynamicID();
 			CDPClient.sendMessage(MessageBuilder.buildCSSEnableMessage(id));
 		} catch (Exception e) {
 			System.err.println("Exception (ignored): " + e.toString());
@@ -61,7 +65,9 @@ public class ComputedStyleTest extends BaseTest {
 	public void after() {
 		// Arrange
 		try {
+			id = utils.getDynamicID();
 			CDPClient.sendMessage(MessageBuilder.buildDOMDisableMessage(id));
+			id = utils.getDynamicID();
 			CDPClient.sendMessage(MessageBuilder.buildCSSDisableMessage(id));
 		} catch (Exception e) {
 			System.err.println("Exception (ignored): " + e.toString());
@@ -71,16 +77,15 @@ public class ComputedStyleTest extends BaseTest {
 
 	private static long nodeId = (long) -1;
 	private static long rootNodeId = (long) -1;
-	private int id2;
 	private int max_retry;
 
 	@Test
 	public void test() {
 
 		try {
-			id2 = utils.getDynamicID();
-			CDPClient.sendMessage(MessageBuilder.buildGetDocumentMessage(id2));
-			responseMessage = CDPClient.getResponseMessage(id2, null);
+			id = utils.getDynamicID();
+			CDPClient.sendMessage(MessageBuilder.buildGetDocumentMessage(id));
+			responseMessage = CDPClient.getResponseMessage(id, null);
 			// System.err.println("getDocument: " + responseMessage);
 			result = new JSONObject(responseMessage);
 			assertThat(result.has("root"), is(true));
@@ -93,22 +98,22 @@ public class ComputedStyleTest extends BaseTest {
 				selector = String.format("div.bd-example button.%s", data);
 				System.err.println(String.format("query Selector: \"%s\"", selector));
 
-				id2 = utils.getDynamicID();
-
-				CDPClient.sendMessage(MessageBuilder.buildQuerySelectorMessage(id2,
-						rootNodeId, selector));
-				System.err.println("id = " + id2);
-				max_retry = CDPClient.getMaxRetry();
-				CDPClient.setMaxRetry(10);
-				nodeId = Integer.parseInt(CDPClient.getResponseMessage(id2, "nodeId"));
-				System.err.println("Query Selector response: " + nodeId);
-
-				id2 = utils.getDynamicID();
+				id = utils.getDynamicID();
 
 				CDPClient.sendMessage(
-						MessageBuilder.buildGetComputedStyleForNode(id2, nodeId));
-				System.err.println("id = " + id2);
-				responseMessage = CDPClient.getResponseMessage(id2, "computedStyle");
+						MessageBuilder.buildQuerySelectorMessage(id, rootNodeId, selector));
+				System.err.println("id = " + id);
+				max_retry = CDPClient.getMaxRetry();
+				CDPClient.setMaxRetry(10);
+				nodeId = Integer.parseInt(CDPClient.getResponseMessage(id, "nodeId"));
+				System.err.println("Query Selector response: " + nodeId);
+
+				id = utils.getDynamicID();
+
+				CDPClient.sendMessage(
+						MessageBuilder.buildGetComputedStyleForNode(id, nodeId));
+				System.err.println("id = " + id);
+				responseMessage = CDPClient.getResponseMessage(id, "computedStyle");
 				// System.err.println("GetComputedStyleForNode response: " +
 				// responseMessage);
 				result2 = new JSONArray(responseMessage);
@@ -117,16 +122,23 @@ public class ComputedStyleTest extends BaseTest {
 					assertThat(result2 instanceof JSONObject, is(true));
 					String name = ((JSONObject) result2).getString("name");
 					// System.err.println(String.format("name: \"%s\"", name));
-					if (name.matches("background-color")) {
-						System.err.println(String.format("computed style: %s",
-								((JSONObject) result2).getString("value")));
+					if (name.matches(propertyName)) {
+						System.err.println(
+								String.format("computed style: " + propertyName + ": %s",
+										((JSONObject) result2).getString("value")));
 					}
 				});
-				id2 = utils.getDynamicID();
+				id = utils.getDynamicID();
 				CDPClient.sendMessage(
-						MessageBuilder.buildGetOuterHTMLMessage(id2, (int) nodeId));
-				responseMessage = CDPClient.getResponseMessage(id2, "outerHTML");
+						MessageBuilder.buildGetOuterHTMLMessage(id, (int) nodeId));
+				responseMessage = CDPClient.getResponseMessage(id, "outerHTML");
 				System.err.println("Get Outer HTML response: " + responseMessage);
+
+				id = utils.getDynamicID();
+				CDPClient.sendMessage(
+						MessageBuilder.buildSetEffectivePropertyValueForNode(id,
+								(int) nodeId, propertyName, value));
+				utils.waitFor(1);
 			}
 		} catch (Exception e) {
 			System.err.println("Exception (ignored): " + e.toString());
