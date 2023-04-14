@@ -16,7 +16,7 @@
     <guava.version>23.0</guava.version>
     <hamcrest-all.version>1.3</hamcrest-all.version>
     <java.version>1.8</java.version>
-    <json.version>20160810</json.version>
+    <json.version>20230227</json.version>
     <!-- 
     <json.version>20201115</json.version>
 -->
