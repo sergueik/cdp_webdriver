@@ -517,6 +517,16 @@ public class MessageBuilder {
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF
+	public static String buildPrintPDFMessage(int id,
+			Map<String, Object> params) {
+		method = "Page.printToPDF";
+
+		String message = buildMessage(id, method, params);
+		System.err.println("Message : " + message);
+		return message;
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-printToPDF
 	public static String buildPrintPDFMessage(int id) {
 		method = "Page.printToPDF";
 		params = new HashMap<>();
