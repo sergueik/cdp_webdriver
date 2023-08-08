@@ -689,14 +689,14 @@ public class MessageBuilder {
 		params.put("storageTypes", "all");
 		if (debug) {
 			System.err.println(String.format(
-					"Sending:\n" + "{\"id\":%s,\"method\":\"Storage.clearDataForOrigin\","
+					"Sending:\n" + "{\"id\":%s,\"method\":\"%s\","
 							+ "\"params\":{\"origin\":\"%s\",\"storageTypes\":\"all\"}}",
-					id, url));
-
+					id, method, url));
 		}
 		return buildMessage(id, method, params);
 	}
 
+	// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-captureScreenshot
 	public static String buildTakeElementScreenShotMessage(int id, long x, long y,
 			long width, long height, int scale) {
 		method = "Page.captureScreenshot";
@@ -712,12 +712,10 @@ public class MessageBuilder {
 		params.put("clip", data);
 		if (debug) {
 			System.err.println(String.format(
-					"Sending:\n" + "{\"id\":%s,\"method\":\"Page.captureScreenshot\","
+					"Sending:\n" + "{\"id\":%s,\"method\":\"%s\","
 							+ "\"params\":{\"clip\":{\"x\":%s,\"y\":%s,\"width\":%s,\"height\":%s,\"scale\":%s}}}",
-					id, x, y, width, height, scale));
-
+					id, method, x, y, width, height, scale));
 		}
-
 		return buildMessage(id, method, params);
 	}
 
@@ -912,70 +910,74 @@ public class MessageBuilder {
 		String method = "Performance.setTimeDomain";
 		params = new HashMap<>();
 		params.put("timeDomain", timeDomain);
+		if (debug) {
+			System.err
+					.println(String.format(
+							"{\"id\":%d,\"method\":\"%s\","
+									+ "\"params\":{\"timeDomain\":\"%s\"}}",
+							id, method, timeDomain));
+		}
 		return buildMessage(id, method, params);
-		/*
-		 * return String.format("{\"id\":%d,\"method\":\"Performance.setTimeDomain\"," +
-		 * "\"params\":{\"timeDomain\":\"%s\"}}", id, timeDomain);
-		 */
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Performance/#method-enable
 	public static String buildPerformanceEnableMessage(int id) {
-		return buildMessage(id, "Performance.enable");
-		/*
-		 * return String.format("{\"id\":%d,\"method\":\"Performance.enable\"}", id);
-		 */
+		method = "Performance.enable";
+		if (debug) {
+			System.err.println(String
+					.format("Sending:\n" + "{\"id\":%d,\"method\":\"%s\"}", id, method));
+		}
+		return buildMessage(id, method);
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Performance/#method-disable
 	public static String buildPerformanceDisableMessage(int id) {
-		if (debug) {
-			System.err.println(String.format(
-					"Sending:\n" + "{\"id\":%d,\"method\":\"Performance.disable\"}", id));
-
-		}
-		return buildMessage(id, "Performance.disable");
-	}
-
-	//
-	// https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-enable
-	public static String buildDOMEnableMessage(int id) {
+		method = "Performance.disable";
 		if (debug) {
 			System.err.println(String
-					.format("Sending:\n" + "{\"id\":%d,\"method\":\"DOM.enable\"}", id));
-
+					.format("Sending:\n" + "{\"id\":%d,\"method\":\"%s\"}", id, method));
 		}
-		return buildMessage(id, "DOM.enable");
+		return buildMessage(id, method);
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-enable
+	public static String buildDOMEnableMessage(int id) {
+		method = "DOM.enable";
+		if (debug) {
+			System.err.println(String
+					.format("Sending:\n" + "{\"id\":%d,\"method\":\"%s\"}", id, method));
+		}
+		return buildMessage(id, method);
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-disable
 	public static String buildDOMDisableMessage(int id) {
+		method = "DOM.disable";
 		if (debug) {
 			System.err.println(String
-					.format("Sending:\n" + "{\"id\":%d,\"method\":\"DOM.disable\"}", id));
-
+					.format("Sending:\n" + "{\"id\":%d,\"method\":\"%s\"}", id, method));
 		}
-		return buildMessage(id, "DOM.disable");
+		return buildMessage(id, method);
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/CSS/#method-enable
 	public static String buildCSSEnableMessage(int id) {
+		method = "CSS.enable";
 		if (debug) {
 			System.err.println(String
-					.format("Sending:\n" + "{\"id\":%d,\"method\":\"DOM.enable\"}", id));
-
+					.format("Sending:\n" + "{\"id\":%d,\"method\":\"%s\"}", id, method));
 		}
-		return buildMessage(id, "CSS.enable");
+		return buildMessage(id, method);
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/CSS/#method-disable
 	public static String buildCSSDisableMessage(int id) {
+		method = "CSS.disable";
 		if (debug) {
 			System.err.println(String
-					.format("Sending:\n" + "{\"id\":%d,\"method\":\"CSS.disable\"}", id));
-
+					.format("Sending:\n" + "{\"id\":%d,\"method\":\"%s\"}", id, method));
 		}
-		return buildMessage(id, "CSS.disable");
+		return buildMessage(id, method);
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Overlay/#method-highlightFrame
@@ -991,34 +993,30 @@ public class MessageBuilder {
 		params.put("frameId", frameId);
 		params.put("contentColor", rgb_data);
 		if (debug) {
-			System.err.println(String.format(
-					"Sending:\n" + "{\"id\":%d,\"method\":\"Overlay.highlightFrame\"}",
-					id));
-
+			System.err.println(String
+					.format("Sending:\n" + "{\"id\":%d,\"method\":\"%s\"}", id, method));
 		}
 		return buildMessage(id, method, params);
-
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Overlay/#method-enable
 	public static String buildOverlayEnableMessage(int id) {
+		method = "Overlay.enable";
 		if (debug) {
-			System.err.println(String.format(
-					"Sending:\n" + "{\"id\":%d,\"method\":\"Overlay.enable\"}", id));
-
+			System.err.println(String
+					.format("Sending:\n" + "{\"id\":%d,\"method\":\"%s\"}", id, method));
 		}
-		return buildMessage(id, "Overlay.enable");
+		return buildMessage(id, method);
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Performance/#method-getMetrics
 	public static String buildPerformanceGetMetricsMessage(int id) {
+		method = "Performance.getMetrics";
 		if (debug) {
-			System.err.println(String.format(
-					"Sending:\n" + "{\"id\":%d,\"method\":\"Performance.getMetrics\"}",
-					id));
-
+			System.err.println(String
+					.format("Sending:\n" + "{\"id\":%d,\"method\":\"%s\"}", id, method));
 		}
-		return buildMessage(id, "Performance.getMetrics");
+		return buildMessage(id, method);
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Emulation/#method-setUserAgentOverride
@@ -1028,11 +1026,8 @@ public class MessageBuilder {
 		params = new HashMap<>();
 		params.put("userAgent", userAgent);
 		if (debug) {
-			System.err.println(String.format(
-					"Sending:\n"
-							+ "{\"id\":%d,\"method\":\"Emulation.setUserAgentOverride\"}",
-					id));
-
+			System.err.println(String
+					.format("Sending:\n" + "{\"id\":%d,\"method\":\"%s\"}", id, method));
 		}
 		return buildMessage(id, method, params);
 
@@ -1048,9 +1043,8 @@ public class MessageBuilder {
 		if (debug) {
 			System.err.println(String.format(
 					"Sending:\n"
-							+ "{\"id\":%d,\"method\":\"Page.addScriptToEvaluateOnLoad\", \"params\":{\"source\":\"%s\"}",
-					id, source));
-
+							+ "{\"id\":%d,\"method\":\"%s\", \"params\":{\"source\":\"%s\"}",
+					id, method, source));
 		}
 		return buildMessage(id, method, params);
 	}
@@ -1065,16 +1059,14 @@ public class MessageBuilder {
 		if (debug) {
 			System.err.println(String.format(
 					"Sending:\n"
-							+ "{\"id\":%d,\"method\":\"Page.addScriptToEvaluateOnNewDocument\", \"params\":{\"source\":\"%s\"}",
-					id, source));
-
+							+ "{\"id\":%d,\"method\":\"%s\", \"params\":{\"source\":\"%s\"}",
+					id, method, source));
 		}
 		return buildMessage(id, method, params);
 	}
 
 	public static String buildPageAddScriptToEvaluateOnNewDocumentMessage(
 			final String source) {
-
 		method = "Page.addScriptToEvaluateOnNewDocument";
 		params = new HashMap<>();
 		params.put("source", source);
@@ -1082,8 +1074,8 @@ public class MessageBuilder {
 		if (debug) {
 			System.err.println(String.format(
 					"Sending:\n"
-							+ "{\"id\":%d,\"method\":\"Page.addScriptToEvaluateOnNewDocument\", \"params\":{\"source\":\"\"}",
-					Utils.getInstance().getDynamicID(), source));
+							+ "{\"id\":%d,\"method\":\"%s\", \"params\":{\"source\":\"\"}",
+					Utils.getInstance().getDynamicID(), method, source));
 
 		}
 
@@ -1099,8 +1091,8 @@ public class MessageBuilder {
 		if (debug) {
 			System.err.println(String.format(
 					"Sending:\n"
-							+ "{\"id\":%d,\"method\":\"Page.removeScriptToEvaluateOnNewDocument\", \"params\":{\"identifier\":\"\"}",
-					id, identifier));
+							+ "{\"id\":%d,\"method\":\"%s\", \"params\":{\"identifier\":\"\"}",
+					id, method, identifier));
 
 		}
 		return buildMessage(id, method, params);
@@ -1118,11 +1110,8 @@ public class MessageBuilder {
 		params.put("mobile", isMobile);
 		params.put("scale", scale);
 		if (debug) {
-			System.err.println(String.format(
-					"Sending:\n"
-							+ "{\"id\":%d,\"method\":\"Emulation.setDeviceMetricsOverride\"}",
-					id));
-
+			System.err.println(String
+					.format("Sending:\n" + "{\"id\":%d,\"method\":\"%s\"}", id, method));
 		}
 		return buildMessage(id, method, params);
 	}
@@ -1187,8 +1176,8 @@ public class MessageBuilder {
 	// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-getLayoutMetrics
 	public static String buildPageGetLayoutMetricsMessage(int id) {
 		if (debug) {
-			System.err.println(String.format(
-					"Sending:\n{\"id\":%d,\"method\":\"Page.getLayoutMetrics\"}", id));
+			System.err.println(
+					String.format("Sending:\n{\"id\":%d,\"method\":\"%s\"}", id, method));
 		}
 		return buildMessage(id, "Page.getLayoutMetrics");
 	}
@@ -1196,9 +1185,8 @@ public class MessageBuilder {
 	// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-getFrameTree
 	public static String buildPageGetFrameTreeMessage(int id) {
 		if (debug) {
-			System.err.println(String.format(
-					"Sending:\n{\"id\":%d,\"method\":\"Page.getFrameTree\"}", id));
-
+			System.err.println(
+					String.format("Sending:\n{\"id\":%d,\"method\":\"%s\"}", id, method));
 		}
 		return buildMessage(id, "Page.getFrameTree");
 	}
@@ -1208,12 +1196,12 @@ public class MessageBuilder {
 		method = "DOM.getFrameOwner";
 		params = new HashMap<>();
 		params.put("frameId", frameId);
-		/*
-		 * if (debug) { System.err.println(String.format(
-		 * "Sending:\n{\"id\":%d,\"method\":\"Page.getFrameTree\"}", id));
-		 * 
-		 * }
-		 */
+
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"frameIdr\":\"%s\"}}",
+					id, method, frameId));
+		}
 		return buildMessage(id, method, params);
 	}
 
@@ -1222,13 +1210,12 @@ public class MessageBuilder {
 		method = "Browser.setDownloadBehavior";
 		params = new HashMap<>();
 		params.put("behavior", "default");
-		/*
-		 * if (debug) { System.err.println(String.format(
-		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"behavior\":\"default\"}}}"
-		 * , id, method ));
-		 * 
-		 * }
-		 */
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"behavior\":\"default\"}}}",
+					id, method));
+		}
+
 		return buildMessage(id, method, params);
 	}
 
@@ -1246,13 +1233,12 @@ public class MessageBuilder {
 		params.put("behavior", randomlyName ? "allowAndName" : "allow");
 		params.put("downloadPath", downloadPath);
 		params.put("eventsEnabled", true);
-		/*
-		 * if (debug) { System.err.println(String.format(
-		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"behavior\":\"%s\", \"downloadPath\":\"%s\"}}}"
-		 * , id, method, (randomlyName ? "allowAndName" : "allow"), downloadPath));
-		 * 
-		 * }
-		 */
+
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"behavior\":\"%s\", \"downloadPath\":\"%s\"}}}",
+					id, method, (randomlyName ? "allowAndName" : "allow"), downloadPath));
+		}
 		return buildMessage(id, method, params);
 	}
 
@@ -1261,13 +1247,11 @@ public class MessageBuilder {
 		method = "Page.setDownloadBehavior";
 		params = new HashMap<>();
 		params.put("behavior", "default");
-		/*
-		 * if (debug) { System.err.println(String.format(
-		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"behavior\":\"default\"}}}"
-		 * , id, method ));
-		 * 
-		 * }
-		 */
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"behavior\":\"default\"}}}",
+					id, method));
+		}
 		return buildMessage(id, method, params);
 	}
 
@@ -1277,23 +1261,21 @@ public class MessageBuilder {
 		params = new HashMap<>();
 		params.put("behavior", "allow");
 		params.put("downloadPath", downloadPath);
-		/*
-		 * if (debug) { System.err.println(String.format(
-		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"behavior\":\"allow\", \"downloadPath\":\"%s\"}}}"
-		 * , id, method,downloadPath)); }
-		 */
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"behavior\":\"allow\", \"downloadPath\":\"%s\"}}}",
+					id, method, downloadPath));
+		}
 		return buildMessage(id, method, params);
 	}
 
 	public static String buildEmulationResetPageScaleMessage(int id) {
+		method = "Emulation.resetPageScaleFactor";
 		if (debug) {
-			System.err.println(String.format(
-					"Sending:\n"
-							+ "{\"id\":%d,\"method\":\"Emulation.resetPageScaleFactor\"}",
-					id));
-
+			System.err.println(String
+					.format("Sending:\n" + "{\"id\":%d,\"method\":\"%s\"}", id, method));
 		}
-		return buildMessage(id, "Emulation.resetPageScaleFactor");
+		return buildMessage(id, method);
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Browser/#method-getHistograms
@@ -1307,12 +1289,11 @@ public class MessageBuilder {
 
 		params.put("query", query);
 		params.put("delta", false);
-
-		/*
-		 * if (debug) { System.err.println(String.format(
-		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"query\":\"%s\", \"delta\": \"false\"}}}"
-		 * , id, method,query)); }
-		 */
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"query\":\"%s\", \"delta\": \"false\"}}}",
+					id, method, query));
+		}
 		return buildMessage(id, method, params);
 	}
 
@@ -1323,22 +1304,23 @@ public class MessageBuilder {
 
 		params.put("name", name);
 		params.put("delta", false);
-
-		/*
-		 * if (debug) { System.err.println(String.format(
-		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"name\":\"%s\", \"delta\": \"false\"}}}"
-		 * , id, method,name )); }
-		 */
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"name\":\"%s\", \"delta\": \"false\"}}}",
+					id, method, name));
+		}
 		return buildMessage(id, method, params);
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-getAllCookies
 	public static String buildNetworkGetAllCookiesMessage(int id) {
 		method = "Network.getAllCookies";
-		/*
-		 * if (debug) { System.err.println(String.format(
-		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{}}}", id, method )); }
-		 */
+
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{}}}", id,
+					method));
+		}
 		return buildMessage(id, method);
 	}
 
@@ -1349,21 +1331,22 @@ public class MessageBuilder {
 		params = new HashMap<>();
 
 		params.put("urls", urls);
-		/*
-		 * if (debug) { System.err.println(String.format(
-		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"urls\":\"%s\"}}}", id,
-		 * method,urls )); }
-		 */
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"urls\":\"%s\"}}}",
+					id, method, urls));
+		}
 		return buildMessage(id, method, params);
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-getNavigationHistory
 	public static String buildPageGetNavigationHistoryMessage(int id) {
 		method = "Page.getNavigationHistory";
-		/*
-		 * if (debug) { System.err.println(String.format(
-		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{}}}", id, method )); }
-		 */
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{}}}", id,
+					method));
+		}
 		return buildMessage(id, method);
 	}
 
@@ -1373,11 +1356,12 @@ public class MessageBuilder {
 		method = "Page.navigateToHistoryEntry";
 		params = new HashMap<>();
 		params.put("entryId", entryId);
-		/*
-		 * if (debug) { System.err.println(String.format(
-		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"entryId\":  %d}}}",
-		 * id, method, entryId )); }
-		 */
+
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"entryId\":  %d}}}",
+					id, method, entryId));
+		}
 		return buildMessage(id, method, params);
 	}
 
@@ -1393,10 +1377,11 @@ public class MessageBuilder {
 	// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-resetNavigationHistory
 	public static String buildPageResetNavigationHistoryMessage(int id) {
 		method = "Page.resetNavigationHistory";
-		/*
-		 * if (debug) { System.err.println(String.format(
-		 * "Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{}}}", id, method )); }
-		 */
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{}}}", id,
+					method));
+		}
 		return buildMessage(id, method);
 	}
 
