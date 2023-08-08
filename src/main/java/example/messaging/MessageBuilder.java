@@ -894,6 +894,7 @@ public class MessageBuilder {
 		 */
 	}
 
+	// https://chromedevtools.github.io/devtools-protocol/tot/Network/#method-setUserAgentOverride
 	public static String buildSetUserAgentOverrideMessage(String userAgent,
 			String platform) {
 		String method = "Network.setUserAgentOverride";
@@ -978,8 +979,6 @@ public class MessageBuilder {
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Overlay/#method-highlightFrame
-
-	// https://chromedevtools.github.io/devtools-protocol/tot/Emulation/#method-setDeviceMetricsOverride
 	public static String buildOverlayHighlightFrameMessage(int id,
 			final String frameId) {
 		method = "Overlay.highlightFrame";
@@ -1022,7 +1021,7 @@ public class MessageBuilder {
 		return buildMessage(id, "Performance.getMetrics");
 	}
 
-	// https://chromedevtools.github.io/devtools-protocol/tot/Emulation/#method-setDeviceMetricsOverride
+	// https://chromedevtools.github.io/devtools-protocol/tot/Emulation/#method-setUserAgentOverride
 	public static String buildEmulationSetUserAgentMessage(int id,
 			final String userAgent) {
 		method = "Emulation.setUserAgentOverride";
@@ -1128,6 +1127,7 @@ public class MessageBuilder {
 		return buildMessage(id, method, params);
 	}
 
+	// https://chromedevtools.github.io/devtools-protocol/tot/Emulation/#method-setDeviceMetricsOverride
 	public static String buildEmulationSetDeviceMetricsMessage(int id,
 			final int width, final int height, final int scaleFactor) {
 		return buildEmulationSetDeviceMetricsMessage(id, width, height, scaleFactor,
@@ -1182,6 +1182,15 @@ public class MessageBuilder {
 					id, method, urls.toString()));
 		}
 		return buildMessage(id, method, params);
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-getLayoutMetrics
+	public static String buildPageGetLayoutMetricsMessage(int id) {
+		if (debug) {
+			System.err.println(String.format(
+					"Sending:\n{\"id\":%d,\"method\":\"Page.getLayoutMetrics\"}", id));
+		}
+		return buildMessage(id, "Page.getLayoutMetrics");
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Page/#method-getFrameTree
@@ -1392,3 +1401,4 @@ public class MessageBuilder {
 	}
 
 }
+

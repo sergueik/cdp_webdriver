@@ -21,6 +21,7 @@ public class UIUtils {
 	private WebDriver driver;
 	private String imageName = null;
 	private String imagePath = null;
+	private static long highlightInterval = 100;
 
 	public String getImagePath() {
 		return imagePath;
@@ -89,6 +90,26 @@ public class UIUtils {
 
 	public void scrollToElement(WebElement element) {
 		this.executeJavaScript("arguments[0].scrollIntoView(true);", element);
+	}
+
+	public void highlight(WebElement element) {
+		highlight(element, highlightInterval, "solid yellow");
+	}
+
+	public void highlight(WebElement element, long highlightInterval) {
+		highlight(element, highlightInterval, "solid yellow");
+	}
+
+	public void highlight(WebElement element, long highlightInterval,
+			String color) {
+		try {
+			this.executeJavaScript(
+					String.format("arguments[0].style.border='3px %s'", color), element);
+			Thread.sleep(highlightInterval);
+			this.executeJavaScript("arguments[0].style.border=''", element);
+		} catch (InterruptedException e) {
+			// System.err.println("Exception (ignored): " + e.toString());
+		}
 	}
 
 }
