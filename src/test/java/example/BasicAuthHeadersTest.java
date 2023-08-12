@@ -7,7 +7,9 @@ package example;
 // example usage: 
 // mvn -Dtrace_id=%TRACEID% -Dversion=01 -Dparent_id=%PARENTID% test
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.core.IsNot.not;
 
 import java.io.IOException;
@@ -18,6 +20,8 @@ import org.apache.commons.codec.binary.Base64;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 // TODO: get rid of
 import com.neovisionaries.ws.client.WebSocketException;
@@ -44,6 +48,11 @@ public class BasicAuthHeadersTest extends BaseTest {
 		driver.navigate().to("https://jigsaw.w3.org/HTTP");
 		byte[] input = String.format("%s:%s", username, password).getBytes("UTF-8");
 		authString = new String(Base64.encodeBase64(input));
+		try {
+			CDPClient.sendMessage(MessageBuilder.buildNetWorkEnableMessage(id));
+		} catch (WebSocketException e) {
+			// ignore
+		}
 
 	}
 
@@ -59,32 +68,46 @@ public class BasicAuthHeadersTest extends BaseTest {
 
 	}
 
+	private static WebElement element;
+
 	@Test
 	public void test1() throws IOException, WebSocketException {
-		// NOTE: simply disabling network does not stop the browser sending headers
-		CDPClient.sendMessage(MessageBuilder.buildNetWorkEnableMessage(id));
-		// bad password
-		CDPClient.sendMessage(MessageBuilder.buildNetWorkSetExtraHTTPHeadersMessage(
-				id, "authorization", "Basic Z3Vlc3Q6YmFkIHBhc3N3b3JkCg=="));
 		driver.navigate().to(URL);
-		for (String message : Arrays.asList("Unauthorized access",
-				"You are denied access to this resource.")) {
-			assertThat(driver.getPageSource(), containsString(message));
-		}
-
-		System.err.println("test 1:" + driver.getPageSource());
+		// System.err.println("test 1:" + driver.getPageSource());
+		element = driver.findElement(By.xpath("//body"));
+		assertThat(element, notNullValue());
+		// NOTE: interplay with headless test, for which the body is
+		// "Unauthorized access\nYou are denied access to this resource."
+		assertThat(element.getText(), is(""));
 	}
 
 	@Test
+	// NOTE: simply disabling network
+	// does not stop the browser sending the headers ??
 	public void test2() throws IOException, WebSocketException {
+		CDPClient.sendMessage(MessageBuilder
+				.buildNetWorkSetExtraHTTPHeadersMessage(id, "authorization", ""));
+		driver.navigate().to(URL);
+		// System.err.println("test 2:" + driver.getPageSource());
 
-		CDPClient.sendMessage(MessageBuilder.buildNetWorkEnableMessage(id));
+		element = driver.findElement(By.xpath("//body"));
+		assertThat(element, notNullValue());
+		assertThat(element.getText(),
+				is("The server was not able to understand this request"));
+		assertThat(driver.getTitle(), is("Bad Request"));
+	}
+
+	@Test
+	public void test3() throws IOException, WebSocketException {
 
 		CDPClient.sendMessage(MessageBuilder.buildNetWorkSetExtraHTTPHeadersMessage(
 				id, "authorization", "Basic " + authString));
 		driver.navigate().to(URL);
-		assertThat(driver.getPageSource(), containsString("Your browser made it!"));
-		System.err.println("test 1:" + driver.getPageSource());
+		// System.err.println("test 3:" + driver.getPageSource());
+		element = driver.findElement(By.xpath("//body"));
+		assertThat(element, notNullValue());
+		assertThat(element.getText(), is("Your browser made it!"));
+
 	}
 
 }

@@ -20,7 +20,7 @@ import com.neovisionaries.ws.client.WebSocketException;
 
 import example.messaging.MessageBuilder;
 
-public class BasicAuthHeadersFailigTest extends BaseTest {
+public class BasicAuthHeadersFailingTest extends BaseTest {
 	private String URL = "https://jigsaw.w3.org/HTTP/Basic/";
 	private String authString = null;
 
