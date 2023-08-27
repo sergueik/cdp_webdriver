@@ -1205,6 +1205,41 @@ public class MessageBuilder {
 		return buildMessage(id, method, params);
 	}
 
+	// https://chromedevtools.github.io/devtools-protocol/tot/Browser#method-getWindowForTarget
+	public static String buildBrowserGetWindowBoundsMessage(int id,
+			long windowId) {
+
+		method = "Browser.getWindowBounds";
+		params = new HashMap<>();
+		params.put("windowId", windowId);
+		return buildMessage(id, method, params);
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Browser#method-getWindowForTarget
+	// https://chromedevtools.github.io/devtools-protocol/tot/Browser#method-getWindowForTarget
+	public static String buildBrowserSetWindowBoundsMessage(int id, long windowId,
+			long left, long top, long width, long height, String windowState) {
+
+		method = "Browser.setWindowBounds";
+
+		params = new HashMap<>();
+		params.put("windowId", windowId);
+		final Map<String, Object> bounds = new HashMap<String, Object>();
+		bounds.put("left", left);
+		bounds.put("top", top);
+		bounds.put("width", width);
+		bounds.put("height", height);
+		bounds.put("windowState", windowState);
+		/* "normal", "minimized", "maximized", "fullscreen" */
+		params.put("bounds", bounds);
+		return buildMessage(id, method, params);
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Browser#method-getWindowForTarget
+	public static String buildBrowserGetWindowForTargetMessage(int id) {
+		return buildMessage(id, "Browser.getWindowForTarget");
+	}
+
 	// https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-getFrameOwner
 	public static String buildBrowserResetDownloadBehaviorMessage(int id) {
 		method = "Browser.setDownloadBehavior";
@@ -1386,4 +1421,3 @@ public class MessageBuilder {
 	}
 
 }
-
