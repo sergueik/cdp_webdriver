@@ -1,8 +1,10 @@
 package example;
+/**
+ * Copyright 2022,2023 Serguei Kouzmine
+ */
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.File;
 import java.nio.file.Files;

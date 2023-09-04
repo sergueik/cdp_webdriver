@@ -19,7 +19,7 @@ public class BaseNotificationServiceTest {
 	private final static int debugPort = Integer
 			.parseInt(TestUtils.getPropertyEnv("debugPort", "0"));
 	// used to override the default port 9222
-	@SuppressWarnings("unused")
+
 	private boolean debug = false;
 
 	protected UINotificationService uiNotificationService;

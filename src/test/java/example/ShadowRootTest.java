@@ -11,19 +11,14 @@ import java.util.Map;
 
 import org.json.JSONObject;
 import org.junit.Test;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.google.gson.Gson;
 // TODO: get rid of
 import com.neovisionaries.ws.client.WebSocketException;
 
 import example.messaging.CDPClient.MessageTimeOutException;
 import example.messaging.MessageBuilder;
 import example.utils.Utils;
-
-import com.google.gson.JsonSyntaxException;
-
-import com.google.gson.Gson;
 
 //based on:
 //https://youtu.be/O76h9Hf9-Os?list=PLMd2VtYMV0OSv62KjzJ4TFGLDTVtTtQVr&t=527
@@ -34,11 +29,7 @@ public class ShadowRootTest extends BaseTest {
 	private String URL = "chrome://downloads/";
 	private String responseMessage = null;
 	private JSONObject result = null;
-	private static WebElement element = null;
-	private static WebDriverWait wait;
 	private static final String expression = "document.querySelector('body > downloads-manager').shadowRoot.querySelector('#toolbar').shadowRoot.querySelector('#toolbar').shadowRoot.querySelector('#leftSpacer > h1').textContent";
-	private int id1;
-	private int id2;
 	private static Gson gson = new Gson();
 
 	@Test
@@ -46,7 +37,7 @@ public class ShadowRootTest extends BaseTest {
 		// Arrange
 		try {
 			driver.navigate().to(URL);
-			CDPClient.sendMessage(MessageBuilder.buildEnableRuntimeMessage(id));
+			CDPClient.sendMessage(MessageBuilder.buildEnableRuntimeMessage());
 			id = Utils.getInstance().getDynamicID();
 			CDPClient.sendMessage(
 					MessageBuilder.buildRuntimeEvaluateMessage(id, expression, false));

@@ -1,44 +1,21 @@
 package example;
-
 /**
  * Copyright 2022 Serguei Kouzmine
  */
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.notNullValue;
+
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasKey;
 
-import java.io.File;
 import java.io.IOException;
-
-import java.nio.file.Files;
-
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Base64;
-import java.util.Date;
 
-import org.apache.commons.io.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
-
-// TODO: get rid of
-import com.neovisionaries.ws.client.WebSocketException;
-
 import example.messaging.MessageBuilder;
-import example.messaging.ServiceWorker;
-import example.messaging.CDPClient.MessageTimeOutException;
-import example.utils.Utils;
 
 public class HistorgramTest extends BaseTest {
 

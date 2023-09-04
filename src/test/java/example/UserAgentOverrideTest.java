@@ -15,7 +15,6 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-// TODO: get rid of
 import com.neovisionaries.ws.client.WebSocketException;
 
 import example.messaging.MessageBuilder;
@@ -55,4 +54,3 @@ public class UserAgentOverrideTest extends BaseTest {
 		assertThat(element.getAttribute("innerText"), is("python 2.7"));
 	}
 }
-

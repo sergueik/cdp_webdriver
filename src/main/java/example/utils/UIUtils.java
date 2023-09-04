@@ -44,7 +44,7 @@ public class UIUtils {
 
 	@SuppressWarnings("deprecation")
 	public WebElement findElement(By locator, int loadTimeout) {
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings({ "unchecked", "rawtypes" })
 		Wait<WebDriver> wait = (new FluentWait(driver))
 				.withTimeout((long) loadTimeout, TimeUnit.SECONDS)
 				.pollingEvery(1L, TimeUnit.SECONDS)

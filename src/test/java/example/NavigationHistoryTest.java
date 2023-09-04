@@ -15,7 +15,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-// TODO: get rid of
 import com.neovisionaries.ws.client.WebSocketException;
 
 import java.time.Duration;
@@ -33,7 +32,7 @@ public class NavigationHistoryTest extends BaseTest {
 	private String responseMessage = null;
 	private JSONObject result = null;
 
-	// NOTE: Cucumber supports "order"attribute in @Before.
+	// NOTE: Cucumber supports "order" attribute in @Before.
 	// Junit does not
 	@Before
 	public void beforeTest() throws IOException {

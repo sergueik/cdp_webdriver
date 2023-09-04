@@ -163,6 +163,50 @@ will see the error:
 
 Alternatively, have JDK and maven in the Docker container and run the tests completely in the container from mapped volume (this is how it is done in [maven/jdk8 apline]( https://hub.docker.com/r/zenika/alpine-maven/tags) base image).
 
+### TODO
+
+in headless run:
+```text
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.923 sec
+
+Results :
+
+Failed tests:   test1(example.BrowserDownloadTest): (..)
+  test2(example.BrowserDownloadTest): (..)
+  test1(example.BasicAuthHeadersFailingTest): (..)
+  test1(example.BasicAuthHeadersTest): (..)
+  test1(example.PageDownloadTest): (..)
+  test(example.ShadowRootTest): (..)
+
+Tests in error:
+  test1(example.PerformanceMetricsTest): JSONArray[0] not found.
+  test2(example.GeolocationOverrideTest): Expected condition failed: waiting for example.utils.UIUtils$$Lambda$221/844872102@64ec1459 (tried for 120 second(s) with 1000 milliseconds interval)
+  test3(example.GeolocationOverrideTest): Expected condition failed: waiting for example.utils.UIUtils$$Lambda$221/844872102@242c4a94 (tried for 120 second(s) with 1000 milliseconds interval)
+  test1(example.NetworkTrackingTest): java.lang.RuntimeException: No message received with id: 945244
+  test1(example.DeviceMetricsOverrideTest): no such element: Unable to locate element: {"method":"xpath","selector":"//*[@id="content-base"]//table//th[contains(text(),"VIEWPORT-WIDTH")]/../td"}(..)
+  test2(example.DeviceMetricsOverrideTest): no such element: Unable to locate element: {"method":"xpath","selector":"//*[@id="content-base"]//table//th[contains(text(),"VIEWPORT-WIDTH")]/../td"}(..)
+  test2(example.IndirectGeolocationOverrideTest): Expected condition failed: waiting for example.utils.UIUtils$$Lambda$221/844872102@364f0a6f (tried for 120 second(s) with 1000 milliseconds interval)
+
+Tests run: 71, Failures: 6, Errors: 7, Skipped: 12
+
+
+```
+in foreground test:
+```text
+Failed tests:   test4(example.PrintPDFTest): (..)
+  test1(example.DeviceMetricsOverrideTest): (..)
+  test2(example.DeviceMetricsOverrideTest): (..)
+  test1(example.BasicAuthHeadersTest): (..)
+
+Tests in error: 
+  test2(example.GeolocationOverrideTest): Expected condition failed: waiting for example.utils.UIUtils$$Lambda$238/700286427@509e4902 (tried for 120 second(s) with 1000 milliseconds interval)
+  test3(example.GeolocationOverrideTest): Expected condition failed: waiting for example.utils.UIUtils$$Lambda$238/700286427@4d8458a1 (tried for 120 second(s) with 1000 milliseconds interval)
+  test2(example.IndirectGeolocationOverrideTest): Expected condition failed: waiting for example.utils.UIUtils$$Lambda$238/700286427@564519de (tried for 120 second(s) with 1000 milliseconds interval)
+
+Tests run: 70, Failures: 4, Errors: 3, Skipped: 12
+
+
+```
 ### See Also:
 
   * intro to [headless chrome](https://developers.google.com/web/updates/2017/04/headless-chrome)

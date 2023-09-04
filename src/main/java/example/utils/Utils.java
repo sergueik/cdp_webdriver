@@ -29,7 +29,6 @@ import example.utils.TestUtils;
 
 public class Utils {
 
-	private Utils utils;
 	private boolean debug = false;
 
 	private int debugPort = 0;

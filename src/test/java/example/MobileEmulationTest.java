@@ -5,15 +5,12 @@ package example;
  */
 import java.io.IOException;
 
-import org.json.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.neovisionaries.ws.client.WebSocketException;
+
 import example.messaging.MessageBuilder;
 
 public class MobileEmulationTest extends BaseTest {

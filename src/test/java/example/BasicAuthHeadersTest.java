@@ -1,20 +1,14 @@
 package example;
-
 /**
  * Copyright 2022,2023 Serguei Kouzmine
  */
 
-// example usage: 
-// mvn -Dtrace_id=%TRACEID% -Dversion=01 -Dparent_id=%PARENTID% test
-import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.core.IsNot.not;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
 
 import org.apache.commons.codec.binary.Base64;
 import org.junit.After;
@@ -23,7 +17,6 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-// TODO: get rid of
 import com.neovisionaries.ws.client.WebSocketException;
 
 import example.messaging.MessageBuilder;

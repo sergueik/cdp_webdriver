@@ -6,23 +6,18 @@ package example;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.neovisionaries.ws.client.WebSocketException;
 
 import example.messaging.CDPClient.MessageTimeOutException;
 import example.messaging.MessageBuilder;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Selected test scenarios for Selenium 3.x Chrome Developer Tools bridge inspired
@@ -36,7 +31,6 @@ public class WindowsTabsNavigationTest extends BaseTest {
 	private static List<String> urls = Arrays.asList(
 			"https://en.wikipedia.org/wiki/Main_Page", "https://www.google.com");
 	private static List<String> targets = new ArrayList<>();
-	private static Map<Integer, String> data = new HashMap<>();
 	private static String responseMessage = null;
 	private static String targetId;
 	private static String sessionID;
@@ -96,7 +90,6 @@ public class WindowsTabsNavigationTest extends BaseTest {
 				JSONObject targetInfo = targetInfos.getJSONObject(i);
 				System.err.println("Can process object: " + targetInfo.toString());
 
-				@SuppressWarnings("unchecked")
 				Iterator<String> targetInfoKeysIterator = targetInfo.keys();
 
 				while (targetInfoKeysIterator.hasNext()) {

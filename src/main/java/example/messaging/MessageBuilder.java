@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 
 import org.apache.commons.codec.binary.Base64;
@@ -554,6 +553,11 @@ public class MessageBuilder {
 		/*
 		 * return String.format("{\"id\":%d,\"method\":\"Runtime.enable\"}", id);
 		 */
+	}
+
+	public static String buildEnableRuntimeMessage() {
+		return buildEnableRuntimeMessage(Utils.getInstance().getDynamicID());
+
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/1-2/Runtime/#method-evaluate

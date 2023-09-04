@@ -4,27 +4,18 @@ package example;
  */
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasKey;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.openqa.selenium.WebElement;
-
-import com.neovisionaries.ws.client.WebSocketException;
 
 import example.messaging.MessageBuilder;
 
@@ -36,9 +27,6 @@ public class ComputedStyleTest extends BaseTest {
 					"btn-warning", "btn-info", "btn-light", "btn-dark", "btn-link"));
 
 	private static String selector = null;
-
-	private static String command = null;
-	private WebElement element;
 
 	private String responseMessage = null;
 	private JSONObject result = null;

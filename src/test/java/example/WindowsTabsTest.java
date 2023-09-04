@@ -4,11 +4,8 @@ package example;
  * Copyright 2020,2021 Serguei Kouzmine
  */
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.neovisionaries.ws.client.WebSocketException;
@@ -26,7 +23,6 @@ import example.messaging.MessageBuilder;
 public class WindowsTabsTest extends BaseTest {
 
 	private static String url = "https://en.wikipedia.org/wiki/Main_Page";
-	private static Map<Integer, String> data = new HashMap<>();
 	private static String responseMessage = null;
 	private static String targetId;
 
