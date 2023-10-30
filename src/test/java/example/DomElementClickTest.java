@@ -23,8 +23,8 @@ import example.messaging.MessageBuilder;
 public class DomElementClickTest extends BaseTest {
 
 	private final static String url = "https://www.wikipedia.org";
-	private final static String selector = "#js-link-box-it > strong";
-
+	private final static String selector = "#js-link-box-de > strong";
+	private boolean debug = false;
 	private String responseMessage = null;
 	private JSONObject result = null;
 	private JSONArray result1 = null;
@@ -32,7 +32,7 @@ public class DomElementClickTest extends BaseTest {
 
 	@Before
 	public void beforeTest() throws IOException {
-		super.setHeadless(false);
+		// super.setHeadless(false);
 		super.beforeTest();
 		driver.navigate().to(url);
 		try {
@@ -87,7 +87,8 @@ public class DomElementClickTest extends BaseTest {
 					.sendMessage(MessageBuilder.buildGetContentQuadsMessage(id, nodeId));
 			System.err.println("id = " + id);
 			responseMessage = CDPClient.getResponseMessage(id, "quads");
-			System.err.println("getContentQuads response: " + responseMessage);
+			if (debug)
+				System.err.println("getContentQuads response: " + responseMessage);
 			result1 = new JSONArray(responseMessage);
 			List<Integer> values = new ArrayList<>();
 			result1.forEach((Object o1) -> {
@@ -96,23 +97,31 @@ public class DomElementClickTest extends BaseTest {
 				JSONArray result2 = (JSONArray) o1;
 				System.err.println("result2:" + result2);
 				result2.forEach((Object data) -> {
-					System.err.println("Quad data:" + data);
-					// NOTE: observed to be mix of Double and Long and to be fragile:
+					if (debug)
+						System.err.println("Quad data:" + data);
+					// NOTE: observed quads to contain mix of Double and Long values which
+					// appear to be fragile in deserialization to:
 					// incompatible types: java.lang.Double cannot be converted to
 					// java.lang.Long
-					Double value;
-					value = Double.parseDouble(data.toString());
+					Double value = Double.parseDouble(data.toString());
 					int coord = Math.round(value.longValue());
 					values.add(coord);
 				});
 			});
 			int x = values.get(0);
 			int y = values.get(1);
-			id = utils.getDynamicID();
+			id = utils.getDynamicID();			
+			CDPClient.sendMessage(
+					MessageBuilder.buildGetOuterHTMLMessage(id, (int) nodeId));
+			responseMessage = CDPClient.getResponseMessage(id, "outerHTML");
+			System.err.println("Target outer HTML: " + responseMessage);
+
 			System.err.println(String.format("Click on: x=%d y=%d", x, y));
+			id = utils.getDynamicID();
 			CDPClient.sendMessage(MessageBuilder.buildDispatchMouseEventMessage(id, x,
 					y, "mousePressed"));
 			utils.sleep(2);
+			id = utils.getDynamicID();
 			CDPClient.sendMessage(MessageBuilder.buildDispatchMouseEventMessage(id, x,
 					y, "mouseReleased"));
 			utils.sleep(3);

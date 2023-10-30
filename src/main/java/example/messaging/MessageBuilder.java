@@ -413,17 +413,18 @@ public class MessageBuilder {
 		params.put("x", x);
 		params.put("y", y);
 		params.put("button", "left");
+		params.put("buttons", 1);
 		params.put("type", type);
 		params.put("clickCount", 1);
 		if (debug) {
 			System.err.println("Sending message: " + String.format(
-					"{\"id\":%d,\"method\":\"INPUT.dispatchMouseEvent\", \"params\":{\"x\":\"%d\", \"y\":\"%d\", \"type\":\"%s\", \"clickCount\":1, \"button\": \"left\"}",
+					"{\"id\":%d,\"method\":\"INPUT.dispatchMouseEvent\", \"params\":{\"x\":%d, \"y\":%d, \"type\":\"%s\", \"clickCount\":1, \"buttons\":1,\"button\": \"left\"}",
 					id, x, y, type));
 		}
 		return buildMessage(id, method, params);
 		/*
 		 * return String.
-		 * format("{\"id\":%d,\"method\":\"INPUT.dispatchMouseEvent\", \"params\":{\"x\":\"%d\", \"y\":\"%d\", \"type\":\"%s\", \"clickCount\":1, \"button\": \"left\"}",
+		 * format("{\"id\":%d,\"method\":\"INPUT.dispatchMouseEvent\", \"params\":{\"x\":%d, \"y\":%ds, \"type\":\"%s\", \"clickCount\":1,  \"buttons\":1, \"button\": \"left\"}",
 		 * id, x, y, type);
 		 */
 	}
