@@ -405,6 +405,29 @@ public class MessageBuilder {
 		 */
 	}
 
+	// https://chromedevtools.github.io/devtools-protocol/tot/Input/#method-dispatchMouseEvent
+	public static String buildDispatchMouseEventMessage(int id, int x, int y,
+			String type) {
+		method = "INPUT.dispatchMouseEvent";
+		params = new HashMap<>();
+		params.put("x", x);
+		params.put("y", y);
+		params.put("button", "left");
+		params.put("type", type);
+		params.put("clickCount", 1);
+		if (debug) {
+			System.err.println("Sending message: " + String.format(
+					"{\"id\":%d,\"method\":\"INPUT.dispatchMouseEvent\", \"params\":{\"x\":\"%d\", \"y\":\"%d\", \"type\":\"%s\", \"clickCount\":1, \"button\": \"left\"}",
+					id, x, y, type));
+		}
+		return buildMessage(id, method, params);
+		/*
+		 * return String.
+		 * format("{\"id\":%d,\"method\":\"INPUT.dispatchMouseEvent\", \"params\":{\"x\":\"%d\", \"y\":\"%d\", \"type\":\"%s\", \"clickCount\":1, \"button\": \"left\"}",
+		 * id, x, y, type);
+		 */
+	}
+
 	// https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-querySelector
 	public static String buildQuerySelectorAllMessage(int id, long nodeId,
 			String selector) {
@@ -429,6 +452,19 @@ public class MessageBuilder {
 		/*
 		 * return String.
 		 * format("{\"id\":%d,\"method\":\"CSS.getComputedStyleForNode\", \"params\":{\"nodeId\":\"%d\"}}"
+		 * , id, nodeId);
+		 */
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-getContentQuads
+	public static String buildGetContentQuadsMessage(int id, long nodeId) {
+		method = "DOM.getContentQuads";
+		params = new HashMap<>();
+		params.put("nodeId", nodeId);
+		return buildMessage(id, method, params);
+		/*
+		 * return String.
+		 * format("{\"id\":%d,\"method\":\"DOM.getContentQuads\", \"params\":{\"nodeId\":\"%d\"}}"
 		 * , id, nodeId);
 		 */
 	}
