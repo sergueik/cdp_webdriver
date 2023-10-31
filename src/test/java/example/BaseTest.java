@@ -59,6 +59,11 @@ public class BaseTest {
 				&& !(System.getenv().containsKey("DISPLAY"))) {
 			headless = true;
 		}
+		if (System.getenv().containsKey("HEADLESS")
+				&& System.getenv("HEADLESS").matches("(?:true|yes|1)")){
+			headless = true;
+		}
+
 		System.err.println("HEADLESS: " + headless);
 		driver = utils.launchBrowser(headless);
 		uiUtils.setDriver(driver);

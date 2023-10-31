@@ -61,7 +61,7 @@ public class DomElementClickTest extends BaseTest {
 
 		try {
 			id = utils.getDynamicID();
-			CDPClient.sendMessage(MessageBuilder.buildGetDocumentMessage(id));
+			CDPClient.sendMessage(MessageBuilder.buildDOMGetDocumentMessage(id));
 			responseMessage = CDPClient.getResponseMessage(id, null);
 			// System.err.println("getDocument: " + responseMessage);
 			result = new JSONObject(responseMessage);

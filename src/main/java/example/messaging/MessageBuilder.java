@@ -319,8 +319,25 @@ public class MessageBuilder {
 		 */
 	}
 
+	// https://chromedevtools.github.io/devtools-protocol/1-2/DOM/#method-highlightNode
+	public static String buildDOMHighlightNode(int id, int nodeId) {
+
+		method = "DOM.highlightNode";
+		params = new HashMap<>();
+		params.put("nodeId", nodeId);
+
+		final String message = buildMessage(id, method, params);
+		// System.err.println("message: " + message);
+		return message;
+		/*
+		 * return String.
+		 * format("{\"id\":%d,\"method\":\"DOM.highlightNode\", \"params\":{\"nodeId\":\"%d\"}}"
+		 * , id, nodeId);
+		 */
+	}
+
 	// https://chromedevtools.github.io/devtools-protocol/1-3/DOM/#method-getDocument
-	public static String buildGetDocumentMessage(int id) {
+	public static String buildDOMGetDocumentMessage(int id) {
 		final String message = buildMessage(id, "DOM.getDocument");
 		// System.err.println("message: " + message);
 		return message;
@@ -339,12 +356,12 @@ public class MessageBuilder {
 		 */
 	}
 
-	public static String buildGetDocumentMessage(int id, Boolean pierce) {
-		return buildGetDocumentMessage(id, -1, pierce);
+	public static String buildDOMGetDocumentMessage(int id, Boolean pierce) {
+		return buildDOMGetDocumentMessage(id, -1, pierce);
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-getDocument
-	public static String buildGetDocumentMessage(int id, int depth,
+	public static String buildDOMGetDocumentMessage(int id, int depth,
 			Boolean pierce) {
 		method = "DOM.getDocument";
 		params = new HashMap<>();
@@ -1032,6 +1049,31 @@ public class MessageBuilder {
 		rgb_data.put("b", Utils.getRandomColor());
 		rgb_data.put("a", 1);
 		params.put("frameId", frameId);
+		params.put("contentColor", rgb_data);
+		if (debug) {
+			System.err.println(String
+					.format("Sending:\n" + "{\"id\":%d,\"method\":\"%s\"}", id, method));
+		}
+		return buildMessage(id, method, params);
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Overlay/#method-hideHighlight
+	public static String buildDOMHideHighlightMessage(int id) {
+		return buildMessage(id, "DOM.hideHighlight");
+	}
+
+	// NOTR; unfinished
+	// https://chromedevtools.github.io/devtools-protocol/1-2/DOM/#method-highlightNode
+	public static String buildDOMHighlightNodeMessage(int id,
+			final String nodeId) {
+		method = "DOM.highlightNode";
+		params = new HashMap<>();
+		Map<String, Integer> rgb_data = new HashMap<>();
+		rgb_data.put("r", Utils.getRandomColor());
+		rgb_data.put("g", Utils.getRandomColor());
+		rgb_data.put("b", Utils.getRandomColor());
+		rgb_data.put("a", 1);
+		params.put("nodeId", nodeId);
 		params.put("contentColor", rgb_data);
 		if (debug) {
 			System.err.println(String

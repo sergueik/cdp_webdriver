@@ -34,7 +34,7 @@ public class ShadowRootDomTest extends BaseTest {
 		driver.navigate().to("chrome://history/");
 		try {
 			CDPClient
-					.sendMessage(MessageBuilder.buildGetDocumentMessage(id, 3, true));
+					.sendMessage(MessageBuilder.buildDOMGetDocumentMessage(id, 3, true));
 			// Assert
 			result = new JSONObject(CDPClient.getResponseMessage(id, "root"));
 			System.err.println("DOM.getDocument object: " + result.toString(2));

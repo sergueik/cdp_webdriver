@@ -19,7 +19,7 @@ import com.neovisionaries.ws.client.WebSocketException;
 import example.messaging.CDPClient.MessageTimeOutException;
 import example.messaging.MessageBuilder;
 
-public class BroswerVersionTest extends BaseTest {
+public class BrowserVersionTest extends BaseTest {
 	private JSONObject result = null;
 
 	@Before

@@ -43,7 +43,7 @@ public class NavigationTest extends BaseTest {
 		long nodeId = (long) -1;
 		driver.get("https://www.wikipedia.org");
 		try {
-			CDPClient.sendMessage(MessageBuilder.buildGetDocumentMessage(id));
+			CDPClient.sendMessage(MessageBuilder.buildDOMGetDocumentMessage(id));
 			responseMessage = CDPClient.getResponseMessage(id, null);
 			result = new JSONObject(responseMessage);
 			assertThat(result.has("root"), is(true));
