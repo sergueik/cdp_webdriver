@@ -319,10 +319,11 @@ public class MessageBuilder {
 		 */
 	}
 
-	// https://chromedevtools.github.io/devtools-protocol/1-2/DOM/#method-highlightNode
-	public static String buildDOMHighlightNode(int id, int nodeId) {
+	// https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-focus
+	// NOTE: argument type - should int work/
+	public static String buildDOMFocusMessage(int id, int	 nodeId) {
 
-		method = "DOM.highlightNode";
+		method = "DOM.focus";
 		params = new HashMap<>();
 		params.put("nodeId", nodeId);
 
@@ -331,7 +332,7 @@ public class MessageBuilder {
 		return message;
 		/*
 		 * return String.
-		 * format("{\"id\":%d,\"method\":\"DOM.highlightNode\", \"params\":{\"nodeId\":\"%d\"}}"
+		 * format("{\"id\":%d,\"method\":\"DOM.focus\", \"params\":{\"nodeId\":\"%d\"}}"
 		 * , id, nodeId);
 		 */
 	}
