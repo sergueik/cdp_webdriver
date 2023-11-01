@@ -321,7 +321,7 @@ public class MessageBuilder {
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/DOM/#method-focus
 	// NOTE: argument type - should int work/
-	public static String buildDOMFocusMessage(int id, int	 nodeId) {
+	public static String buildDOMFocusMessage(int id, int nodeId) {
 
 		method = "DOM.focus";
 		params = new HashMap<>();
@@ -1065,17 +1065,21 @@ public class MessageBuilder {
 
 	// NOTR; unfinished
 	// https://chromedevtools.github.io/devtools-protocol/1-2/DOM/#method-highlightNode
-	public static String buildDOMHighlightNodeMessage(int id,
-			final String nodeId) {
+	public static String buildDOMHighlightNodeMessage(int id, final long nodeId) {
 		method = "DOM.highlightNode";
-		params = new HashMap<>();
-		Map<String, Integer> rgb_data = new HashMap<>();
-		rgb_data.put("r", Utils.getRandomColor());
-		rgb_data.put("g", Utils.getRandomColor());
-		rgb_data.put("b", Utils.getRandomColor());
-		rgb_data.put("a", 1);
+		params.clear();
 		params.put("nodeId", nodeId);
-		params.put("contentColor", rgb_data);
+		Map<String, Object> color = new HashMap<>();
+
+		Map<String, Object> highlightConfig = new HashMap<>();
+		color = getRandomColor(128, 0, 128);
+		highlightConfig.put("borderColor", color);
+
+		color = getRandomColor();
+		highlightConfig.put("contentColor", color);
+		highlightConfig.put("showInfo", true);
+		params.put("highlightConfig", highlightConfig);
+
 		if (debug) {
 			System.err.println(String
 					.format("Sending:\n" + "{\"id\":%d,\"method\":\"%s\"}", id, method));
@@ -1086,6 +1090,16 @@ public class MessageBuilder {
 	// https://chromedevtools.github.io/devtools-protocol/tot/Overlay/#method-enable
 	public static String buildOverlayEnableMessage(int id) {
 		method = "Overlay.enable";
+		if (debug) {
+			System.err.println(String
+					.format("Sending:\n" + "{\"id\":%d,\"method\":\"%s\"}", id, method));
+		}
+		return buildMessage(id, method);
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Overlay/#method-disable
+	public static String buildOverlayDisableMessage(int id) {
+		method = "Overlay.disable";
 		if (debug) {
 			System.err.println(String
 					.format("Sending:\n" + "{\"id\":%d,\"method\":\"%s\"}", id, method));
@@ -1504,4 +1518,31 @@ public class MessageBuilder {
 		return buildMessage(id, method);
 	}
 
+	private static Map<String, Object> getRandomColor() {
+		return getRandomColor(.5f);
+	}
+
+	private static Map<String, Object> getRandomColor(final float alpha) {
+		Map<String, Object> color = new HashMap<>();
+		color.put("r", Utils.getRandomColor());
+		color.put("g", Utils.getRandomColor());
+		color.put("b", Utils.getRandomColor());
+		color.put("a", alpha);
+		return color;
+	}
+
+	private static Map<String, Object> getRandomColor(int red, int green,
+			int blue) {
+		return getRandomColor(red, green, blue, 1);
+	}
+
+	private static Map<String, Object> getRandomColor(int red, int green,
+			int blue, final float alpha) {
+		Map<String, Object> color = new HashMap<>();
+		color.put("r", red);
+		color.put("g", green);
+		color.put("b", blue);
+		color.put("a", alpha);
+		return color;
+	}
 }
