@@ -30,7 +30,8 @@ public class ComputedStyleTest extends BaseTest {
 
 	private String responseMessage = null;
 	private JSONObject result = null;
-	private JSONArray result2 = null;
+	private JSONObject result2 = null;
+	private JSONArray results = null;
 	private static final String propertyName = "background-color";
 	private static final String value = "rgb(10,10,10)";
 
@@ -73,13 +74,11 @@ public class ComputedStyleTest extends BaseTest {
 		try {
 			id = utils.getDynamicID();
 			CDPClient.sendMessage(MessageBuilder.buildDOMGetDocumentMessage(id));
-			responseMessage = CDPClient.getResponseMessage(id, null);
-			// System.err.println("getDocument: " + responseMessage);
+			responseMessage = CDPClient.getResponseMessage(id, "root");
+			// System.err.println("DOM.getDocument response: " + responseMessage);
 			result = new JSONObject(responseMessage);
-			assertThat(result.has("root"), is(true));
-
-			assertThat(result.getJSONObject("root").has("nodeId"), is(true));
-			rootNodeId = result.getJSONObject("root").getLong("nodeId");
+			assertThat(result.has("nodeId"), is(true));
+			rootNodeId = result.getLong("nodeId");
 			assertTrue(rootNodeId != 0);
 			for (String data : classes) {
 
@@ -104,16 +103,17 @@ public class ComputedStyleTest extends BaseTest {
 				responseMessage = CDPClient.getResponseMessage(id, "computedStyle");
 				// System.err.println("GetComputedStyleForNode response: " +
 				// responseMessage);
-				result2 = new JSONArray(responseMessage);
-				result2.forEach((result2) -> {
-					// System.err.println("result2:" + result2);
-					assertThat(result2 instanceof JSONObject, is(true));
-					String name = ((JSONObject) result2).getString("name");
+				results = new JSONArray(responseMessage);
+				results.forEach((Object o) -> {
+					// System.err.println("results:" + results);
+					assertThat(o instanceof JSONObject, is(true));
+					result2 = (JSONObject) o;
+					String name = result2.getString("name");
 					// System.err.println(String.format("name: \"%s\"", name));
 					if (name.matches(propertyName)) {
 						System.err.println(
 								String.format("computed style: " + propertyName + ": %s",
-										((JSONObject) result2).getString("value")));
+										result2.getString("value")));
 					}
 				});
 				id = utils.getDynamicID();

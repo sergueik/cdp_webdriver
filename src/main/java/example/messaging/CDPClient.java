@@ -1,5 +1,10 @@
 package example.messaging;
 
+/**
+ * Copyright 2020-2023 Serguei Kouzmine
+ */
+
+
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.neovisionaries.ws.client.WebSocket;

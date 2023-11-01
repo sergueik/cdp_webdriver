@@ -27,8 +27,9 @@ public class DomElementClickTest extends BaseTest {
 	private boolean debug = false;
 	private String responseMessage = null;
 	private JSONObject result = null;
-	private JSONArray result1 = null;
-	private static long nodeId = (long) -1;
+	private JSONArray results = null;
+	private JSONArray results2 = null;
+	private static long nodeId = -1l;
 
 	@Before
 	public void beforeTest() throws IOException {
@@ -62,13 +63,11 @@ public class DomElementClickTest extends BaseTest {
 		try {
 			id = utils.getDynamicID();
 			CDPClient.sendMessage(MessageBuilder.buildDOMGetDocumentMessage(id));
-			responseMessage = CDPClient.getResponseMessage(id, null);
-			// System.err.println("getDocument: " + responseMessage);
+			responseMessage = CDPClient.getResponseMessage(id, "root");
+			// System.err.println("DOM.getDocument response: " + responseMessage);
 			result = new JSONObject(responseMessage);
-			assertThat(result.has("root"), is(true));
-
-			assertThat(result.getJSONObject("root").has("nodeId"), is(true));
-			nodeId = result.getJSONObject("root").getLong("nodeId");
+			assertThat(result.has("nodeId"), is(true));
+			nodeId = result.getLong("nodeId");
 			assertTrue(nodeId != 0);
 
 			id = utils.getDynamicID();
@@ -89,16 +88,16 @@ public class DomElementClickTest extends BaseTest {
 			responseMessage = CDPClient.getResponseMessage(id, "quads");
 			if (debug)
 				System.err.println("getContentQuads response: " + responseMessage);
-			result1 = new JSONArray(responseMessage);
+			results = new JSONArray(responseMessage);
 			List<Integer> values = new ArrayList<>();
-			result1.forEach((Object o1) -> {
+			results.forEach((Object o) -> {
 
-				assertThat(o1 instanceof JSONArray, is(true));
-				JSONArray result2 = (JSONArray) o1;
-				System.err.println("result2:" + result2);
-				result2.forEach((Object data) -> {
+				assertThat(o instanceof JSONArray, is(true));
+				results2 = (JSONArray) o;
+				System.err.println("results2: " + results2);
+				results2.forEach((Object data) -> {
 					if (debug)
-						System.err.println("Quad data:" + data);
+						System.err.println("Quad data: " + data);
 					// NOTE: observed quads to contain mix of Double and Long values which
 					// appear to be fragile in deserialization to:
 					// incompatible types: java.lang.Double cannot be converted to
@@ -110,7 +109,7 @@ public class DomElementClickTest extends BaseTest {
 			});
 			int x = values.get(0);
 			int y = values.get(1);
-			id = utils.getDynamicID();			
+			id = utils.getDynamicID();
 			CDPClient.sendMessage(
 					MessageBuilder.buildGetOuterHTMLMessage(id, (int) nodeId));
 			responseMessage = CDPClient.getResponseMessage(id, "outerHTML");

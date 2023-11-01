@@ -1,6 +1,6 @@
 package example;
 /**
- * Copyright 2021 Serguei Kouzmine
+ * Copyright 2021,2023 Serguei Kouzmine
  */
 
 import java.io.IOException;
@@ -20,9 +20,9 @@ public class ShadowRootDomTest extends BaseTest {
 	private JSONObject result1 = null;
 	private JSONObject result2 = null;
 	private JSONObject result3 = null;
-	Iterator<Object> results1Iterator = null;
-	Iterator<Object> results2Iterator = null;
-	Iterator<Object> results3Iterator = null;
+	Iterator<Object> iterator1 = null;
+	Iterator<Object> iterator2 = null;
+	Iterator<Object> iterator3 = null;
 
 	// NOTE: similar with "chrome://downloads/"
 
@@ -38,17 +38,17 @@ public class ShadowRootDomTest extends BaseTest {
 			// Assert
 			result = new JSONObject(CDPClient.getResponseMessage(id, "root"));
 			System.err.println("DOM.getDocument object: " + result.toString(2));
-			results1Iterator = result.getJSONArray("children").iterator();
-			while (results1Iterator.hasNext()) {
-				result1 = (JSONObject) results1Iterator.next();
+			iterator1 = result.getJSONArray("children").iterator();
+			while (iterator1.hasNext()) {
+				result1 = (JSONObject) iterator1.next();
 				if (result1.getString("nodeName").equals("HTML")) {
-					results2Iterator = result1.getJSONArray("children").iterator();
-					while (results2Iterator.hasNext()) {
-						result2 = (JSONObject) results2Iterator.next();
+					iterator2 = result1.getJSONArray("children").iterator();
+					while (iterator2.hasNext()) {
+						result2 = (JSONObject) iterator2.next();
 						if (result2.getString("nodeName").equals("BODY")) {
-							results3Iterator = result2.getJSONArray("children").iterator();
-							while (results3Iterator.hasNext()) {
-								result3 = (JSONObject) results3Iterator.next();
+							iterator3 = result2.getJSONArray("children").iterator();
+							while (iterator3.hasNext()) {
+								result3 = (JSONObject) iterator3.next();
 								if (result3.getString("nodeName").equals("HISTORY-APP")) {
 									System.err.println(
 											"Shadow Roots in element <history-app id=\"history-app\">:\n"
