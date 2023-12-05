@@ -1402,6 +1402,7 @@ public class MessageBuilder {
 		return buildMessage(id, method, params);
 	}
 
+	// https://chromedevtools.github.io/devtools-protocol/tot/Emulation/#method-resetPageScaleFactor
 	public static String buildEmulationResetPageScaleMessage(int id) {
 		method = "Emulation.resetPageScaleFactor";
 		if (debug) {
@@ -1409,6 +1410,18 @@ public class MessageBuilder {
 					.format("Sending:\n" + "{\"id\":%d,\"method\":\"%s\"}", id, method));
 		}
 		return buildMessage(id, method);
+	}
+
+	// https://chromedevtools.github.io/devtools-protocol/tot/Emulation/#method-resetPageScaleFactor
+	public static String buildEmulationSetPageScaleMessage(int id, float scale) {
+		method = "Emulation.setPageScaleFactor";
+		params = new HashMap<>();
+		params.put("pageScaleFactor", scale);
+		if (debug)
+			System.err.println(String.format(
+					"Sending:\n{\"id\":%d,\"method\":\"%s\", \"params\":{\"pageScaleFactor\": \"%9.3f\"}}}",
+					id, method, scale));
+		return buildMessage(id, method, params);
 	}
 
 	// https://chromedevtools.github.io/devtools-protocol/tot/Browser/#method-getHistograms
