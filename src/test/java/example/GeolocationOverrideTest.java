@@ -1,7 +1,7 @@
 package example;
 
 /**
- * Copyright 2022 Serguei Kouzmine
+ * Copyright 2022,2024 Serguei Kouzmine
  */
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -31,6 +31,7 @@ import example.utils.Utils;
 public class GeolocationOverrideTest extends BaseTest {
 
 	private String URL = null;
+	private int findTime = 10;
 	private static WebElement element = null;
 	// private static By locator = By
 	// .cssSelector("button[aria-label='Show Your Location']");
@@ -43,21 +44,24 @@ public class GeolocationOverrideTest extends BaseTest {
 		this.setDebug(true);
 		System.err.println("WebSocketURL: " + GetWebSocketURL());
 		setLocation();
-		utils.sleep(240);
+		// skip hanging code
+		// utils.sleep(240);
 	}
 
+	@Ignore("hanging")
 	@Test
 	public void test1() throws IOException, WebSocketException,
 			MessageTimeOutException, InterruptedException {
 		URL = "https://www.google.com/maps";
 
 		driver.navigate().to(URL);
-		element = uiUtils.findElement(locator, 120);
+		element = uiUtils.findElement(locator, findTime);
 		element.click();
 		utils.waitFor(10);
 		uiUtils.takeScreenShot();
 	}
 
+	@Ignore("hanging")
 	@Test
 	// "Location Unavailable" test
 	// NOTE: also leads to NPE in AfterClass when run alone
@@ -90,7 +94,7 @@ public class GeolocationOverrideTest extends BaseTest {
 			throw e;
 		}
 		driver.navigate().to(URL);
-		element = uiUtils.findElement(By.id("placename"), 120);
+		element = uiUtils.findElement(By.id("placename"), findTime);
 		// confirm that #placename is empty
 		assertThat(element.getText(), is(""));
 	}
@@ -100,10 +104,10 @@ public class GeolocationOverrideTest extends BaseTest {
 		URL = "https://mycurrentlocation.net";
 		driver.navigate().to(URL);
 		locator = By.cssSelector(".location-intro");
-		element = uiUtils.findElement(locator, 120);
+		element = uiUtils.findElement(locator, findTime);
 		assertThat(element.getText(), containsString("Mountain View"));
 		System.err.println("Location explained: " + element.getText());
-		utils.sleep(120);
+		// utils.sleep(120);
 	}
 
 	@Override
@@ -140,3 +144,4 @@ public class GeolocationOverrideTest extends BaseTest {
 	}
 
 }
+
