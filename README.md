@@ -223,7 +223,10 @@ Tests run: 70, Failures: 4, Errors: 3, Skipped: 12
   * [rubycdp/ferrum](https://github.com/rubycdp/ferrum) Ruby port of CDP [homepage](https://evrone.com/ferrum-ruby-chrome-driver)
   * __ferrum__ and derivative gems (__vessel__, __foot-traffic__) [overview](https://dev.to/libsyz/modern-ruby-web-automation-and-scraping-with-ferrum-10dh)
   * [websocket client for the CDP](https://github.com/HubSpot/ChromeDevToolsClient)
-
+  * [bypassing Cloudware by using CDP bidi API through C#](https://habr.com/en/articles/792868/) (in Russian)
+  * [Puppeteer Sharp](https://www.puppeteersharp.com) .NET port [source repo](https://github.com/hardkoded/puppeteer-sharp) and [latest nuget package](https://www.nuget.org/packages/PuppeteerSharp/#supportedframeworks-body-tab) - NOTE: limited to __.Net Standard__ 2.x (claims to work with __.Net Framework__ 4.6.1 too)
+  * [puppeteer](https://github.com/puppeteer/puppeteer) Node.js API for Chrome
+  * replica [fucore/cdp4j](https://github.com/fucora/cdp4j)
 ### Author
 [Serguei Kouzmine](kouzmine_serguei@yahoo.com)
 
